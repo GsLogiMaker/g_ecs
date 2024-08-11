@@ -1,7 +1,6 @@
 
-#include "godot_cpp/variant/variant.hpp"
-#include "utils.h"
 #include "entity.h"
+#include "utils.h"
 // needed here because entity.h does not include
 // component.h, but uses forward declaration instead
 #include "component.h"
@@ -10,6 +9,7 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include "godot_cpp/variant/variant.hpp"
 
 using namespace godot;
 
@@ -19,23 +19,27 @@ GlEntity::~GlEntity() {
 }
 
 Ref<GlEntity> GlEntity::spawn(GlWorld* world) {
-	if (world == nullptr) {
-		// world = GlWorld::singleton();
+	GlWorld* world_ = world;
+	if (world_ == nullptr) {
+		// world_ = GlWorld::singleton();
 	}
 
-	Ref<GlEntity> e = Variant(memnew(GlEntity));
-	e->set_world(world);
-	e->set_id(ecs_new(world->raw()));
+	Ref<GlEntity> e = Variant(memnew(GlEntity(
+		ecs_new(world_->raw()),
+		world_
+	)));
 	return e;
 }
 Ref<GlEntity> GlEntity::from(Variant entity, GlWorld* world) {
-	if (world == nullptr) {
-		// world = GlWorld::singleton();
+	GlWorld* world_ = world;
+	if (world_ == nullptr) {
+		// world_ = GlWorld::singleton();
 	}
 
-	Ref<GlEntity> e = Variant(memnew(GlEntity));
-	e->set_world(world);
-	e->set_id(world->coerce_id(entity));
+	Ref<GlEntity> e = memnew(GlEntity(
+		world_->coerce_id(entity),
+		world_
+	));
 
 	if (!e->is_alive()) {
 		return Variant(nullptr);

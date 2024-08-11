@@ -2,7 +2,6 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "godot_cpp/variant/utility_functions.hpp"
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -11,6 +10,7 @@ namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
 	class GlComponentBuilder;
+	class GlQueryBuilder;
 
 	class GlWorld : public Object {
 		GDCLASS(GlWorld, Object)
@@ -24,6 +24,7 @@ namespace godot {
 		// **************************************
 
 		Ref<GlComponentBuilder> component_builder();
+		Ref<GlQueryBuilder> query_builder();
 
 		ecs_entity_t coerce_id(Variant);
 		void progress(double delta);
