@@ -2,6 +2,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "godot_cpp/variant/utility_functions.hpp"
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -103,8 +104,7 @@ namespace godot {
 		) {
 			T* list = (T*)ptr;
 			for (int i=0; i != count; i++) {
-				T value = T();
-				list[i] = value;
+				new(&list[i]) T();
 			}
 		}
 
