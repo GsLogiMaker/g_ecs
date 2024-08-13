@@ -17,11 +17,11 @@ GlQueryBuilder::~GlQueryBuilder() {
 }
 
 Ref<GlQuery> GlQueryBuilder::build() {
-	const char* FAILED_TO_BUILD = "Failed to build component\n";
-	if (built) {
+	const char* FAILED_TO_BUILD = "Failed to build query\n";
+	if (is_built()) {
 		ERR(nullptr,
 			FAILED_TO_BUILD,
-			"Component builder was already built"
+			"Query builder was already built"
 		);
 	}
 	built = true;
