@@ -6,6 +6,10 @@
 #include "registerable_entity.h"
 #include "component.h"
 #include "component_builder.h"
+#include "querylike_builder.h"
+#include "query_builder.h"
+#include "query.h"
+#include "query_iterator.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -22,10 +26,14 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	}
 
 	godot::ClassDB::register_class<GlWorld>();
-	godot::ClassDB::register_class<GlEntity>();
-	godot::ClassDB::register_class<GlRegisterableEntity>();
-	godot::ClassDB::register_class<GlComponent>();
+	godot::ClassDB::register_abstract_class<GlEntity>();
+	godot::ClassDB::register_abstract_class<GlRegisterableEntity>();
+	godot::ClassDB::register_abstract_class<GlComponent>();
 	godot::ClassDB::register_abstract_class<GlComponentBuilder>();
+	godot::ClassDB::register_abstract_class<GlQuerylikeBuilder>();
+	godot::ClassDB::register_abstract_class<GlQueryBuilder>();
+	godot::ClassDB::register_abstract_class<GlQuery>();
+	godot::ClassDB::register_abstract_class<GlQueryIterator>();
 
 	Engine::get_singleton()->register_singleton("GlGlobalWorld", memnew(GlWorld));
 }

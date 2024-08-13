@@ -14,11 +14,13 @@ namespace godot {
 
 	public:
 		GlRegisterableEntity();
+		GlRegisterableEntity(ecs_entity_t id, GlWorld* world):
+			GlEntity(id, world) {}
 		~GlRegisterableEntity();
 
 	protected:
 		static void _bind_methods();
-	
+
 	private:
 	};
 

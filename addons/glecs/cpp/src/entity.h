@@ -17,6 +17,8 @@ namespace godot {
 
 	public:
 		GlEntity();
+		GlEntity(ecs_entity_t id_, GlWorld* world_): id(id_), world(world_) {}
+		GlEntity(GlEntity& ett): GlEntity(ett.get_id(), ett.get_world()) {}
 		~GlEntity();
 
 		// --------------------------------------
