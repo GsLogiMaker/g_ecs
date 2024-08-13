@@ -20,6 +20,10 @@ GlQuery::~GlQuery() {
 // --- Exposed
 // --------------------------------------
 
+GlWorld* GlQuery::get_world() {
+	return world;
+}
+
 Ref<GlQueryIterator> GlQuery::iterate() {
 	return Ref(memnew(GlQueryIterator(
 		Ref(this),
@@ -32,5 +36,6 @@ Ref<GlQueryIterator> GlQuery::iterate() {
 // --------------------------------------
 
 void GlQuery::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("get_world"), &GlQuery::get_world);
 	godot::ClassDB::bind_method(D_METHOD("iterate"), &GlQuery::iterate);
 }

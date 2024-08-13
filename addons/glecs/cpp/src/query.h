@@ -22,6 +22,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		GlWorld* get_world();
+
 		Ref<GlQueryIterator> iterate();
 
 		// --------------------------------------

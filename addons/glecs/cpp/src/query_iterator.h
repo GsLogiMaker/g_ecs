@@ -28,6 +28,8 @@ namespace godot {
 		bool _iter_next(Variant arg);
 		Variant _iter_get(Variant arg);
 
+		GlWorld* get_world();
+
 		// --------------------------------------
 		// --- Unexposed
 		// --------------------------------------

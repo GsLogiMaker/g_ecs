@@ -2,7 +2,6 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "godot_cpp/variant/utility_functions.hpp"
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>

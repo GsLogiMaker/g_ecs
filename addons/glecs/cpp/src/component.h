@@ -16,6 +16,9 @@ namespace godot {
 
 	public:
 		GlComponent();
+		GlComponent(ecs_entity_t entity, ecs_entity_t component, GlWorld* world):
+			source_entity_id(entity),
+			GlRegisterableEntity(component, world) {}
 		~GlComponent();
 
 		// --------------------------------------
