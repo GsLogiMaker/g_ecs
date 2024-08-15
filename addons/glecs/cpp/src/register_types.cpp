@@ -1,6 +1,7 @@
 
 #include "register_types.h"
 
+#include "system_builder.h"
 #include "world.h"
 #include "entity.h"
 #include "registerable_entity.h"
@@ -34,6 +35,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	godot::ClassDB::register_abstract_class<GlQueryBuilder>();
 	godot::ClassDB::register_abstract_class<GlQuery>();
 	godot::ClassDB::register_abstract_class<GlQueryIterator>();
+	godot::ClassDB::register_abstract_class<GlSystemBuilder>();
 
 	Engine::get_singleton()->register_singleton("GlGlobalWorld", memnew(GlWorld));
 }
