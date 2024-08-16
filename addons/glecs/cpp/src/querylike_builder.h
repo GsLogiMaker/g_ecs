@@ -34,6 +34,9 @@ namespace godot {
 		GlWorld* get_world();
 		bool is_built();
 		Ref<GlQuerylikeBuilder> with(Variant component);
+		Ref<GlQuerylikeBuilder> maybe_with(Variant component);
+		Ref<GlQuerylikeBuilder> or_with(Variant component);
+		Ref<GlQuerylikeBuilder> without(Variant component);
 
 		// **************************************
 		// *** Unexposed ***
