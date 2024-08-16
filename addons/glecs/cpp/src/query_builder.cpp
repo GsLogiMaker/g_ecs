@@ -1,6 +1,7 @@
 
 
 #include "query_builder.h"
+#include "godot_cpp/variant/callable.hpp"
 #include "world.h"
 #include "query.h"
 #include "utils.h"
@@ -25,6 +26,8 @@ Ref<GlQuery> GlQueryBuilder::build() {
 		);
 	}
 	built = true;
+
+	setup_ctx(Callable());
 
 	query_desc.entity = ecs_new(get_world()->raw());
 	auto query = ecs_query_init(

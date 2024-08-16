@@ -15,8 +15,7 @@ namespace godot {
 		GlQueryIterator();
 		GlQueryIterator(Ref<GlQuery> query, ecs_iter_t iterator):
 			query(query),
-			iterator(iterator),
-			done(false)
+			iterator(iterator)
 			{}
 		~GlQueryIterator();
 
@@ -34,14 +33,20 @@ namespace godot {
 		// --- Unexposed
 		// --------------------------------------
 
+		bool is_done();
+		bool is_started();
+
+		void set_done(bool value);
+		void set_started(bool value);
+
 	protected:
 		static void _bind_methods();
 
 	private:
 		Ref<GlQuery> query;
 		ecs_iter_t iterator;
-		int index;
-		bool done;
+		int index{0};
+		uint8_t iter_flags{0};
 	};
 
 }
