@@ -145,19 +145,6 @@ QueryIterationContext::QueryIterationContext(
 	callable = callable_;
 	world = query_b->get_world();
 
-	comp_ref_per_term = Array();
-	comp_ref_args = Array();
-	comp_ref_per_term.set_typed(
-		Variant::OBJECT,
-		GlComponent::get_class_static(),
-		Variant(nullptr)
-	);
-	comp_ref_args.set_typed(
-		Variant::OBJECT,
-		GlComponent::get_class_static(),
-		Variant(nullptr)
-	);
-
 	for (int i=0; i != query_b->get_term_count(); i++) {
 		auto terms = query_b->query_desc.terms;
 		switch (terms[i].oper) {

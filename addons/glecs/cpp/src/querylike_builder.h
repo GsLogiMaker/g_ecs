@@ -4,6 +4,7 @@
 
 #include "component.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include <query.h>
 
 #include <flecs.h>
@@ -63,8 +64,8 @@ namespace godot {
 
 	class QueryIterationContext {
 	public:
-		Array comp_ref_per_term {Array()};
-		Array comp_ref_args {Array()};
+		TypedArray<GlComponent> comp_ref_per_term {TypedArray<GlComponent>()};
+		TypedArray<GlComponent> comp_ref_args {TypedArray<GlComponent>()};
 
 		QueryIterationContext(
 			Ref<GlQuerylikeBuilder> query_b,
