@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GlComponentBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+	Builder for a new component type.
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
+	<link title="More on Flecs Components">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html#components-1</link>
 	</tutorials>
 	<methods>
 		<method name="add_member">
@@ -12,17 +14,20 @@
 			<param index="0" name="member" type="String" />
 			<param index="1" name="type" type="int" enum="Variant.Type" />
 			<description>
+			Adds a member to the new component.
 			</description>
 		</method>
 		<method name="build">
 			<return type="void" />
 			<description>
+			Creates the new component from the settings of the builder.
 			</description>
 		</method>
 		<method name="set_name">
 			<return type="GlComponentBuilder" />
 			<param index="0" name="name" type="String" />
 			<description>
+			Sets the name of the new component.
 			</description>
 		</method>
 	</methods>

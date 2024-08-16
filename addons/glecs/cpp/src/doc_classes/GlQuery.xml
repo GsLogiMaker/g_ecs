@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GlQuery" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+	The results of a query.
 	</brief_description>
 	<description>
+	See [GlQueryBuilder] for how to create a query.
 	</description>
 	<tutorials>
+	<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>
 	</tutorials>
 	<methods>
 		<method name="get_world">
 			<return type="GlWorld" />
 			<description>
+			Returns the world queried from.
 			</description>
 		</method>
 		<method name="iterate">
 			<return type="GlQueryIterator" />
 			<description>
+			Returns an iterator over the queried entities.
 			</description>
 		</method>
 	</methods>
