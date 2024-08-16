@@ -93,6 +93,4 @@ void GlQueryIterator::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GlQueryIterator::get_world);
 	godot::ClassDB::bind_method(D_METHOD("is_done"), &GlQueryIterator::is_done);
 	godot::ClassDB::bind_method(D_METHOD("is_started"), &GlQueryIterator::is_started);
-	godot::ClassDB::bind_method(D_METHOD("set_done"), &GlQueryIterator::set_done);
-	godot::ClassDB::bind_method(D_METHOD("set_started"), &GlQueryIterator::set_started);
 }

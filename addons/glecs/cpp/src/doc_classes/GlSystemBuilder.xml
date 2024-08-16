@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GlSystemBuilder" inherits="GlQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+	A builder for systems.
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
+	<link title="More on Flecs Systems">https://www.flecs.dev/flecs/md_docs_2Systems</link>
 	</tutorials>
 	<methods>
 		<method name="for_each">
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
+			Builds the system with a callback for iterating over each result.
 			</description>
 		</method>
 	</methods>

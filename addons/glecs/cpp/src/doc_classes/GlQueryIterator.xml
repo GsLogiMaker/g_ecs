@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GlQueryIterator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+	An iterator over queried entities.
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
+	<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>
 	</tutorials>
 	<methods>
 		<method name="get_world">
 			<return type="GlWorld" />
 			<description>
+			Returns the world queried from.
 			</description>
 		</method>
 		<method name="is_done">
 			<return type="bool" />
 			<description>
+			Returns [code]true[/code] if this iterator has been exhausted.
 			</description>
 		</method>
 		<method name="is_started">
 			<return type="bool" />
 			<description>
+			Returns [code]true[/code] if this iterator has started iterating.
 			</description>
 		</method>
 	</methods>
