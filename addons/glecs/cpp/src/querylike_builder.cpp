@@ -199,27 +199,15 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 	auto query = it->query;
 	auto terms = it->query->terms;
 	int i_arg = 0;
-	bool or_chain_started = false;
 	for (int term_i=0; term_i != query->term_count; term_i++) {
 		auto term = terms[term_i];
 		switch (term.oper) {
 			case ecs_oper_kind_t::EcsAnd:
-				if (or_chain_started && comp_ref_args[i_arg] != Variant()) {
-					// Is end of OR chain and arg is already set, do nothing
-					or_chain_started = false;
-					break;
-				}
 				comp_ref_args[i_arg] = comp_ref_per_term[term_i];
 				i_arg += 1;
-				or_chain_started = false;
 				break;
 
 			case ecs_oper_kind_t::EcsOptional:
-				if (or_chain_started && comp_ref_args[i_arg] == Variant()) {
-					// Is end of OR chain and arg is already set, do nothing
-					or_chain_started = false;
-					break;
-				}
 				if (it->ptrs[term_i] == nullptr) {
 					// Term is null due to being optional
 					comp_ref_args[i_arg] = Variant();
@@ -227,36 +215,33 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 					comp_ref_args[i_arg] = comp_ref_per_term[term_i];
 				}
 				i_arg += 1;
-				or_chain_started = false;
 				break;
 
 			case ecs_oper_kind_t::EcsOr:
-				if (!or_chain_started) {
+				if (term.id == it->ids[i_arg]) {
+					// Term matches OR chain, set arg to term
+					comp_ref_args[i_arg] = comp_ref_per_term[term_i];
+					i_arg += 1;
+					// Skip terms till OR chain is exited.
+					// There is guarentied to be another none OR term at the
+					// end of the chain, so we don't need to check for the end of
+					// the terms list.
+					while (terms[term_i].oper == ecs_oper_kind_t::EcsOr) {
+						term_i++;
+					}
+					// Final term in OR chain is skipped by for loop.
+				} else {
+					// Term does not match arg, set arg to null until
+					// matching term is found in OR chain.
+					// Arg may remain null if the final term is
+					// optional or negative.
 					comp_ref_args[i_arg] = Variant();
 				}
-				or_chain_started = true;
 
-				if (comp_ref_args[i_arg] != Variant()) {
-					// Arg already matched previous term in
-					// OR chain, do nothing
-					break;
-				}
-				if (term.id == it->ids[i_arg]) {
-					// Arg matches OR term, set arg to term
-					comp_ref_args[i_arg] = comp_ref_per_term[term_i];
-				}
-
-				// OR terms must always be followed by another term, so
-				// there's guarentied to be another term after this one
-				if (terms[term_i+1].oper == ecs_oper_kind_t::EcsNot) {
-					// NOT terms don't increment i_arg, so increment
-					// it here instead
-					i_arg += 1;
-				}
 				break;
 
 			case ecs_oper_kind_t::EcsNot:
-				or_chain_started = false;
+				// NOT terms don't add arguments, do nothing
 				break;
 		}
 
