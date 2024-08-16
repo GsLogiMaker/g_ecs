@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GlWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="coerce_id">
+			<return type="int" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="component_builder">
+			<return type="GlComponentBuilder" />
+			<description>
+			</description>
+		</method>
+		<method name="progress">
+			<return type="void" />
+			<param index="0" name="delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="query_builder">
+			<return type="GlQueryBuilder" />
+			<description>
+			</description>
+		</method>
+		<method name="start_rest_api">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="system_builder">
+			<return type="GlSystemBuilder" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

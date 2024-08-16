@@ -1,27 +1,26 @@
 
-#include "register_types.h"
-
-#include "system_builder.h"
-#include "world.h"
-#include "entity.h"
-#include "registerable_entity.h"
 #include "component.h"
 #include "component_builder.h"
-#include "querylike_builder.h"
-#include "query_builder.h"
+#include "doc_data.gen.h"
+#include "entity.h"
+#include "gdextension_interface.h"
+#include "godot_cpp/classes/engine.hpp"
 #include "query.h"
+#include "query_builder.h"
 #include "query_iterator.h"
-
-#include <gdextension_interface.h>
-#include <godot_cpp/core/defs.hpp>
-#include <godot_cpp/classes/engine.hpp>
-#include <godot_cpp/godot.hpp>
-
-// Note to self: If there are undefined symbols showing up as errors in Godot, it may be that symbol was not implemented. Double check the cpp file of the symbol to make sure its name and path are correct, because you will not get warnings or errors if they aren't.
+#include "querylike_builder.h"
+#include "register_types.h"
+#include "registerable_entity.h"
+#include "system_builder.h"
+#include "world.h"
 
 using namespace godot;
 
 void initialize_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen editor_help_load_xml_from_utf8_chars_and_len = (GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen)internal::gdextension_interface_get_proc_address("editor_help_load_xml_from_utf8_chars_and_len");
+		editor_help_load_xml_from_utf8_chars_and_len(_doc_data, _doc_data_size);
+	}
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}

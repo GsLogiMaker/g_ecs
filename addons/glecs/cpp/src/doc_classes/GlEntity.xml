@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GlEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_component">
+			<return type="GlEntity" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="from" qualifiers="static">
+			<return type="GlEntity" />
+			<param index="0" name="id" type="Variant" />
+			<param index="1" name="world" type="GlWorld" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_component">
+			<return type="GlComponent" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="get_id">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_world">
+			<return type="GlWorld" />
+			<description>
+			</description>
+		</method>
+		<method name="spawn" qualifiers="static">
+			<return type="GlEntity" />
+			<param index="0" name="world" type="GlWorld" default="null" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

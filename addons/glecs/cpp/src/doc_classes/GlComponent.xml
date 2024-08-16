@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GlComponent" inherits="GlRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_member">
+			<return type="Variant" />
+			<param index="0" name="member" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="get_source_entity">
+			<return type="GlEntity" />
+			<description>
+			</description>
+		</method>
+		<method name="get_source_id">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set_member">
+			<return type="void" />
+			<param index="0" name="member" type="String" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>
