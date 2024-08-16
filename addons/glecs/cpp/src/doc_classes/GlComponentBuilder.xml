@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GlComponentBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_member">
+			<return type="GlComponentBuilder" />
+			<param index="0" name="member" type="String" />
+			<param index="1" name="type" type="int" enum="Variant.Type" />
+			<description>
+			</description>
+		</method>
+		<method name="build">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GlComponentBuilder" />
+			<param index="0" name="name" type="String" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

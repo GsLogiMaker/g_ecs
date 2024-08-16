@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GlQuerylikeBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_built">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="maybe_with">
+			<return type="GlQuerylikeBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="or_with">
+			<return type="GlQuerylikeBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="with">
+			<return type="GlQuerylikeBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="without">
+			<return type="GlQuerylikeBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

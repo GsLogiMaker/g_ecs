@@ -18,3 +18,5 @@ addons/glecs/cpp/.sconsign.dblite
 *.os
 addons/glecs/cpp/.cache
 addons/glecs/cpp/compile_commands.json
+.godot/scene_groups_cache.cfg
+addons/glecs/cpp/src/doc_data.gen.h
