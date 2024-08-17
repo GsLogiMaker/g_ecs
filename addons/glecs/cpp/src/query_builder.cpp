@@ -11,13 +11,13 @@
 
 using namespace godot;
 
-GlQueryBuilder::GlQueryBuilder() {
+GFQueryBuilder::GFQueryBuilder() {
 }
 
-GlQueryBuilder::~GlQueryBuilder() {
+GFQueryBuilder::~GFQueryBuilder() {
 }
 
-Ref<GlQuery> GlQueryBuilder::build() {
+Ref<GFQuery> GFQueryBuilder::build() {
 	const char* FAILED_TO_BUILD = "Failed to build query\n";
 	if (is_built()) {
 		ERR(nullptr,
@@ -35,15 +35,15 @@ Ref<GlQuery> GlQueryBuilder::build() {
 		&query_desc
 	);
 
-	return Ref(memnew(GlQuery(get_world(), query)));
+	return Ref(memnew(GFQuery(get_world(), query)));
 }
 
 // **********************************************
 // *** PROTECTED ***
 // **********************************************
 
-void GlQueryBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("build"), &GlQueryBuilder::build);
+void GFQueryBuilder::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("build"), &GFQueryBuilder::build);
 }
 
 // **********************************************

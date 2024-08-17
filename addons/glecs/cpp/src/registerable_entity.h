@@ -9,14 +9,14 @@
 
 namespace godot {
 
-	class GlRegisterableEntity : public GlEntity {
-		GDCLASS(GlRegisterableEntity, GlEntity)
+	class GFRegisterableEntity : public GFEntity {
+		GDCLASS(GFRegisterableEntity, GFEntity)
 
 	public:
-		GlRegisterableEntity();
-		GlRegisterableEntity(ecs_entity_t id, GlWorld* world):
-			GlEntity(id, world) {}
-		~GlRegisterableEntity();
+		GFRegisterableEntity();
+		GFRegisterableEntity(ecs_entity_t id, GFWorld* world):
+			GFEntity(id, world) {}
+		~GFRegisterableEntity();
 
 	protected:
 		static void _bind_methods();

@@ -10,24 +10,24 @@
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
-	class GlComponentBuilder;
-	class GlQueryBuilder;
-	class GlSystemBuilder;
+	class GFComponentBuilder;
+	class GFQueryBuilder;
+	class GFSystemBuilder;
 
-	class GlWorld : public Object {
-		GDCLASS(GlWorld, Object)
+	class GFWorld : public Object {
+		GDCLASS(GFWorld, Object)
 
 	public:
-		GlWorld();
-		~GlWorld();
+		GFWorld();
+		~GFWorld();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
-		Ref<GlComponentBuilder> component_builder();
-		Ref<GlQueryBuilder> query_builder();
-		Ref<GlSystemBuilder> system_builder();
+		Ref<GFComponentBuilder> component_builder();
+		Ref<GFQueryBuilder> query_builder();
+		Ref<GFSystemBuilder> system_builder();
 
 		ecs_entity_t coerce_id(Variant);
 		void progress(double delta);
@@ -38,6 +38,8 @@ namespace godot {
 		// **************************************
 		// *** Unexposed ***
 		// **************************************
+
+		static const char* SINGLETON_NAME;
 
 		// *** Glecs entities ***
 		static ecs_entity_t glecs;
@@ -89,7 +91,7 @@ namespace godot {
 		void init_component_ptr(void*, ecs_entity_t, Variant);
 		void init_gd_type_ptr(void*, ecs_entity_t);
 
-		static GlWorld* singleton();
+		static GFWorld* singleton();
 		ecs_world_t* raw();
 
 	protected:
@@ -163,10 +165,10 @@ namespace godot {
 				}
 			}; ecs_component_init(_raw, &desc);
 			ecs_type_hooks_t hooks = {
-				.ctor = GlWorld::gd_type_ctor<T>,
-				.dtor = GlWorld::gd_type_dtor<T>,
-				.copy = GlWorld::gd_type_copy<T>,
-				.move = GlWorld::gd_type_move<T>
+				.ctor = GFWorld::gd_type_ctor<T>,
+				.dtor = GFWorld::gd_type_dtor<T>,
+				.copy = GFWorld::gd_type_copy<T>,
+				.move = GFWorld::gd_type_move<T>
 			}; ecs_set_hooks_id(_raw, *static_id, &hooks);
 			ecs_add_path_w_sep(
 				_raw,

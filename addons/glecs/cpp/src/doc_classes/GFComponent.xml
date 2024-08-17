@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GlComponent" inherits="GlRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-	A reference to a Glecs component from a [GlWorld] that is attatached to an entity.
+	A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
 	<description>
 	</description>
@@ -17,9 +17,9 @@
 			</description>
 		</method>
 		<method name="get_source_entity">
-			<return type="GlEntity" />
+			<return type="GFEntity" />
 			<description>
-			Returns a [GlEntity] reference to the entity this component's data is from.
+			Returns a [GFEntity] reference to the entity this component's data is from.
 			</description>
 		</method>
 		<method name="get_source_id">

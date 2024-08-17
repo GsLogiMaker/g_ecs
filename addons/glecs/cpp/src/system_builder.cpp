@@ -12,13 +12,13 @@
 
 using namespace godot;
 
-GlSystemBuilder::GlSystemBuilder() {
+GFSystemBuilder::GFSystemBuilder() {
 }
 
-GlSystemBuilder::~GlSystemBuilder() {
+GFSystemBuilder::~GFSystemBuilder() {
 }
 
-void GlSystemBuilder::for_each(Callable callable) {
+void GFSystemBuilder::for_each(Callable callable) {
 	const char* FAILED_TO_BUILD = "Failed to build system\n";
 	if (is_built()) {
 		ERR(/**/,
@@ -47,8 +47,8 @@ void GlSystemBuilder::for_each(Callable callable) {
 
 
 
-void GlSystemBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GlSystemBuilder::for_each);
+void GFSystemBuilder::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFSystemBuilder::for_each);
 }
 
 // **********************************************

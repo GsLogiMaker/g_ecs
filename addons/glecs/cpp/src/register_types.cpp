@@ -25,18 +25,18 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-	godot::ClassDB::register_class<GlWorld>();
-	godot::ClassDB::register_abstract_class<GlEntity>();
-	godot::ClassDB::register_abstract_class<GlRegisterableEntity>();
-	godot::ClassDB::register_abstract_class<GlComponent>();
-	godot::ClassDB::register_abstract_class<GlComponentBuilder>();
-	godot::ClassDB::register_abstract_class<GlQuerylikeBuilder>();
-	godot::ClassDB::register_abstract_class<GlQueryBuilder>();
-	godot::ClassDB::register_abstract_class<GlQuery>();
-	godot::ClassDB::register_abstract_class<GlQueryIterator>();
-	godot::ClassDB::register_abstract_class<GlSystemBuilder>();
+	godot::ClassDB::register_class<GFWorld>();
+	godot::ClassDB::register_abstract_class<GFEntity>();
+	godot::ClassDB::register_abstract_class<GFRegisterableEntity>();
+	godot::ClassDB::register_abstract_class<GFComponent>();
+	godot::ClassDB::register_abstract_class<GFComponentBuilder>();
+	godot::ClassDB::register_abstract_class<GFQuerylikeBuilder>();
+	godot::ClassDB::register_abstract_class<GFQueryBuilder>();
+	godot::ClassDB::register_abstract_class<GFQuery>();
+	godot::ClassDB::register_abstract_class<GFQueryIterator>();
+	godot::ClassDB::register_abstract_class<GFSystemBuilder>();
 
-	Engine::get_singleton()->register_singleton("GlGlobalWorld", memnew(GlWorld));
+	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
@@ -44,7 +44,7 @@ void uninitialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-	Engine::get_singleton()->unregister_singleton("GlGlobalWorld");
+	Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
 }
 
 extern "C" {

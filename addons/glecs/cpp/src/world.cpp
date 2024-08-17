@@ -16,49 +16,51 @@
 
 using namespace godot;
 
-ecs_entity_t GlWorld::glecs = 0;
-ecs_entity_t GlWorld::glecs_meta = 0;
-ecs_entity_t GlWorld::glecs_meta_real = 0;
-ecs_entity_t GlWorld::glecs_meta_nil = 0;
-ecs_entity_t GlWorld::glecs_meta_bool = 0;
-ecs_entity_t GlWorld::glecs_meta_int = 0;
-ecs_entity_t GlWorld::glecs_meta_float = 0;
-ecs_entity_t GlWorld::glecs_meta_string = 0;
-ecs_entity_t GlWorld::glecs_meta_vector2 = 0;
-ecs_entity_t GlWorld::glecs_meta_vector2i = 0;
-ecs_entity_t GlWorld::glecs_meta_rect2 = 0;
-ecs_entity_t GlWorld::glecs_meta_rect2i = 0;
-ecs_entity_t GlWorld::glecs_meta_vector3 = 0;
-ecs_entity_t GlWorld::glecs_meta_vector3i = 0;
-ecs_entity_t GlWorld::glecs_meta_transform2d = 0;
-ecs_entity_t GlWorld::glecs_meta_vector4 = 0;
-ecs_entity_t GlWorld::glecs_meta_vector4i = 0;
-ecs_entity_t GlWorld::glecs_meta_plane = 0;
-ecs_entity_t GlWorld::glecs_meta_quaternion = 0;
-ecs_entity_t GlWorld::glecs_meta_aabb = 0;
-ecs_entity_t GlWorld::glecs_meta_basis = 0;
-ecs_entity_t GlWorld::glecs_meta_transform3d = 0;
-ecs_entity_t GlWorld::glecs_meta_projection = 0;
-ecs_entity_t GlWorld::glecs_meta_color = 0;
-ecs_entity_t GlWorld::glecs_meta_string_name = 0;
-ecs_entity_t GlWorld::glecs_meta_node_path = 0;
-ecs_entity_t GlWorld::glecs_meta_rid = 0;
-ecs_entity_t GlWorld::glecs_meta_object = 0;
-ecs_entity_t GlWorld::glecs_meta_callable = 0;
-ecs_entity_t GlWorld::glecs_meta_signal = 0;
-ecs_entity_t GlWorld::glecs_meta_dictionary = 0;
-ecs_entity_t GlWorld::glecs_meta_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_byte_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_int32_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_int64_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_float32_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_float64_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_string_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_vector2_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_vector3_array = 0;
-ecs_entity_t GlWorld::glecs_meta_packed_color_array = 0;
+const char* GFWorld::SINGLETON_NAME = "GFGlobalWorld";
 
-GlWorld::GlWorld() {
+ecs_entity_t GFWorld::glecs = 0;
+ecs_entity_t GFWorld::glecs_meta = 0;
+ecs_entity_t GFWorld::glecs_meta_real = 0;
+ecs_entity_t GFWorld::glecs_meta_nil = 0;
+ecs_entity_t GFWorld::glecs_meta_bool = 0;
+ecs_entity_t GFWorld::glecs_meta_int = 0;
+ecs_entity_t GFWorld::glecs_meta_float = 0;
+ecs_entity_t GFWorld::glecs_meta_string = 0;
+ecs_entity_t GFWorld::glecs_meta_vector2 = 0;
+ecs_entity_t GFWorld::glecs_meta_vector2i = 0;
+ecs_entity_t GFWorld::glecs_meta_rect2 = 0;
+ecs_entity_t GFWorld::glecs_meta_rect2i = 0;
+ecs_entity_t GFWorld::glecs_meta_vector3 = 0;
+ecs_entity_t GFWorld::glecs_meta_vector3i = 0;
+ecs_entity_t GFWorld::glecs_meta_transform2d = 0;
+ecs_entity_t GFWorld::glecs_meta_vector4 = 0;
+ecs_entity_t GFWorld::glecs_meta_vector4i = 0;
+ecs_entity_t GFWorld::glecs_meta_plane = 0;
+ecs_entity_t GFWorld::glecs_meta_quaternion = 0;
+ecs_entity_t GFWorld::glecs_meta_aabb = 0;
+ecs_entity_t GFWorld::glecs_meta_basis = 0;
+ecs_entity_t GFWorld::glecs_meta_transform3d = 0;
+ecs_entity_t GFWorld::glecs_meta_projection = 0;
+ecs_entity_t GFWorld::glecs_meta_color = 0;
+ecs_entity_t GFWorld::glecs_meta_string_name = 0;
+ecs_entity_t GFWorld::glecs_meta_node_path = 0;
+ecs_entity_t GFWorld::glecs_meta_rid = 0;
+ecs_entity_t GFWorld::glecs_meta_object = 0;
+ecs_entity_t GFWorld::glecs_meta_callable = 0;
+ecs_entity_t GFWorld::glecs_meta_signal = 0;
+ecs_entity_t GFWorld::glecs_meta_dictionary = 0;
+ecs_entity_t GFWorld::glecs_meta_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_byte_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_int32_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_int64_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_float32_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_float64_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_string_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_vector2_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_vector3_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
+
+GFWorld::GFWorld() {
 	_raw = ecs_init();
 	ECS_IMPORT(raw(), FlecsStats);
 
@@ -475,11 +477,11 @@ GlWorld::GlWorld() {
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
 }
 
-GlWorld::~GlWorld() {
+GFWorld::~GFWorld() {
 	ecs_fini(_raw);
 }
 
-ecs_entity_t GlWorld::coerce_id(Variant value) {
+ecs_entity_t GFWorld::coerce_id(Variant value) {
 	String string;
 	godot::CharString str;
 	Vector2i vec;
@@ -497,8 +499,8 @@ ecs_entity_t GlWorld::coerce_id(Variant value) {
 					"Null objects can't be coerced to valid entity IDs"
 				);
 			}
-			if (obj->is_class(GlEntity::get_class_static())) {
-				return ((GlEntity*) obj)->get_id();
+			if (obj->is_class(GFEntity::get_class_static())) {
+				return ((GFEntity*) obj)->get_id();
 			}
 			ERR(0,
 				"Objects of type ",
@@ -523,50 +525,50 @@ ecs_entity_t GlWorld::coerce_id(Variant value) {
 	);
 }
 
-void GlWorld::progress(double delta) {
+void GFWorld::progress(double delta) {
 	ecs_progress(raw(), delta);
 }
 
-GlWorld* GlWorld::singleton() {
+GFWorld* GFWorld::singleton() {
 	Object* singleton = Engine::get_singleton()
-		->get_singleton("GlGlobalWorld");
-	return Object::cast_to<GlWorld>(singleton);
+		->get_singleton(GFWorld::SINGLETON_NAME);
+	return Object::cast_to<GFWorld>(singleton);
 }
 
-Ref<GlComponentBuilder> GlWorld::component_builder() {
-	Ref<GlComponentBuilder> builder = memnew(GlComponentBuilder);
+Ref<GFComponentBuilder> GFWorld::component_builder() {
+	Ref<GFComponentBuilder> builder = memnew(GFComponentBuilder);
 	builder->set_world(this);
 	return builder;
 }
 
-Ref<GlQueryBuilder> GlWorld::query_builder() {
-	Ref<GlQueryBuilder> builder = memnew(GlQueryBuilder(this));
+Ref<GFQueryBuilder> GFWorld::query_builder() {
+	Ref<GFQueryBuilder> builder = memnew(GFQueryBuilder(this));
 	return builder;
 }
 
-Ref<GlSystemBuilder> GlWorld::system_builder() {
-	Ref<GlSystemBuilder> builder = memnew(GlSystemBuilder(this));
+Ref<GFSystemBuilder> GFWorld::system_builder() {
+	Ref<GFSystemBuilder> builder = memnew(GFSystemBuilder(this));
 	return builder;
 }
 
-void GlWorld::start_rest_api() {
+void GFWorld::start_rest_api() {
 	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);
 	EcsRest rest = (EcsRest)EcsRest();
 	ecs_set_id(raw(), rest_id, rest_id, sizeof(EcsRest), &rest);
 }
 
-ecs_entity_t GlWorld::variant_type_to_id(Variant::Type type) {
+ecs_entity_t GFWorld::variant_type_to_id(Variant::Type type) {
 	if (type == Variant::Type::VARIANT_MAX) {
 		throw "No ID exists for VARIANT_MAX";
 	}
-	return GlWorld::glecs_meta_nil + type;
+	return GFWorld::glecs_meta_nil + type;
 }
 
-Variant::Type GlWorld::id_to_variant_type(ecs_entity_t id) {
-	if (id < GlWorld::glecs_meta_nil) {
+Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
+	if (id < GFWorld::glecs_meta_nil) {
 		return godot::Variant::NIL;
 	}
-	Variant::Type type = Variant::Type(id - GlWorld::glecs_meta_nil);
+	Variant::Type type = Variant::Type(id - GFWorld::glecs_meta_nil);
 	if (type >= Variant::Type::VARIANT_MAX) {
 		return godot::Variant::NIL;
 	}
@@ -577,7 +579,7 @@ Variant::Type GlWorld::id_to_variant_type(ecs_entity_t id) {
 // --- Unexposed ---
 // ----------------------------------------------
 
-void GlWorld::copy_component_ptr(
+void GFWorld::copy_component_ptr(
 	const void* src_ptr,
 	void* dst_ptr,
 	ecs_entity_t component
@@ -594,7 +596,7 @@ void GlWorld::copy_component_ptr(
 	}
 }
 
-void GlWorld::copy_gd_type_ptr(
+void GFWorld::copy_gd_type_ptr(
 	const void* src_ptr,
 	void* dst_ptr,
 	ecs_entity_t type
@@ -649,7 +651,7 @@ void GlWorld::copy_gd_type_ptr(
 	}
 }
 
-void GlWorld::deinit_component_ptr(
+void GFWorld::deinit_component_ptr(
 	void* ptr,
 	ecs_entity_t component
 ) {
@@ -664,7 +666,7 @@ void GlWorld::deinit_component_ptr(
 	}
 }
 
-void GlWorld::deinit_gd_type_ptr(
+void GFWorld::deinit_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
 ) {
@@ -718,7 +720,7 @@ void GlWorld::deinit_gd_type_ptr(
 	}
 }
 
-void GlWorld::init_component_ptr(
+void GFWorld::init_component_ptr(
 	void* ptr,
 	ecs_entity_t component,
 	Variant args
@@ -735,7 +737,7 @@ void GlWorld::init_component_ptr(
 }
 
 /// If the type is a Variant, then initializes the pointer as that type
-void GlWorld::init_gd_type_ptr(
+void GFWorld::init_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
 ) {
@@ -784,7 +786,7 @@ void GlWorld::init_gd_type_ptr(
 	}
 }
 
-ecs_world_t * GlWorld::raw() {
+ecs_world_t * GFWorld::raw() {
 	return _raw;
 }
 
@@ -792,20 +794,20 @@ ecs_world_t * GlWorld::raw() {
 // --- Protected ---
 // ----------------------------------------------
 
-void GlWorld::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("component_builder"), &GlWorld::component_builder);
-	godot::ClassDB::bind_method(D_METHOD("query_builder"), &GlWorld::query_builder);
-	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GlWorld::system_builder);
-	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GlWorld::coerce_id);
-	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GlWorld::start_rest_api);
-	godot::ClassDB::bind_method(D_METHOD("progress", "delta"), &GlWorld::progress);
+void GFWorld::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("component_builder"), &GFWorld::component_builder);
+	godot::ClassDB::bind_method(D_METHOD("query_builder"), &GFWorld::query_builder);
+	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
+	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
+	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
+	godot::ClassDB::bind_method(D_METHOD("progress", "delta"), &GFWorld::progress);
 }
 
 // ----------------------------------------------
 // --- Private ---
 // ----------------------------------------------
 
-void GlWorld::define_gd_literal(
+void GFWorld::define_gd_literal(
 	const char* name,
 	ecs_primitive_kind_t primitive,
 	ecs_entity_t* id_storage

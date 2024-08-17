@@ -11,10 +11,10 @@
 
 using namespace godot;
 
-GlQueryIterator::GlQueryIterator() {
+GFQueryIterator::GFQueryIterator() {
 }
 
-GlQueryIterator::~GlQueryIterator() {
+GFQueryIterator::~GFQueryIterator() {
 	if (!is_done()) {
 		ecs_iter_fini(&iterator);
 	}
@@ -24,10 +24,10 @@ GlQueryIterator::~GlQueryIterator() {
 // --- Exposed ---
 // --------------------------------------
 
-bool GlQueryIterator::_iter_init(Variant arg) {
+bool GFQueryIterator::_iter_init(Variant arg) {
 	return _iter_next(arg);
 }
-bool GlQueryIterator::_iter_next(Variant arg) {
+bool GFQueryIterator::_iter_next(Variant arg) {
 	if (is_done()) {
 		ERR(false,
 			"Can't get next in GlQueryIterator\n",
@@ -50,28 +50,28 @@ bool GlQueryIterator::_iter_next(Variant arg) {
 	index += 1;
 	return !is_done();
 }
-Variant GlQueryIterator::_iter_get(Variant arg) {
+Variant GFQueryIterator::_iter_get(Variant arg) {
 	QueryIterationContext* ctx = (QueryIterationContext*) iterator.query->binding_ctx;
 	return ctx->comp_ref_args;
 }
 
-GlWorld* GlQueryIterator::get_world() {
+GFWorld* GFQueryIterator::get_world() {
 	return query->get_world();
 }
 
-bool GlQueryIterator::is_done() {
+bool GFQueryIterator::is_done() {
 	return (iter_flags & 1 << 0) != 0;
 }
-bool GlQueryIterator::is_started() {
+bool GFQueryIterator::is_started() {
 	return (iter_flags & 1 << 1) != 0;
 }
 
-void GlQueryIterator::set_done(bool value) {
+void GFQueryIterator::set_done(bool value) {
 	uint8_t new_value = ((uint8_t) value) << 0;
 	uint8_t other_flags = iter_flags & ~new_value;
 	iter_flags = other_flags | new_value;
 }
-void GlQueryIterator::set_started(bool value) {
+void GFQueryIterator::set_started(bool value) {
 	uint8_t new_value = ((uint8_t) value) << 1;
 	uint8_t other_flags = iter_flags & ~new_value;
 	iter_flags = other_flags | new_value;
@@ -86,11 +86,11 @@ void GlQueryIterator::set_started(bool value) {
 // --- Protected ---
 // --------------------------------------
 
-void GlQueryIterator::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("_iter_init", "arg"), &GlQueryIterator::_iter_init);
-	godot::ClassDB::bind_method(D_METHOD("_iter_next", "arg"), &GlQueryIterator::_iter_next);
-	godot::ClassDB::bind_method(D_METHOD("_iter_get", "arg"), &GlQueryIterator::_iter_get);
-	godot::ClassDB::bind_method(D_METHOD("get_world"), &GlQueryIterator::get_world);
-	godot::ClassDB::bind_method(D_METHOD("is_done"), &GlQueryIterator::is_done);
-	godot::ClassDB::bind_method(D_METHOD("is_started"), &GlQueryIterator::is_started);
+void GFQueryIterator::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("_iter_init", "arg"), &GFQueryIterator::_iter_init);
+	godot::ClassDB::bind_method(D_METHOD("_iter_next", "arg"), &GFQueryIterator::_iter_next);
+	godot::ClassDB::bind_method(D_METHOD("_iter_get", "arg"), &GFQueryIterator::_iter_get);
+	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFQueryIterator::get_world);
+	godot::ClassDB::bind_method(D_METHOD("is_done"), &GFQueryIterator::is_done);
+	godot::ClassDB::bind_method(D_METHOD("is_started"), &GFQueryIterator::is_started);
 }

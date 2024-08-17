@@ -8,11 +8,10 @@
 
 using namespace godot;
 
-GlRegisterableEntity::GlRegisterableEntity() {
+GFRegisterableEntity::GFRegisterableEntity() {
 }
-GlRegisterableEntity::~GlRegisterableEntity() {
-}
-
-void GlRegisterableEntity::_bind_methods() {
+GFRegisterableEntity::~GFRegisterableEntity() {
 }
 
+void GFRegisterableEntity::_bind_methods() {
+}

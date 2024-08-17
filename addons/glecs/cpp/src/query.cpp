@@ -9,10 +9,10 @@
 
 using namespace godot;
 
-GlQuery::GlQuery() {
+GFQuery::GFQuery() {
 
 }
-GlQuery::~GlQuery() {
+GFQuery::~GFQuery() {
 	ecs_query_fini(query);
 }
 
@@ -20,12 +20,12 @@ GlQuery::~GlQuery() {
 // --- Exposed
 // --------------------------------------
 
-GlWorld* GlQuery::get_world() {
+GFWorld* GFQuery::get_world() {
 	return world;
 }
 
-Ref<GlQueryIterator> GlQuery::iterate() {
-	return Ref(memnew(GlQueryIterator(
+Ref<GFQueryIterator> GFQuery::iterate() {
+	return Ref(memnew(GFQueryIterator(
 		Ref(this),
 		ecs_query_iter(this->world->raw(), this->query)
 	)));
@@ -35,7 +35,7 @@ Ref<GlQueryIterator> GlQuery::iterate() {
 // --- Unexposed
 // --------------------------------------
 
-void GlQuery::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("get_world"), &GlQuery::get_world);
-	godot::ClassDB::bind_method(D_METHOD("iterate"), &GlQuery::iterate);
+void GFQuery::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFQuery::get_world);
+	godot::ClassDB::bind_method(D_METHOD("iterate"), &GFQuery::iterate);
 }

@@ -10,45 +10,45 @@
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
-	class GlComponent;
+	class GFComponent;
 
-	class GlEntity : public RefCounted {
-		GDCLASS(GlEntity, RefCounted)
+	class GFEntity : public RefCounted {
+		GDCLASS(GFEntity, RefCounted)
 
 	public:
-		GlEntity();
-		GlEntity(ecs_entity_t id_, GlWorld* world_): id(id_), world(world_) {}
-		GlEntity(GlEntity& ett): GlEntity(ett.get_id(), ett.get_world()) {}
-		~GlEntity();
+		GFEntity();
+		GFEntity(ecs_entity_t id_, GFWorld* world_): id(id_), world(world_) {}
+		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
+		~GFEntity();
 
 		// --------------------------------------
 		// --- Exposed ---
 		// --------------------------------------
 
-		static Ref<GlEntity> spawn(GlWorld*);
-		static Ref<GlEntity> from(Variant, GlWorld*);
+		static Ref<GFEntity> spawn(GFWorld*);
+		static Ref<GFEntity> from(Variant, GFWorld*);
 
-		Ref<GlEntity> add_component(Variant);
-		Ref<GlComponent> get_component(Variant);
+		Ref<GFEntity> add_component(Variant);
+		Ref<GFComponent> get_component(Variant);
 
 		bool is_alive();
 
 		ecs_entity_t get_id();
-		GlWorld* get_world();
+		GFWorld* get_world();
 
 		// --------------------------------------
 		// --- Unexposed ---
 		// --------------------------------------
 
 		void set_id(ecs_entity_t);
-		void set_world(GlWorld*);
+		void set_world(GFWorld*);
 
 	protected:
 		static void _bind_methods();
 
 	private:
 		ecs_entity_t id;
-		GlWorld* world;
+		GFWorld* world;
 	};
 
 }

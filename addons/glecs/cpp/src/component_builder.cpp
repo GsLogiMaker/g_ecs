@@ -9,17 +9,17 @@
 
 using namespace godot;
 
-GlComponentBuilder::GlComponentBuilder() {
+GFComponentBuilder::GFComponentBuilder() {
 	component_desc = {0};
 	struct_desc = {0};
 	member_names = Array();
 	world = {0};
 	built = {0};
 }
-GlComponentBuilder::~GlComponentBuilder() {
+GFComponentBuilder::~GFComponentBuilder() {
 }
 
-Ref<GlComponentBuilder> GlComponentBuilder::add_member(
+Ref<GFComponentBuilder> GFComponentBuilder::add_member(
 	String member,
 	Variant::Type type
 ) {
@@ -32,7 +32,7 @@ Ref<GlComponentBuilder> GlComponentBuilder::add_member(
 		);
 	}
 
-	EntityResult ecs_type_result = GlWorld::variant_type_to_id(type);
+	EntityResult ecs_type_result = GFWorld::variant_type_to_id(type);
 	if (!ecs_type_result.is_ok()) {
 		ERR(Ref(this),
 			ERR_ADD_COMPONENT,
@@ -49,18 +49,18 @@ Ref<GlComponentBuilder> GlComponentBuilder::add_member(
 	return Ref(this);
 }
 
-int GlComponentBuilder::get_member_count() {
+int GFComponentBuilder::get_member_count() {
 	return member_names.size();
 }
 
-Ref<GlComponentBuilder> GlComponentBuilder::set_name(
+Ref<GFComponentBuilder> GFComponentBuilder::set_name(
 	String name_
 ) {
 	name = name_;
 	return Ref(this);
 }
 
-void GlComponentBuilder::build() {
+void GFComponentBuilder::build() {
 	const char* FAILED_TO_BUILD = "Failed to build component\n";
 	if (built) {
 		ERR(/**/,
@@ -89,10 +89,10 @@ void GlComponentBuilder::build() {
 	ecs_entity_t struct_id = ecs_struct_init(raw, &struct_desc);
 
 	ecs_type_hooks_t hooks = {
-		.ctor = GlComponentBuilder::ctor,
-		.dtor = GlComponentBuilder::dtor,
-		.copy = GlComponentBuilder::copy,
-		.move = GlComponentBuilder::move,
+		.ctor = GFComponentBuilder::ctor,
+		.dtor = GFComponentBuilder::dtor,
+		.copy = GFComponentBuilder::copy,
+		.move = GFComponentBuilder::move,
 		.binding_ctx = new HooksBindingContext(world),
 		.binding_ctx_free = [](void* ptr) {
 			HooksBindingContext* ctx = (HooksBindingContext*)ptr;
@@ -103,7 +103,7 @@ void GlComponentBuilder::build() {
 	ecs_add_path(raw, component_id, 0, component_desc.type.name);
 }
 
-void GlComponentBuilder::set_world(GlWorld* world_) {
+void GFComponentBuilder::set_world(GFWorld* world_) {
 	world = world_;
 }
 
@@ -111,10 +111,10 @@ void GlComponentBuilder::set_world(GlWorld* world_) {
 // *** PROTECTED ***
 // **********************************************
 
-void GlComponentBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GlComponentBuilder::add_member);
-	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GlComponentBuilder::set_name);
-	godot::ClassDB::bind_method(D_METHOD("build"), &GlComponentBuilder::build);
+void GFComponentBuilder::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);
+	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFComponentBuilder::set_name);
+	godot::ClassDB::bind_method(D_METHOD("build"), &GFComponentBuilder::build);
 
 }
 
@@ -122,7 +122,7 @@ void GlComponentBuilder::_bind_methods() {
 // *** PRIVATE ***
 // **********************************************
 
-void GlComponentBuilder::ctor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
+void GFComponentBuilder::ctor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
 	uint8_t* list = (uint8_t*)ptr;
 	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
 
@@ -131,7 +131,7 @@ void GlComponentBuilder::ctor(void* ptr, int32_t count, const ecs_type_info_t* t
 		ctx->world->init_component_ptr((void*)item, type_info->component, Variant());
 	}
 }
-void GlComponentBuilder::dtor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
+void GFComponentBuilder::dtor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
 	uint8_t* list = (uint8_t*)ptr;
 	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
 
@@ -140,7 +140,7 @@ void GlComponentBuilder::dtor(void* ptr, int32_t count, const ecs_type_info_t* t
 		ctx->world->deinit_component_ptr((void*)item, type_info->component);
 	}
 }
-void GlComponentBuilder::copy(
+void GFComponentBuilder::copy(
 	void* dst_ptr,
 	const void* src_ptr,
 	int32_t count,
@@ -157,7 +157,7 @@ void GlComponentBuilder::copy(
 		ctx->world->copy_component_ptr((const void*)src, (void*)dst, type_info->component);
 	}
 }
-void GlComponentBuilder::move(
+void GFComponentBuilder::move(
 	void* dst_ptr,
 	void* src_ptr,
 	int32_t count,
@@ -175,7 +175,7 @@ void GlComponentBuilder::move(
 	}
 }
 
-HooksBindingContext::HooksBindingContext(GlWorld* world_) {
+HooksBindingContext::HooksBindingContext(GFWorld* world_) {
 	world = world_;
 }
 HooksBindingContext::~HooksBindingContext() {

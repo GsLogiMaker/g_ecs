@@ -13,12 +13,12 @@
 
 using namespace godot;
 
-GlComponent::GlComponent() {
+GFComponent::GFComponent() {
 }
-GlComponent::~GlComponent() {
+GFComponent::~GFComponent() {
 }
 
-void GlComponent::set_member(String member, Variant value) {
+void GFComponent::set_member(String member, Variant value) {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -40,7 +40,7 @@ void GlComponent::set_member(String member, Variant value) {
 	set_member_value_as_type(member_ptr, value, member_data->type);
 }
 
-void GlComponent::set_member_value_as_primitive(
+void GFComponent::set_member_value_as_primitive(
 	void* ptr,
 	Variant value,
 	ecs_primitive_kind_t primitive
@@ -100,7 +100,7 @@ void GlComponent::set_member_value_as_primitive(
 	#undef SET_MEMBER_ETT
 }
 
-void GlComponent::set_member_value_as_type(
+void GFComponent::set_member_value_as_type(
 	void* ptr,
 	Variant value,
 	ecs_entity_t type
@@ -114,7 +114,7 @@ void GlComponent::set_member_value_as_type(
 
 	switch (vari_type) {
 	case(Variant::Type::NIL): {
-		if (type == GlWorld::glecs_meta_real) {
+		if (type == GFWorld::glecs_meta_real) {
 			SET_MEMBER(FLOAT, real_t); return;
 		}
 		if (ecs_has_id(raw, type, ecs_id(EcsPrimitive))) {
@@ -172,7 +172,7 @@ void GlComponent::set_member_value_as_type(
 	#undef SET_MEMBER
 }
 
-Variant GlComponent::get_member(String member) {
+Variant GFComponent::get_member(String member) {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -194,13 +194,13 @@ Variant GlComponent::get_member(String member) {
 	return member_value_as_type(member_value_ptr, member_data->type);
 }
 
-void* GlComponent::get_member_ptr_mut_at(int offset) {
+void* GFComponent::get_member_ptr_mut_at(int offset) {
 	ecs_world_t* raw = get_world()->raw();
 	int8_t* bytes = (int8_t*) ecs_get_mut_id(raw, get_source_id(), get_id());
 	return (void*) &bytes[offset];
 }
 
-const EcsMember* GlComponent::get_member_data(String member) {
+const EcsMember* GFComponent::get_member_data(String member) {
 	ecs_world_t* raw = get_world()->raw();
 	const char* c_str = member.utf8().get_data();
 
@@ -223,7 +223,7 @@ const EcsMember* GlComponent::get_member_data(String member) {
 	return member_data;
 }
 
-Variant GlComponent::member_value_as_primitive(
+Variant GFComponent::member_value_as_primitive(
 	void* ptr,
 	ecs_primitive_kind_t primitive
 ) {
@@ -250,7 +250,7 @@ Variant GlComponent::member_value_as_primitive(
 	}
 }
 
-Variant GlComponent::member_value_as_type(
+Variant GFComponent::member_value_as_type(
 	void* ptr,
 	ecs_entity_t type
 ) {
@@ -314,22 +314,22 @@ Variant GlComponent::member_value_as_type(
 	throw "Unreachable";
 }
 
-Ref<GlEntity> GlComponent::get_source_entity() {
-	return GlEntity::from(get_source_id(), get_world());
+Ref<GFEntity> GFComponent::get_source_entity() {
+	return GFEntity::from(get_source_id(), get_world());
 }
 
-ecs_entity_t GlComponent::get_source_id() {
+ecs_entity_t GFComponent::get_source_id() {
 	return source_entity_id;
 }
 
-void GlComponent::set_source_id(ecs_entity_t id) {
+void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
 
-void GlComponent::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("get_member", "member"), &GlComponent::get_member);
-	godot::ClassDB::bind_method(D_METHOD("set_member", "member", "value"), &GlComponent::set_member);
+void GFComponent::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("get_member", "member"), &GFComponent::get_member);
+	godot::ClassDB::bind_method(D_METHOD("set_member", "member", "value"), &GFComponent::set_member);
 
-	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GlComponent::get_source_entity);
-	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GlComponent::get_source_id);
+	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
+	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
 }
