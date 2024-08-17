@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode
+var world:GFWorld
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
@@ -16,7 +15,7 @@ func test_pipelines():
 	world.new_pipeline(&"first")
 	world.new_pipeline(&"second")
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Bools) \
 		.add_component(Ints) \
 		.set_name("Test")
@@ -59,13 +58,13 @@ func test_bools():
 			x.a = not x.b
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(Bools).a, true)
 	assert_eq(entity.get_component(Bools).b, false)
@@ -80,14 +79,14 @@ func test_ints():
 			x.a += x.b
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Ints) \
 		.set_name("Test")
 	entity.get_component(Ints).b = 1
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(Ints).a, 14)
 	
@@ -103,14 +102,14 @@ func test_floats():
 	get_process_delta_time()
 	get_physics_process_delta_time()
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Floats) \
 		.set_name("Test")
 	entity.get_component(Floats).b = 1.2
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_almost_eq(entity.get_component(Floats).a, 16.8, 0.05)
 	
@@ -124,16 +123,16 @@ func test_strings():
 			x.a += x.b
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.set_name("Test")
 	entity.add_component(Strings, ["", "po"])
 	var strings:Strings = entity.get_component(Strings)
 	assert_eq(strings.a, "")
 	assert_eq(strings.b, "po")
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(strings.a, "poempoemempoememem")
 	assert_eq(strings.b, "poememem")
@@ -148,15 +147,15 @@ func test_byte_arrays():
 				x.a[i] += x.b[i]
 			)
 			
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(ByteArrays) \
 		.set_name("Test")
 	entity.get_component(ByteArrays).a = PackedByteArray([1, 2, 3])
 	entity.get_component(ByteArrays).b = PackedByteArray([2, 4, 3])
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(ByteArrays).a, PackedByteArray([7, 14, 12]))
 	
@@ -169,7 +168,7 @@ func test_textures():
 			x.a = x.b
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Textures) \
 		.set_name("Test")
 	entity.get_component(Textures).a = null
@@ -181,9 +180,9 @@ func test_textures():
 	assert_eq(entity.get_component(Textures).b, null)
 	entity.get_component(Textures).b = load("res://icon.svg")
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(Textures).a, load("res://icon.svg"))
 	assert_eq(entity.get_component(Textures).b, load("res://icon.svg"))
@@ -194,7 +193,7 @@ func test_ref_counts():
 	var rc:= RefCounted.new()
 	assert_eq(rc.get_reference_count(), 1)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(RefCounts) \
 		.set_name("Test")
 	
@@ -214,15 +213,15 @@ func test_arrays():
 				x.b[i] += x.a[i]
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Arrays) \
 		.set_name("Test")
 	entity.get_component(Arrays).a = [23, 4, 6]
 	entity.get_component(Arrays).b = [1, 2, 1]
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(Arrays).a, [23, 4, 6])
 	assert_eq(entity.get_component(Arrays).b, [70, 14, 19])
@@ -236,15 +235,15 @@ func test_dicts():
 			x.b["value"] += x.a["add_by"]
 			)
 	
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Dicts) \
 		.set_name("Test")
 	entity.get_component(Dicts).a = {"add_by": 5}
 	entity.get_component(Dicts).b = {"value": 2}
 	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
+	world.progress(0.0)
+	world.progress(0.0)
 	
 	assert_eq(entity.get_component(Dicts).a, {"add_by":5})
 	assert_eq(entity.get_component(Dicts).b, {"value":17})
@@ -255,112 +254,112 @@ func test_dicts():
 
 #region Components
 
-class Bools extends GlecsComponent:
+class Bools extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = false,
 		b = false,
 	}
 	var a:bool:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:bool:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Ints extends GlecsComponent:
+class Ints extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = 0,
 		b = 0,
 	}
 	var a:int:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:int = 25:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Floats extends GlecsComponent:
+class Floats extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = 0.0,
 		b = 0.0,
 	}
 	var a:float:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:float:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Strings extends GlecsComponent:
+class Strings extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = "",
 		b = "",
 	}
 	var a:String:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:String:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class ByteArrays extends GlecsComponent:
+class ByteArrays extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = PackedByteArray([]),
 		b = PackedByteArray([]),
 	}
 	var a:PackedByteArray:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:PackedByteArray:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Textures extends GlecsComponent:
+class Textures extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = null,
 		b = null,
 	}
 	var a:Texture2D:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:Texture2D:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class RefCounts extends GlecsComponent:
+class RefCounts extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = null,
 		b = null,
 	}
 	var a:RefCounted:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:RefCounted:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Arrays extends GlecsComponent:
+class Arrays extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = [],
 		b = [],
 	}
 	var a:Array:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:Array:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Dicts extends GlecsComponent:
+class Dicts extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = {},
 		b = {},
 	}
 	var a:Dictionary:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:Dictionary:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
 #endregion

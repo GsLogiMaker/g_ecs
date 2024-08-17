@@ -1,7 +1,7 @@
 
 ## A component containing a [Texture2D]. 
 
-extends GlecsComponent
+extends GFComponent
 
 const Self:= preload("./texture2d.gd")
 const CanvasItemComponent:= preload("./canvas_item.gd")
@@ -10,12 +10,12 @@ const Render:= preload("../rendering/render.gd")
 static func _get_members(): return {
 	texture = null,
 }
-func get_texture() -> Texture2D: return getc(&"texture")
-func set_texture(v:Texture2D) -> void: return setc(&"texture", v)
+func get_texture() -> Texture2D: return getm(&"texture")
+func set_texture(v:Texture2D) -> void: return setm(&"texture", v)
 
-static func _registered(w:GlecsWorldObject):
+static func _registered(w:GFWorld):
 	# On Render-Texture set with CanvasItemComponent
-	w.new_event_listener(Glecs.ON_SET) \
+	w.observer_builder(Glecs.ON_SET) \
 		.with(w.pair(Render, Self)) \
 		.with(CanvasItemComponent, Glecs.INOUT_MODE_FILTER) \
 		.for_each(func(ctexture:Self, item:CanvasItemComponent):

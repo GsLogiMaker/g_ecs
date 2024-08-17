@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode
+var world:GFWorld
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world)
+	world = GFWorld.new()
 	world.new_pipeline(&"test_pipeline")
 
 func after_all():
@@ -20,7 +19,7 @@ func test_stuff():
 			boo.b = boo.a
 			)
 	
-	var e:= GlecsEntity.spawn(world.as_object()) \
+	var e:= GFEntity.spawn(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 	var bools:Bools = e.get_component(Bools)
@@ -40,16 +39,16 @@ func test_stuff():
 
 #region Components
 
-class Bools extends GlecsComponent:
+class Bools extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = false,
 		b = false,
 	}
 	var a:bool:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:bool:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
 #endregion

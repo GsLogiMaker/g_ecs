@@ -2,11 +2,10 @@
 @tool
 extends GutTest
 
-var world:GlecsWorldNode
+var world:GFWorld
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
@@ -14,7 +13,7 @@ func after_all():
 #region Tests
 
 func test_auto_register():
-	GlecsEntity.spawn(world.as_object()) \
+	GFEntity.spawn(world) \
 		.add_component(load("res://components/a_component.gd"))
 
 	assert_eq(
@@ -98,14 +97,14 @@ func test_register_sub_class():
 
 #region Components
 
-class Foo extends GlecsComponent:
+class Foo extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = false,
 		b = 0,
 		c = 0.0,
 	}
 
-class Bar extends GlecsComponent:
+class Bar extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = Vector2.ZERO,
 		b = 0.0,
