@@ -31,10 +31,12 @@ namespace godot {
 		Ref<GFEntity> add_component(Variant);
 		Ref<GFComponent> get_component(Variant);
 
-		bool is_alive();
-
 		ecs_entity_t get_id();
 		GFWorld* get_world();
+		bool is_alive();
+
+		Ref<GFEntity> set_name(String);
+		String get_name();
 
 		// --------------------------------------
 		// --- Unexposed ---
