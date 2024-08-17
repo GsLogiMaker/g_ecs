@@ -9,7 +9,7 @@
 	<link title="More on Flecs Components">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html#components-1</link>
 	</tutorials>
 	<methods>
-		<method name="get_member">
+		<method name="getm">
 			<return type="Variant" />
 			<param index="0" name="member" type="String" />
 			<description>
@@ -19,7 +19,7 @@
 			entity.add_component("glecs/meta/Vector2")
 			var vec2 = entity.get_component("glecs/meta/Vector2")
 
-			vec2.get_member("x")
+			vec2.getm("x")
 			[/codeblock]
 			</description>
 		</method>
@@ -51,7 +51,7 @@
 			[/codeblock]
 			</description>
 		</method>
-		<method name="set_member">
+		<method name="setm">
 			<return type="void" />
 			<param index="0" name="member" type="String" />
 			<param index="1" name="value" type="Variant" />
@@ -62,7 +62,7 @@
 			entity.add_component("glecs/meta/Vector2")
 			var vec2 = entity.get_component("glecs/meta/Vector2")
 
-			vec2.set_member("x", 3.14)
+			vec2.setm("x", 3.14)
 			[/codeblock]
 			</description>
 		</method>

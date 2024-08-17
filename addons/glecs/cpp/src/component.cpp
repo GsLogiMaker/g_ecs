@@ -18,7 +18,7 @@ GFComponent::GFComponent() {
 GFComponent::~GFComponent() {
 }
 
-void GFComponent::set_member(String member, Variant value) {
+void GFComponent::setm(String member, Variant value) {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -172,7 +172,7 @@ void GFComponent::set_member_value_as_type(
 	#undef SET_MEMBER
 }
 
-Variant GFComponent::get_member(String member) {
+Variant GFComponent::getm(String member) {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -327,8 +327,8 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 }
 
 void GFComponent::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("get_member", "member"), &GFComponent::get_member);
-	godot::ClassDB::bind_method(D_METHOD("set_member", "member", "value"), &GFComponent::set_member);
+	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
+	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);

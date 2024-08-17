@@ -25,8 +25,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
-		Variant get_member(String);
-		void set_member(String, Variant);
+		Variant getm(String);
+		void setm(String, Variant);
 
 		Ref<GFEntity> get_source_entity();
 		ecs_entity_t get_source_id();
