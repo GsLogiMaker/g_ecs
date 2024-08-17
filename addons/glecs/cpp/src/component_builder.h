@@ -9,29 +9,29 @@
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
-	class GlWorld;
+	class GFWorld;
 
-	class GlComponentBuilder : public RefCounted {
-		GDCLASS(GlComponentBuilder, RefCounted)
+	class GFComponentBuilder : public RefCounted {
+		GDCLASS(GFComponentBuilder, RefCounted)
 
 	public:
-		GlComponentBuilder();
-		~GlComponentBuilder();
+		GFComponentBuilder();
+		~GFComponentBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
-		Ref<GlComponentBuilder> add_member(String, Variant::Type);
+		Ref<GFComponentBuilder> add_member(String, Variant::Type);
 		int get_member_count();
-		Ref<GlComponentBuilder> set_name(String);
+		Ref<GFComponentBuilder> set_name(String);
 		void build();
 
 		// **************************************
 		// *** Unexposed ***
 		// **************************************
 
-		void set_world(GlWorld*);
+		void set_world(GFWorld*);
 
 	protected:
 		static void _bind_methods();
@@ -44,7 +44,7 @@ namespace godot {
 		Array member_names;
 		/// The name of this compoennt
 		String name;
-		GlWorld* world;
+		GFWorld* world;
 		/// Is true if this builder has already been built
 		bool built;
 
@@ -57,9 +57,9 @@ namespace godot {
 
 	class HooksBindingContext {
 	public:
-		GlWorld* world;
+		GFWorld* world;
 
-		HooksBindingContext(GlWorld* world);
+		HooksBindingContext(GFWorld* world);
 		~HooksBindingContext();
 	};
 

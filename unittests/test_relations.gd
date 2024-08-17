@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode
+var world:GFWorld
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
@@ -15,18 +14,18 @@ func after_all():
 func test_bools():
 	# TODO: Query for relations
 	world.new_system().for_each(func(_delta): pass)
-	var apple:= GlecsEntity.spawn(world.as_object()) \
+	var apple:= GFEntity.spawn(world) \
 		.set_name("Apple")
 		
-	GlecsEntity.spawn(world.as_object()).set_name("Eats")
+	GFEntity.spawn(world).set_name("Eats")
 	
-	var man:= GlecsEntity.spawn(world.as_object()) \
+	var man:= GFEntity.spawn(world) \
 		.set_name("Man") \
 		.add_relation("Eats", apple)
 	
-	var cow:= GlecsEntity.spawn(world.as_object()) \
+	var cow:= GFEntity.spawn(world) \
 		.set_name("Cow")
-	var grass:= GlecsEntity.spawn(world.as_object()) \
+	var grass:= GFEntity.spawn(world) \
 		.set_name("Grass")
 	cow.add_relation("Eats", grass)
 	
@@ -40,7 +39,7 @@ func test_bools():
 
 #region Components
 
-class Bools extends GlecsComponent:
+class Bools extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = false,
 		b = false,

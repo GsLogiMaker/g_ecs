@@ -11,24 +11,24 @@
 
 namespace godot {
 
-	class GlComponent : public GlRegisterableEntity {
-		GDCLASS(GlComponent, GlRegisterableEntity)
+	class GFComponent : public GFRegisterableEntity {
+		GDCLASS(GFComponent, GFRegisterableEntity)
 
 	public:
-		GlComponent();
-		GlComponent(ecs_entity_t entity, ecs_entity_t component, GlWorld* world):
+		GFComponent();
+		GFComponent(ecs_entity_t entity, ecs_entity_t component, GFWorld* world):
 			source_entity_id(entity),
-			GlRegisterableEntity(component, world) {}
-		~GlComponent();
+			GFRegisterableEntity(component, world) {}
+		~GFComponent();
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
-		Variant get_member(String);
-		void set_member(String, Variant);
+		Variant getm(String);
+		void setm(String, Variant);
 
-		Ref<GlEntity> get_source_entity();
+		Ref<GFEntity> get_source_entity();
 		ecs_entity_t get_source_id();
 
 		// --------------------------------------

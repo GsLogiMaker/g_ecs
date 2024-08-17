@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GlQueryIterator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQueryIterator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	An iterator over queried entities.
 	</brief_description>
@@ -10,7 +10,7 @@
 	</tutorials>
 	<methods>
 		<method name="get_world">
-			<return type="GlWorld" />
+			<return type="GFWorld" />
 			<description>
 			Returns the world queried from.
 			</description>

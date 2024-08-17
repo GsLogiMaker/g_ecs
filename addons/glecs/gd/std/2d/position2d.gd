@@ -1,7 +1,7 @@
 
 ## A component that represents a position in 2D space.
 
-extends GlecsComponent
+extends GFComponent
 
 const Self:= preload("./position2d.gd")
 const CanvasItemC:= preload("./canvas_item.gd")
@@ -11,16 +11,16 @@ const Scale2DC:= preload("./scale2d.gd")
 static func _get_members() -> Dictionary: return {
 	vec = Vector2(),
 }
-func get_vec() -> Vector2: return getc(&"vec")
-func set_vec(v:Vector2) -> void: return setc(&"vec", v)
-func get_x() -> float: return getc(&"vec").x
-func set_x(v:float) -> void: return setc(&"vec", Vector2(v, get_y()))
-func get_y() -> float: return getc(&"vec").y
-func set_y(v:float) -> void: return setc(&"vec", Vector2(get_x(), v))
+func get_vec() -> Vector2: return getm(&"vec")
+func set_vec(v:Vector2) -> void: return setm(&"vec", v)
+func get_x() -> float: return getm(&"vec").x
+func set_x(v:float) -> void: return setm(&"vec", Vector2(v, get_y()))
+func get_y() -> float: return getm(&"vec").y
+func set_y(v:float) -> void: return setm(&"vec", Vector2(get_x(), v))
 
-static func _registered(w:GlecsWorldObject):
+static func _registered(w:GFWorld):
 	# On Position2D set, update visual transform of CanvasItemC
-	w.new_event_listener(Glecs.ON_SET) \
+	w.observer_builder(Glecs.ON_SET) \
 		.with(CanvasItemC, Glecs.INOUT_MODE_FILTER) \
 		.with(Self) \
 		.maybe_with(Rotation2DC) \

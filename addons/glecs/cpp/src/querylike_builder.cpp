@@ -11,28 +11,28 @@
 
 using namespace godot;
 
-GlQuerylikeBuilder::GlQuerylikeBuilder() {
+GFQuerylikeBuilder::GFQuerylikeBuilder() {
 }
-GlQuerylikeBuilder::~GlQuerylikeBuilder() {
+GFQuerylikeBuilder::~GFQuerylikeBuilder() {
 }
 
 // **************************************
 // *** Exposed ***
 // **************************************
 
-int GlQuerylikeBuilder::get_term_count() {
+int GFQuerylikeBuilder::get_term_count() {
 	return term_count;
 }
 
-GlWorld* GlQuerylikeBuilder::get_world() {
+GFWorld* GFQuerylikeBuilder::get_world() {
 	return world;
 }
 
-bool GlQuerylikeBuilder::is_built() {
+bool GFQuerylikeBuilder::is_built() {
 	return built;
 }
 
-Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::with(Variant component) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
 
 	query_desc.terms[get_term_count()] = {
@@ -44,7 +44,7 @@ Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::with(Variant component) {
 
 	return Ref(this);
 }
-Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::maybe_with(Variant component) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
 
 	query_desc.terms[get_term_count()] = {
@@ -56,7 +56,7 @@ Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::maybe_with(Variant component) {
 
 	return Ref(this);
 }
-Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::or_with(Variant component) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
 	if (get_term_count() == 0) {
 		ERR(Ref(this),
 			"Could not add term to query\n",
@@ -82,7 +82,7 @@ Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::or_with(Variant component) {
 
 	return Ref(this);
 }
-Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::without(Variant component) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
 
 	query_desc.terms[get_term_count()] = {
@@ -99,7 +99,7 @@ Ref<GlQuerylikeBuilder> GlQuerylikeBuilder::without(Variant component) {
 // *** Unexposed ***
 // **************************************
 
-void GlQuerylikeBuilder::set_world(GlWorld* world_) {
+void GFQuerylikeBuilder::set_world(GFWorld* world_) {
 	world = world_;
 }
 
@@ -107,7 +107,7 @@ void GlQuerylikeBuilder::set_world(GlWorld* world_) {
 // *** PROTECTED ***
 // **********************************************
 
-QueryIterationContext* GlQuerylikeBuilder::setup_ctx(Callable callable) {
+QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 	QueryIterationContext* ctx =  new QueryIterationContext(
 		Ref(this),
 		callable
@@ -120,12 +120,12 @@ QueryIterationContext* GlQuerylikeBuilder::setup_ctx(Callable callable) {
 	return ctx;
 }
 
-void GlQuerylikeBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("is_built"), &GlQuerylikeBuilder::is_built);
-	godot::ClassDB::bind_method(D_METHOD("with", "component"), &GlQuerylikeBuilder::with);
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "component"), &GlQuerylikeBuilder::maybe_with);
-	godot::ClassDB::bind_method(D_METHOD("or_with", "component"), &GlQuerylikeBuilder::or_with);
-	godot::ClassDB::bind_method(D_METHOD("without", "component"), &GlQuerylikeBuilder::without);
+void GFQuerylikeBuilder::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFQuerylikeBuilder::is_built);
+	godot::ClassDB::bind_method(D_METHOD("with", "component"), &GFQuerylikeBuilder::with);
+	godot::ClassDB::bind_method(D_METHOD("maybe_with", "component"), &GFQuerylikeBuilder::maybe_with);
+	godot::ClassDB::bind_method(D_METHOD("or_with", "component"), &GFQuerylikeBuilder::or_with);
+	godot::ClassDB::bind_method(D_METHOD("without", "component"), &GFQuerylikeBuilder::without);
 
 }
 
@@ -139,7 +139,7 @@ void GlQuerylikeBuilder::_bind_methods() {
 // **********************************************
 
 QueryIterationContext::QueryIterationContext(
-	Ref<GlQuerylikeBuilder> query_b,
+	Ref<GFQuerylikeBuilder> query_b,
 	Callable callable_
 ) {
 	callable = callable_;
@@ -151,13 +151,13 @@ QueryIterationContext::QueryIterationContext(
 			case ecs_oper_kind_t::EcsAnd:
 			case ecs_oper_kind_t::EcsOptional:
 				comp_ref_per_term.append(Variant(Ref(memnew(
-					GlComponent(0, terms[i].id, get_world())
+					GFComponent(0, terms[i].id, get_world())
 				))));
 				comp_ref_args.append(Variant());
 				break;
 			case ecs_oper_kind_t::EcsOr:
 				comp_ref_per_term.append(Variant(Ref(memnew(
-					GlComponent(0, terms[i].id, get_world())
+					GFComponent(0, terms[i].id, get_world())
 				))));
 				// OR terms must always be followed by another term, so
 				// there's guarentied to be another term after this one
@@ -180,7 +180,7 @@ QueryIterationContext::~QueryIterationContext() {}
 Callable QueryIterationContext::get_callable() {
 	return callable;
 }
-GlWorld* QueryIterationContext::get_world() {
+GFWorld* QueryIterationContext::get_world() {
 	return world;
 }
 
@@ -190,7 +190,7 @@ void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity
 		if (obj == nullptr) {
 			continue;
 		}
-		GlComponent* comp = obj->cast_to<GlComponent>(obj);
+		GFComponent* comp = obj->cast_to<GFComponent>(obj);
 		comp->set_source_id(it->entities[entity_index]);
 	}
 }

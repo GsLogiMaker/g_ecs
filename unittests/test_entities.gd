@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode = null
+var world:GFWorld = null
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world, true)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
@@ -13,7 +12,7 @@ func after_all():
 #region Tests
 
 func test_component_get_and_set():
-	var e:GlecsEntity = GlecsEntity.spawn(world.as_object()) \
+	var e:GFEntity = GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 	
@@ -26,7 +25,7 @@ func test_component_get_and_set():
 	e.delete()
 
 func test_component_string_get_and_set():
-	var e:= GlecsEntity.spawn(world.as_object()) \
+	var e:= GFEntity.spawn(world) \
 		.add_component(Stringy) \
 		.set_name("Test")
 	
@@ -41,21 +40,21 @@ func test_component_string_get_and_set():
 	assert_eq(foo.b, "em")
 
 func test_new_entity_with_unregistered_component():
-	var e:GlecsEntity = GlecsEntity.spawn(world.as_object()) \
+	var e:GFEntity = GFEntity.spawn(world) \
 		.add_component(Unregistered) \
 		.set_name("Test")
 	assert_eq(e.get_component(Unregistered).value, 0)
 
 func test_creating_entity_by_new():
 	# Test that an entity is invalidated by being deleted
-	var e:= GlecsEntity.spawn(world.as_object())
+	var e:= GFEntity.spawn(world)
 	assert_eq(e.is_valid(), true)
 	e.delete()
 	assert_eq(e.is_valid(), false)
 	
 	# Test that an entity is invalidated by its world being deleted
-	var w:= GlecsWorldObject.new()
-	var e2:= GlecsEntity.spawn(w)
+	var w:= GFWorld.new()
+	var e2:= GFEntity.spawn(w)
 	assert_eq(e2.is_valid(), true)
 	w.free()
 	assert_eq(e2.is_valid(), false)
@@ -63,20 +62,20 @@ func test_creating_entity_by_new():
 func test_entity_from():
 	var id:= 0
 	if true:
-		var tmp_entity = GlecsEntity.spawn(world.as_object())
+		var tmp_entity = GFEntity.spawn(world)
 		tmp_entity.set_name(&"Cool Name")
 		id = tmp_entity.get_id()
 	assert_ne(id, 0)
 	
-	var e:= GlecsEntity.from(id, world.as_object())
+	var e:= GFEntity.from(id, world)
 	assert_ne(e, null)
 	assert_eq(e.get_name(), &"Cool Name")
 
 func test_entity_created_in_singleton():
-	var e:= GlecsEntity.spawn()
+	var e:= GFEntity.spawn()
 	assert_eq(e.is_valid(), true)
 	
-	var e2:= GlecsEntity.spawn(GlecsSingleton)
+	var e2:= GFEntity.spawn(GlecsSingleton)
 	assert_eq(e2.is_valid(), true)
 	
 	assert_eq(e.get_world(), e2.get_world())
@@ -88,40 +87,40 @@ func test_entity_created_in_singleton():
 
 #region Classes
 
-class Foo extends GlecsComponent:
+class Foo extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		value = 0.0,
 	}
 	var value:float:
-		get: return getc(&"value")
-		set(v): setc(&"value", v)
+		get: return getm(&"value")
+		set(v): setm(&"value", v)
 
-class Stringy extends GlecsComponent:
+class Stringy extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		a = "",
 		b = "",
 	}
 	var a:String:
-		get: return getc(&"a")
-		set(v): setc(&"a", v)
+		get: return getm(&"a")
+		set(v): setm(&"a", v)
 	var b:String:
-		get: return getc(&"b")
-		set(v): setc(&"b", v)
+		get: return getm(&"b")
+		set(v): setm(&"b", v)
 
-class Unadded extends GlecsComponent:
+class Unadded extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		value = 0,
 	}
 	var value:int:
-		get: return getc(&"value")
-		set(v): setc(&"value", v)
+		get: return getm(&"value")
+		set(v): setm(&"value", v)
 
-class Unregistered extends GlecsComponent:
+class Unregistered extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		value = 0,
 	}
 	var value:int:
-		get: return getc(&"value")
-		set(v): setc(&"value", v)
+		get: return getm(&"value")
+		set(v): setm(&"value", v)
 
 #endregion

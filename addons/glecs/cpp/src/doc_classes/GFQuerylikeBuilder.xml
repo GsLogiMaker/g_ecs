@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GlQuerylikeBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQuerylikeBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	The abstract base class for different query-like builders.
 	</brief_description>
@@ -16,35 +16,35 @@
 			</description>
 		</method>
 		<method name="maybe_with">
-			<return type="GlQuerylikeBuilder" />
+			<return type="GFQuerylikeBuilder" />
 			<param index="0" name="component" type="Variant" />
 			<description>
 			Adds an optional term to the query.
-			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GlWorld.coerce_id].
+			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="or_with">
-			<return type="GlQuerylikeBuilder" />
+			<return type="GFQuerylikeBuilder" />
 			<param index="0" name="component" type="Variant" />
 			<description>
 			Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
-			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GlWorld.coerce_id].
+			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="with">
-			<return type="GlQuerylikeBuilder" />
+			<return type="GFQuerylikeBuilder" />
 			<param index="0" name="component" type="Variant" />
 			<description>
 			Adds a term to the query.
-			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GlWorld.coerce_id].
+			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="without">
-			<return type="GlQuerylikeBuilder" />
+			<return type="GFQuerylikeBuilder" />
 			<param index="0" name="component" type="Variant" />
 			<description>
 			Adds a negative term to the query.
-			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GlWorld.coerce_id].
+			The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 	</methods>

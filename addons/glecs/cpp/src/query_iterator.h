@@ -8,16 +8,16 @@
 
 namespace godot {
 
-	class GlQueryIterator : public RefCounted {
-		GDCLASS(GlQueryIterator, RefCounted)
+	class GFQueryIterator : public RefCounted {
+		GDCLASS(GFQueryIterator, RefCounted)
 
 	public:
-		GlQueryIterator();
-		GlQueryIterator(Ref<GlQuery> query, ecs_iter_t iterator):
+		GFQueryIterator();
+		GFQueryIterator(Ref<GFQuery> query, ecs_iter_t iterator):
 			query(query),
 			iterator(iterator)
 			{}
-		~GlQueryIterator();
+		~GFQueryIterator();
 
 		// --------------------------------------
 		// --- Exposed
@@ -27,7 +27,7 @@ namespace godot {
 		bool _iter_next(Variant arg);
 		Variant _iter_get(Variant arg);
 
-		GlWorld* get_world();
+		GFWorld* get_world();
 
 		// --------------------------------------
 		// --- Unexposed
@@ -43,7 +43,7 @@ namespace godot {
 		static void _bind_methods();
 
 	private:
-		Ref<GlQuery> query;
+		Ref<GFQuery> query;
 		ecs_iter_t iterator;
 		int index{0};
 		uint8_t iter_flags{0};

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GlWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	An entity component system world.
 	</brief_description>
@@ -13,11 +13,11 @@
 			<param index="0" name="entity" type="Variant" />
 			<description>
 			Coerces a [Variant] to an ID.
-			How Variants are coerced to IDs goes as follows: [br]- [int] : Used as ID directly. [br]- [String] : Treated as a path and looks up the entity at that path. [br]- [StringName] : Treated as a path and looks up the entity at that path. [br]- [NodePath] : Treated as a path and looks up the entity at that path. [br]- [Vector2i] : Used directly as a relationship pair. [br]- [GlEntity] (and subtypes) : Returns the ID of the entity being referenced. [br]- Everything else : Returns 0 and pushes an error.
+			How Variants are coerced to IDs goes as follows: [br]- [int] : Used as ID directly. [br]- [String] : Treated as a path and looks up the entity at that path. [br]- [StringName] : Treated as a path and looks up the entity at that path. [br]- [NodePath] : Treated as a path and looks up the entity at that path. [br]- [Vector2i] : Used directly as a relationship pair. [br]- [GFEntity] (and subtypes) : Returns the ID of the entity being referenced. [br]- Everything else : Returns 0 and pushes an error.
 			</description>
 		</method>
 		<method name="component_builder">
-			<return type="GlComponentBuilder" />
+			<return type="GFComponentBuilder" />
 			<description>
 			Returns a new component builder.
 			</description>
@@ -30,7 +30,7 @@
 			</description>
 		</method>
 		<method name="query_builder">
-			<return type="GlQueryBuilder" />
+			<return type="GFQueryBuilder" />
 			<description>
 			Returns a new query builder.
 			</description>
@@ -42,7 +42,7 @@
 			</description>
 		</method>
 		<method name="system_builder">
-			<return type="GlSystemBuilder" />
+			<return type="GFSystemBuilder" />
 			<description>
 			Returns a new system builder.
 			</description>

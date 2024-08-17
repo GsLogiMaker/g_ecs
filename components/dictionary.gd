@@ -1,14 +1,14 @@
 
-extends GlecsComponent
+extends GFComponent
 
 const DEFINE:= {
 	dict = TYPE_DICTIONARY,
 }
 
 func get_dict() -> Dictionary:
-	return getc(&"dict")
+	return getm(&"dict")
 
 func set_dict(v:Dictionary) -> void:
-	return setc(&"dict", v)
+	return setm(&"dict", v)
 
-class OtherClass extends GlecsComponent: pass
+class OtherClass extends GFComponent: pass

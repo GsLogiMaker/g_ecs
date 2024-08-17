@@ -14,36 +14,36 @@
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
-	class GlWorld;
+	class GFWorld;
 	class QueryIterationContext;
 
-	class GlQuerylikeBuilder : public RefCounted {
-		GDCLASS(GlQuerylikeBuilder, RefCounted)
+	class GFQuerylikeBuilder : public RefCounted {
+		GDCLASS(GFQuerylikeBuilder, RefCounted)
 
 		friend QueryIterationContext;
 
 	public:
-		GlQuerylikeBuilder();
-		GlQuerylikeBuilder(GlWorld* world): world(world) {}
-		~GlQuerylikeBuilder();
+		GFQuerylikeBuilder();
+		GFQuerylikeBuilder(GFWorld* world): world(world) {}
+		~GFQuerylikeBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
 		int get_term_count();
-		GlWorld* get_world();
+		GFWorld* get_world();
 		bool is_built();
-		Ref<GlQuerylikeBuilder> with(Variant component);
-		Ref<GlQuerylikeBuilder> maybe_with(Variant component);
-		Ref<GlQuerylikeBuilder> or_with(Variant component);
-		Ref<GlQuerylikeBuilder> without(Variant component);
+		Ref<GFQuerylikeBuilder> with(Variant component);
+		Ref<GFQuerylikeBuilder> maybe_with(Variant component);
+		Ref<GFQuerylikeBuilder> or_with(Variant component);
+		Ref<GFQuerylikeBuilder> without(Variant component);
 
 		// **************************************
 		// *** Unexposed ***
 		// **************************************
 
-		void set_world(GlWorld*);
+		void set_world(GFWorld*);
 
 	protected:
 		/// The Flecs description of the building query.
@@ -58,23 +58,23 @@ namespace godot {
 		/// The number of terms added to the query so far.
 		int term_count{0};
 		/// The world to query in.
-		GlWorld* world{nullptr};
+		GFWorld* world{nullptr};
 
 	};
 
 	class QueryIterationContext {
 	public:
-		TypedArray<GlComponent> comp_ref_per_term {TypedArray<GlComponent>()};
-		TypedArray<GlComponent> comp_ref_args {TypedArray<GlComponent>()};
+		TypedArray<GFComponent> comp_ref_per_term {TypedArray<GFComponent>()};
+		TypedArray<GFComponent> comp_ref_args {TypedArray<GFComponent>()};
 
 		QueryIterationContext(
-			Ref<GlQuerylikeBuilder> query_b,
+			Ref<GFQuerylikeBuilder> query_b,
 			Callable callable
 		);
 		~QueryIterationContext();
 
 		Callable get_callable();
-		GlWorld* get_world();
+		GFWorld* get_world();
 
 		void update_component_entities(ecs_iter_t* it, int entity_index);
 		void update_component_terms(ecs_iter_t* it);
@@ -82,7 +82,7 @@ namespace godot {
 
 	private:
 		Callable callable;
-		GlWorld* world;
+		GFWorld* world;
 	};
 
 }

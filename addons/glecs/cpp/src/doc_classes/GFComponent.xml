@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	<link title="More on Flecs Components">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html#components-1</link>
+	</tutorials>
+	<methods>
+		<method name="getm">
+			<return type="Variant" />
+			<param index="0" name="member" type="String" />
+			<description>
+			Returns the value of a component's member
+			[codeblock]
+			var entity = GFEntity.spawn()
+			entity.add_component("glecs/meta/Vector2")
+			var vec2 = entity.get_component("glecs/meta/Vector2")
+
+			vec2.getm("x")
+			[/codeblock]
+			</description>
+		</method>
+		<method name="get_source_entity">
+			<return type="GFEntity" />
+			<description>
+			Returns a [GFEntity] reference to the entity this component's data is from.
+			[codeblock]
+			var Vector2C = GFEntity.from("glecs/meta/Vector2")
+			var entity = GFEntity.spawn()
+			entity.add_component(Vector2C)
+			var vec2 = entity.get_component(Vector2C)
+
+			vec2.get_source_entity().get_id() == Vector2C.get_id() # True
+			[/codeblock]
+			</description>
+		</method>
+		<method name="get_source_id">
+			<return type="int" />
+			<description>
+			Returns the ID of the entity that this component's data is from.
+			[codeblock]
+			var Vector2C = GFEntity.from("glecs/meta/Vector2")
+			var entity = GFEntity.spawn()
+			entity.add_component(Vector2C)
+			var vec2 = entity.get_component(Vector2C)
+
+			vec2.get_source_id() == Vector2C.get_id() # True
+			[/codeblock]
+			</description>
+		</method>
+		<method name="setm">
+			<return type="void" />
+			<param index="0" name="member" type="String" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			Sets the value of a component's member
+			[codeblock]
+			var entity = GFEntity.spawn()
+			entity.add_component("glecs/meta/Vector2")
+			var vec2 = entity.get_component("glecs/meta/Vector2")
+
+			vec2.setm("x", 3.14)
+			[/codeblock]
+			</description>
+		</method>
+	</methods>
+</class>

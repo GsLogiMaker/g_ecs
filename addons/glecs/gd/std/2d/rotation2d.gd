@@ -1,7 +1,7 @@
 
 ## A component that represents a rotaition in 2D space.
 
-extends GlecsComponent
+extends GFComponent
 
 const Self:= preload("./rotation2d.gd")
 const CanvasItemC:= preload("./canvas_item.gd")
@@ -11,12 +11,12 @@ const Scale2DC:= preload("./scale2d.gd")
 static func _get_members() -> Dictionary: return {
 	angle = 0.0,
 }
-func get_angle() -> float: return getc(&"angle")
-func set_angle(v:float) -> void: return setc(&"angle", v)
+func get_angle() -> float: return getm(&"angle")
+func set_angle(v:float) -> void: return setm(&"angle", v)
 
-static func _registered(w:GlecsWorldObject):
+static func _registered(w:GFWorld):
 	# On Rotation2DC set, update visual transform of CanvasItemC
-	w.new_event_listener(Glecs.ON_SET) \
+	w.observer_builder(Glecs.ON_SET) \
 		.with(CanvasItemC, Glecs.INOUT_MODE_FILTER) \
 		.with(Self) \
 		.maybe_with(Position2DC) \

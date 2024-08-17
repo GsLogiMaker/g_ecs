@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GlQueryBuilder" inherits="GlQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	A builder for queries.
 	</brief_description>
@@ -10,7 +10,7 @@
 	</tutorials>
 	<methods>
 		<method name="build">
-			<return type="GlQuery" />
+			<return type="GFQuery" />
 			<description>
 			Builds and returns the new query.
 			</description>

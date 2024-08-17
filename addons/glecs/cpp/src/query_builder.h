@@ -12,21 +12,21 @@
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
-	class GlWorld;
+	class GFWorld;
 
-	class GlQueryBuilder : public GlQuerylikeBuilder {
-		GDCLASS(GlQueryBuilder, GlQuerylikeBuilder)
+	class GFQueryBuilder : public GFQuerylikeBuilder {
+		GDCLASS(GFQueryBuilder, GFQuerylikeBuilder)
 
 	public:
-		GlQueryBuilder();
-		GlQueryBuilder(GlWorld* world): GlQuerylikeBuilder(world) {}
-		~GlQueryBuilder();
+		GFQueryBuilder();
+		GFQueryBuilder(GFWorld* world): GFQuerylikeBuilder(world) {}
+		~GFQueryBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
-		Ref<GlQuery> build();
+		Ref<GFQuery> build();
 
 		// **************************************
 		// *** Unexposed ***
