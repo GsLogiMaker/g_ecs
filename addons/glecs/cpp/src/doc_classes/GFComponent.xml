@@ -14,18 +14,41 @@
 			<param index="0" name="member" type="String" />
 			<description>
 			Returns the value of a component's member
+			[codeblock]
+			var entity = GFEntity.spawn()
+			entity.add_component("glecs/meta/Vector2")
+			var vec2 = entity.get_component("glecs/meta/Vector2")
+
+			vec2.get_member("x")
+			[/codeblock]
 			</description>
 		</method>
 		<method name="get_source_entity">
 			<return type="GFEntity" />
 			<description>
 			Returns a [GFEntity] reference to the entity this component's data is from.
+			[codeblock]
+			var Vector2C = GFEntity.from("glecs/meta/Vector2")
+			var entity = GFEntity.spawn()
+			entity.add_component(Vector2C)
+			var vec2 = entity.get_component(Vector2C)
+
+			vec2.get_source_entity().get_id() == Vector2C.get_id() # True
+			[/codeblock]
 			</description>
 		</method>
 		<method name="get_source_id">
 			<return type="int" />
 			<description>
 			Returns the ID of the entity that this component's data is from.
+			[codeblock]
+			var Vector2C = GFEntity.from("glecs/meta/Vector2")
+			var entity = GFEntity.spawn()
+			entity.add_component(Vector2C)
+			var vec2 = entity.get_component(Vector2C)
+
+			vec2.get_source_id() == Vector2C.get_id() # True
+			[/codeblock]
 			</description>
 		</method>
 		<method name="set_member">
@@ -34,6 +57,13 @@
 			<param index="1" name="value" type="Variant" />
 			<description>
 			Sets the value of a component's member
+			[codeblock]
+			var entity = GFEntity.spawn()
+			entity.add_component("glecs/meta/Vector2")
+			var vec2 = entity.get_component("glecs/meta/Vector2")
+
+			vec2.set_member("x", 3.14)
+			[/codeblock]
 			</description>
 		</method>
 	</methods>
