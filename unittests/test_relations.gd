@@ -16,23 +16,23 @@ func test_bools():
 	world.new_system().for_each(func(_delta): pass)
 	var apple:= GFEntity.spawn(world) \
 		.set_name("Apple")
-		
+
 	GFEntity.spawn(world).set_name("Eats")
-	
+
 	var man:= GFEntity.spawn(world) \
 		.set_name("Man") \
 		.add_relation("Eats", apple)
-	
+
 	var cow:= GFEntity.spawn(world) \
 		.set_name("Cow")
 	var grass:= GFEntity.spawn(world) \
 		.set_name("Grass")
 	cow.add_relation("Eats", grass)
-	
-	world.run_pipeline(Glecs.PROCESS, 0.0)
-	
+
+	world.progress(0.0)
+
 	assert_eq(true, true)
-	
+
 	man.free()
 	apple.free()
 #endregion

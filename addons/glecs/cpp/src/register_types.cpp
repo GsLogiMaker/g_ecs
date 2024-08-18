@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
+#include "observer_builder.h"
 #include "query.h"
 #include "query_builder.h"
 #include "query_iterator.h"
@@ -26,14 +27,18 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	}
 
 	godot::ClassDB::register_class<GFWorld>();
+
 	godot::ClassDB::register_abstract_class<GFEntity>();
 	godot::ClassDB::register_abstract_class<GFRegisterableEntity>();
 	godot::ClassDB::register_abstract_class<GFComponent>();
+
 	godot::ClassDB::register_abstract_class<GFComponentBuilder>();
-	godot::ClassDB::register_abstract_class<GFQuerylikeBuilder>();
-	godot::ClassDB::register_abstract_class<GFQueryBuilder>();
 	godot::ClassDB::register_abstract_class<GFQuery>();
 	godot::ClassDB::register_abstract_class<GFQueryIterator>();
+
+	godot::ClassDB::register_abstract_class<GFQuerylikeBuilder>();
+	godot::ClassDB::register_abstract_class<GFObserverBuilder>();
+	godot::ClassDB::register_abstract_class<GFQueryBuilder>();
 	godot::ClassDB::register_abstract_class<GFSystemBuilder>();
 
 	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));

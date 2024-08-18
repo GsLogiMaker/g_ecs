@@ -11,6 +11,7 @@ namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
 	class GFComponentBuilder;
+	class GFObserverBuilder;
 	class GFQueryBuilder;
 	class GFSystemBuilder;
 
@@ -26,6 +27,7 @@ namespace godot {
 		// **************************************
 
 		Ref<GFComponentBuilder> component_builder();
+		Ref<GFObserverBuilder> observer_builder_varargs(const Variant**, int64_t, GDExtensionCallError&);
 		Ref<GFQueryBuilder> query_builder();
 		Ref<GFSystemBuilder> system_builder();
 

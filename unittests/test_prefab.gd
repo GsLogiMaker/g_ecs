@@ -23,10 +23,10 @@ func test_prefab():
 			b.a.y += f.c * 2
 			b.b = PI
 			)
-			
+
 	var entity:= GFEntity.spawn(world)
-	entity.add_entity(world.pair(Glecs.IS_A, MyPrefab))
-	
+	entity.add_entity(world.pair("flecs/core/IsA", MyPrefab))
+
 	# Test inhereted componets exist entity
 	var foo:Foo = entity.get_component(Foo)
 	var bar:Bar = entity.get_component(Bar)
@@ -41,7 +41,7 @@ func test_prefab():
 	assert_almost_eq(bar.b, 5.6, 0.001)
 
 	# Test process with inhereted components
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
 	assert_eq(foo.b, 24)
 	assert_almost_eq(foo.c, 3.63, 0.001)
 	assert_almost_eq(bar.a, Vector2(2+foo.c, 1.1+(foo.c*2)), Vector2(0.001, 0.001))
@@ -63,13 +63,13 @@ class Bar extends GFComponent:
 		a = Vector2.ZERO,
 		b = 0.0,
 	}
-	
+
 class MyPrefab extends GFRegisterableEntity:
-	
+
 	static func _registered(world:GFWorld) -> void:
 		var p:= GFEntity.from(MyPrefab, world)
 		p.add_entity(Glecs.PREFAB)
 		p.add_component(Foo, [true, 23, 2.33])
 		p.add_component(Bar, [Vector2(2, 1.1), 5.6])
-		
+
 #endregion

@@ -15,27 +15,27 @@ func test_component_get_and_set():
 	var e:GFEntity = GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
-	
+
 	var foo:Foo = e.get_component(Foo)
 	assert_almost_eq(foo.value, 0.0, 0.01)
-	
+
 	foo.value = 2.3
 	assert_almost_eq(foo.value, 2.3, 0.01)
-	
+
 	e.delete()
 
 func test_component_string_get_and_set():
 	var e:= GFEntity.spawn(world) \
 		.add_component(Stringy) \
 		.set_name("Test")
-	
+
 	var foo:Stringy = e.get_component(Stringy)
 	foo.a = "po"
 	foo.b = "em"
 	assert_eq(foo.a, "po")
-	
+
 	foo.a += foo.b
-	
+
 	assert_eq(foo.a, "poem")
 	assert_eq(foo.b, "em")
 
@@ -51,7 +51,7 @@ func test_creating_entity_by_new():
 	assert_eq(e.is_valid(), true)
 	e.delete()
 	assert_eq(e.is_valid(), false)
-	
+
 	# Test that an entity is invalidated by its world being deleted
 	var w:= GFWorld.new()
 	var e2:= GFEntity.spawn(w)
@@ -66,7 +66,7 @@ func test_entity_from():
 		tmp_entity.set_name(&"Cool Name")
 		id = tmp_entity.get_id()
 	assert_ne(id, 0)
-	
+
 	var e:= GFEntity.from(id, world)
 	assert_ne(e, null)
 	assert_eq(e.get_name(), &"Cool Name")
@@ -74,12 +74,12 @@ func test_entity_from():
 func test_entity_created_in_singleton():
 	var e:= GFEntity.spawn()
 	assert_eq(e.is_valid(), true)
-	
-	var e2:= GFEntity.spawn(GlecsSingleton)
+
+	var e2:= GFEntity.spawn(GFGlobalWorld)
 	assert_eq(e2.is_valid(), true)
-	
+
 	assert_eq(e.get_world(), e2.get_world())
-	
+
 	e.delete()
 	e2.delete()
 

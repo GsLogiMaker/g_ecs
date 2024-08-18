@@ -14,13 +14,13 @@ func after_all():
 
 func test_on_add_event():
 	i = 0
-	
-	world.observer_builder(Glecs.ON_ADD) \
+
+	world.observer_builder("flecs/core/OnAdd") \
 		.with(Ints) \
 		.for_each(func(_ints: Ints):
 			self.i += 1
 			)
-	
+
 	var e:= GFEntity.spawn(world) \
 		.add_component(Ints) \
 		.set_name("WithInts")
@@ -43,13 +43,13 @@ func test_on_add_event():
 
 func test_on_init_event():
 	i = 0
-	
-	world.observer_builder(Glecs.ON_INIT) \
+
+	world.observer_builder("glecs/core/on_init") \
 		.with(Ints) \
 		.for_each(func(ints: Ints):
 			self.i += ints.a + ints.b
 			)
-	
+
 	var e:= GFEntity.spawn(world) \
 		.add_component(Ints, [2, 31]) \
 		.set_name("WithInts")
@@ -73,31 +73,31 @@ func test_on_init_event():
 func test_on_set_event():
 	i = 0
 	var w:= GFWorld.new()
-	
-	w.observer_builder(Glecs.ON_SET) \
+
+	w.observer_builder("flecs/core/OnSet") \
 		.with(Ints) \
 		.for_each(func(ints:Ints):
 			self.i += ints.a + ints.b
 			)
-			
+
 	var e:= GFEntity.spawn(w) \
 		.add_component(Ints, [2, 6])
-	var ints:Ints = e.get_component(Ints)
-	
-	ints.a = 15
-	ints.b = 45
-	
+	var ints_c:Ints = e.get_component(Ints)
+
+	ints_c.a = 15
+	ints_c.b = 45
+
 	assert_eq(i, (2 + 6) + (15 + 6) + (15 + 45))
 
 
 func test_on_add_event_with_objects():
 	i = 0
-	world.observer_builder(Glecs.ON_ADD) \
+	world.observer_builder("flecs/core/OnAdd") \
 		.with(Textures) \
 		.for_each(func(_ints: Textures):
 			self.i += 1
 			)
-	
+
 	var e:= GFEntity.spawn(world) \
 		.add_component(Textures) \
 		.set_name("WithInts")
@@ -106,7 +106,7 @@ func test_on_add_event_with_objects():
 	assert_eq(e.get_component(Textures).b, null)
 
 	e.free()
-	
+
 	# In this test, the loaded textures will be auto freed by Godot if Glecs
 	# does not properly take ownership of them.
 	i = 0
@@ -124,10 +124,9 @@ func test_on_add_event_with_objects():
 #region Components
 
 class Ints extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = 0,
-		b = 0,
-	}
+	static func _build(b:GFComponentBuilder) -> Dictionary:
+		b.add_member("a", TYPE_INT)
+		b.add_member("b", TYPE_INT)
 	var a:int:
 		get: return getm(&"a")
 		set(v): setm(&"a", v)
@@ -136,10 +135,9 @@ class Ints extends GFComponent:
 		set(v): setm(&"b", v)
 
 class Textures extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = null,
-		b = null,
-	}
+	static func _build(b:GFComponentBuilder) -> Dictionary:
+		b.add_member("a", TYPE_OBJECT)
+		b.add_member("b", TYPE_OBJECT)
 	var a:Texture2D:
 		get: return getm(&"a")
 		set(v): setm(&"a", v)
