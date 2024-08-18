@@ -2,8 +2,9 @@
 #include "world.h"
 #include "entity.h"
 #include "component_builder.h"
-#include "system_builder.h"
+#include "observer_builder.h"
 #include "query_builder.h"
+#include "system_builder.h"
 #include "utils.h"
 
 #include <flecs.h>
@@ -541,6 +542,33 @@ Ref<GFComponentBuilder> GFWorld::component_builder() {
 	return builder;
 }
 
+Ref<GFObserverBuilder> GFWorld::observer_builder_varargs(
+	const Variant** args,
+	int64_t arg_count,
+	GDExtensionCallError& error
+) {
+	if (arg_count > FLECS_EVENT_DESC_MAX) {
+		// TODO: utilize call error
+		ERR(Ref<GFObserverBuilder>(),
+			"Failed to set terms in observer builder",
+			"Max term count is ", FLECS_EVENT_DESC_MAX, ", but ",
+			arg_count, " terms were passed"
+		);
+	}
+
+	Ref<GFObserverBuilder> builder = memnew(GFObserverBuilder(this));
+	builder->set_events_varargs(args, arg_count, error);
+	return builder;
+}
+
+Variant observer_builder_varargs(
+	const Variant **args,
+	GDExtensionInt arg_count,
+	GDExtensionCallError &error
+) {
+	return arg_count;
+}
+
 Ref<GFQueryBuilder> GFWorld::query_builder() {
 	Ref<GFQueryBuilder> builder = memnew(GFQueryBuilder(this));
 	return builder;
@@ -796,6 +824,7 @@ ecs_world_t * GFWorld::raw() {
 
 void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("component_builder"), &GFWorld::component_builder);
+	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "observer_builder", &GFWorld::observer_builder_varargs);
 	godot::ClassDB::bind_method(D_METHOD("query_builder"), &GFWorld::query_builder);
 	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
