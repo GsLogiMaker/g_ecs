@@ -98,16 +98,14 @@ func test_register_sub_class():
 #region Components
 
 class Foo extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = false,
-		b = 0,
-		c = 0.0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_BOOL)
+		b_.add_member("b", TYPE_INT)
+		b_.add_member("c", TYPE_FLOAT)
 
 class Bar extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = Vector2.ZERO,
-		b = 0.0,
-	}
-	
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_VECTOR2)
+		b_.add_member("b", TYPE_FLOAT)
+
 #endregion

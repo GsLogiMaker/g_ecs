@@ -3,6 +3,8 @@
 #define WORLD_H
 
 
+#include "godot_cpp/classes/script.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -33,6 +35,7 @@ namespace godot {
 
 		ecs_entity_t coerce_id(Variant);
 		void progress(double delta);
+		void register_script(Ref<Script>);
 		void start_rest_api();
 		static ecs_entity_t variant_type_to_id(Variant::Type);
 		static Variant::Type id_to_variant_type(ecs_entity_t);
@@ -101,6 +104,7 @@ namespace godot {
 
 	private:
 		ecs_world_t* _raw;
+		Dictionary registered_entities;
 
 		template<typename T>
 		static void gd_type_ctor(

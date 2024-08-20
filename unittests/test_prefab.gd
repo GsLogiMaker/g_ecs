@@ -52,23 +52,21 @@ func test_prefab():
 #region Components
 
 class Foo extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = false,
-		b = 0,
-		c = 0.0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_BOOL)
+		b_.add_member("b", TYPE_INT)
+		b_.add_member("c", TYPE_FLOAT)
 
 class Bar extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = Vector2.ZERO,
-		b = 0.0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_VECTOR2)
+		b_.add_member("b", TYPE_FLOAT)
 
 class MyPrefab extends GFRegisterableEntity:
 
 	static func _registered(world:GFWorld) -> void:
 		var p:= GFEntity.from(MyPrefab, world)
-		p.add_entity(Glecs.PREFAB)
+		p.add_entity("flecs/core/Prefab")
 		p.add_component(Foo, [true, 23, 2.33])
 		p.add_component(Bar, [Vector2(2, 1.1), 5.6])
 

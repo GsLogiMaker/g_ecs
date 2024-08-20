@@ -29,8 +29,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	godot::ClassDB::register_class<GFWorld>();
 
 	godot::ClassDB::register_abstract_class<GFEntity>();
-	godot::ClassDB::register_abstract_class<GFRegisterableEntity>();
-	godot::ClassDB::register_abstract_class<GFComponent>();
+	godot::ClassDB::register_class<GFRegisterableEntity>();
+	godot::ClassDB::register_class<GFComponent>();
 
 	godot::ClassDB::register_abstract_class<GFComponentBuilder>();
 	godot::ClassDB::register_abstract_class<GFQuery>();

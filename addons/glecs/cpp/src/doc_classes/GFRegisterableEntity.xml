@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GFRegisterableEntity" inherits="GFEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-	An abstract base class for types of entities that can be registered to a world via a [Script].
+		An abstract base class for types of entities that can be registered to a world via a [Script].
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="_register" qualifiers="virtual">
+			<return type="void" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Override this method to add customize logic when this script is registered to a world and associated with an ID.
+				[codeblock]
+				class_name EnemyTag extends GFRegisterableEntity
+
+				func _register(world:GFWorld) -&gt; void:
+				    set_name("EnemyTag")
+				[/codeblock]
+			</description>
+		</method>
+	</methods>
 </class>

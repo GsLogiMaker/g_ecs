@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-	A reference to an entity from a [GFWorld].
+		A reference to an entity from a [GFWorld].
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
-	<link title="More on Flecs Entities">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html</link>
+		<link title="More on Flecs Entities">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html</link>
 	</tutorials>
 	<methods>
 		<method name="add_component">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />
 			<description>
-			Adds component data to this reference's entity.
-			The component is identified by a [Variant] that is coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				Adds component data to this reference's entity.
+				The component is identified by a [Variant] that is coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="from" qualifiers="static">
@@ -22,37 +22,50 @@
 			<param index="0" name="id" type="Variant" />
 			<param index="1" name="world" type="GFWorld" default="null" />
 			<description>
-			Creates a reference to an entity from a [Variant] coerced to an ID.
-			If no world is specified, a default world is used.
-			To learn more about Variant coercion see [method GFWorld.coerce_id].
+				Creates a reference to an entity from a [Variant] coerced to an ID.
+				If no world is specified, a default world is used.
+				To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="get_component">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
 			<description>
-			Returns a reference to the component's data by the components's ID.
-			Returns [code]null[/code] if the ID is not attatached to this reference's entity or if the ID is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				Returns a reference to the component's data by the components's ID.
+				Returns [code]null[/code] if the ID is not attatached to this reference's entity or if the ID is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about Variant coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="get_id">
 			<return type="int" />
 			<description>
-			Returns the ID of this reference's entity.
+				Returns the ID of this reference's entity.
+			</description>
+		</method>
+		<method name="get_name">
+			<return type="String" />
+			<description>
+				Returns the name of this entity.
 			</description>
 		</method>
 		<method name="get_world">
 			<return type="GFWorld" />
 			<description>
-			Returns the world this reference's entity is from.
+				Returns the world this reference's entity is from.
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFEntity" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Sets the name of this entity.
 			</description>
 		</method>
 		<method name="spawn" qualifiers="static">
 			<return type="GFEntity" />
 			<param index="0" name="world" type="GFWorld" default="null" />
 			<description>
-			Creates a new entity and returns a reference to it.
-			If no world is specified, a default world is used.
+				Creates a new entity and returns a reference to it.
+				If no world is specified, a default world is used.
 			</description>
 		</method>
 	</methods>

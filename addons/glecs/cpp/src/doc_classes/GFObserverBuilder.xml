@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A builder for observers.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+		<link title="More on Flecs Observers">https://www.flecs.dev/flecs/md_docs_2ObserversManual</link>
+	</tutorials>
+	<methods>
+		<method name="for_each">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Builds the observer with a callback for iterating over each result.
+			</description>
+		</method>
+		<method name="set_event">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="event" type="Variant" />
+			<description>
+				Sets an event this observer listens for at the specified index.
+			</description>
+		</method>
+		<method name="set_events" qualifiers="const vararg">
+			<return type="GFObserverBuilder" />
+			<description>
+				Sets all events this observer listens for.
+			</description>
+		</method>
+	</methods>
+</class>

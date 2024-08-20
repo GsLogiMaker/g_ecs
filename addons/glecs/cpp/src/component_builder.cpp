@@ -53,6 +53,19 @@ int GFComponentBuilder::get_member_count() {
 	return member_names.size();
 }
 
+GFWorld* GFComponentBuilder::get_world() {
+	return world;
+}
+
+bool GFComponentBuilder::is_built() {
+	return built;
+}
+
+Ref<GFComponentBuilder> GFComponentBuilder::set_entity(Variant entity) {
+	component_desc.entity = get_world()->coerce_id(entity);
+	return Ref(this);
+}
+
 Ref<GFComponentBuilder> GFComponentBuilder::set_name(
 	String name_
 ) {
@@ -82,11 +95,18 @@ void GFComponentBuilder::build() {
 	ecs_world_t* raw = world->raw();
 
 	// Create component entity
-	ecs_entity_t component_id = ecs_new(raw);
+	ecs_entity_t component_id = 0;
+	if (component_desc.entity != 0) {
+		component_id = component_desc.entity;
+	} else {
+		component_id = ecs_new(raw);
+	}
 	component_desc.entity = component_id;
 	struct_desc.entity = component_id;
 
-	ecs_entity_t struct_id = ecs_struct_init(raw, &struct_desc);
+	ecs_struct_init(raw, &struct_desc);
+
+	assert(ecs_has_id(raw, component_id, ecs_id(Component)));
 
 	ecs_type_hooks_t hooks = {
 		.ctor = GFComponentBuilder::ctor,
@@ -113,6 +133,7 @@ void GFComponentBuilder::set_world(GFWorld* world_) {
 
 void GFComponentBuilder::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);
+	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFComponentBuilder::is_built);
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFComponentBuilder::set_name);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFComponentBuilder::build);
 

@@ -8,16 +8,15 @@ const CanvasItemC:= preload("./canvas_item.gd")
 const Position2DC:= preload("./position2d.gd")
 const Rotation2DC:= preload("./rotation2d.gd")
 
-static func _get_members() -> Dictionary: return {
-	scale = Vector2.ONE,
-}
+func _build(b: GFComponentBuilder) -> void:
+	b.add_member("scale", TYPE_VECTOR2)
 func get_scale() -> Vector2: return getm(&"scale")
 func set_scale(v:Vector2) -> void: return setm(&"scale", v)
 
 static func _registered(w:GFWorld):
 	# On Scale2DC set, update visual transform of CanvasItemC
-	w.observer_builder(Glecs.ON_SET) \
-		.with(CanvasItemC, Glecs.INOUT_MODE_FILTER) \
+	w.observer_builder("flecs/core/OnSet") \
+		.with(CanvasItemC).access_filer() \
 		.with(Self) \
 		.maybe_with(Position2DC) \
 		.maybe_with(Rotation2DC) \
