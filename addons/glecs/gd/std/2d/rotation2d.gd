@@ -13,7 +13,7 @@ func _build(b: GFComponentBuilder) -> void:
 func get_angle() -> float: return getm(&"angle")
 func set_angle(v:float) -> void: return setm(&"angle", v)
 
-static func _registered(w:GFWorld):
+func _register(w:GFWorld):
 	# On Rotation2DC set, update visual transform of CanvasItemC
 	w.observer_builder("flecs/core/OnSet") \
 		.with(CanvasItemC).access_filter() \

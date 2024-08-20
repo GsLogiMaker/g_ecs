@@ -17,7 +17,7 @@ func set_x(v:float) -> void: return setm(&"vec", Vector2(v, get_y()))
 func get_y() -> float: return getm(&"vec").y
 func set_y(v:float) -> void: return setm(&"vec", Vector2(get_x(), v))
 
-static func _registered(w:GFWorld):
+func _register(w:GFWorld):
 	# On Position2D set, update visual transform of CanvasItemC
 	w.observer_builder("flecs/core/OnSet") \
 		.with(CanvasItemC).access_filter() \

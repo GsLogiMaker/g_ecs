@@ -141,7 +141,7 @@ class RegistrationA extends GFComponent:
 	func set_result(v:float) -> void:
 		setm(&"result", v)
 
-	static func _registered(world: GFWorld):
+	func _register(world: GFWorld):
 		world.new_system() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
@@ -164,7 +164,7 @@ class RegistrationB extends GFComponent:
 	func set_result(v:float) -> void:
 		setm(&"result", v)
 
-	static func _registered(world:GFWorld):
+	func _register(world:GFWorld):
 		world.new_system() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \

@@ -13,7 +13,7 @@ func _build(b: GFComponentBuilder) -> void:
 func get_scale() -> Vector2: return getm(&"scale")
 func set_scale(v:Vector2) -> void: return setm(&"scale", v)
 
-static func _registered(w:GFWorld):
+func _register(w:GFWorld):
 	# On Scale2DC set, update visual transform of CanvasItemC
 	w.observer_builder("flecs/core/OnSet") \
 		.with(CanvasItemC).access_filer() \

@@ -64,7 +64,7 @@ class Bar extends GFComponent:
 
 class MyPrefab extends GFRegisterableEntity:
 
-	static func _registered(world:GFWorld) -> void:
+	func _register(world:GFWorld) -> void:
 		var p:= GFEntity.from(MyPrefab, world)
 		p.add_entity("flecs/core/Prefab")
 		p.add_component(Foo, [true, 23, 2.33])
