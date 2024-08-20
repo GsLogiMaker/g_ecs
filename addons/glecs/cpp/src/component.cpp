@@ -1,8 +1,11 @@
 
 #include "component.h"
+#include "component_builder.h"
+#include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/variant.hpp"
+#include "registerable_entity.h"
 #include "utils.h"
 
 #include <cstdint>
@@ -16,6 +19,23 @@ using namespace godot;
 GFComponent::GFComponent() {
 }
 GFComponent::~GFComponent() {
+}
+
+void GFComponent::_register_internal(
+	GFWorld* world
+) {
+	// Build component
+	Ref<GFComponentBuilder> b = world->component_builder();
+	if (GDVIRTUAL_IS_OVERRIDDEN(_build)) {
+		b->set_entity(get_id());
+		GDVIRTUAL_CALL(_build, b);
+		if (!b->is_built()) {
+			b->build();
+		}
+	}
+
+	// Call super method
+	GFRegisterableEntity::_register_internal(world);
 }
 
 void GFComponent::setm(String member, Variant value) {
@@ -327,6 +347,8 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 }
 
 void GFComponent::_bind_methods() {
+	GDVIRTUAL_BIND(_build, "b");
+
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
 

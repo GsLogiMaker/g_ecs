@@ -2,7 +2,9 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "component_builder.h"
 #include "entity.h"
+#include "godot_cpp/core/gdvirtual.gen.inc"
 #include "registerable_entity.h"
 
 #include <flecs.h>
@@ -25,6 +27,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
+
 		Variant getm(String);
 		void setm(String, Variant);
 
@@ -34,6 +38,8 @@ namespace godot {
 		// --------------------------------------
 		// --- Unexposed
 		// --------------------------------------
+
+		void _register_internal(GFWorld* world) override;
 
 		void set_source_id(ecs_entity_t id);
 

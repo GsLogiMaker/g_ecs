@@ -2,8 +2,11 @@
 #include "world.h"
 #include "entity.h"
 #include "component_builder.h"
+#include "godot_cpp/classes/script.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "observer_builder.h"
 #include "query_builder.h"
+#include "registerable_entity.h"
 #include "system_builder.h"
 #include "utils.h"
 
@@ -579,6 +582,22 @@ Ref<GFSystemBuilder> GFWorld::system_builder() {
 	return builder;
 }
 
+void GFWorld::register_script(Ref<Script> script) {
+	ecs_entity_t id = ecs_new(raw());
+	registered_entities[script] = id;
+
+	if (godot::ClassDB::is_parent_class(
+		script->get_instance_base_type(),
+		GFRegisterableEntity::get_class_static()
+	)) {
+		Ref<GFRegisterableEntity> obj = ClassDB::instantiate(
+			script->get_instance_base_type()
+		);
+		obj->set_script(script);
+		obj->call("register_in_world", this, id);
+	};
+}
+
 void GFWorld::start_rest_api() {
 	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);
 	EcsRest rest = (EcsRest)EcsRest();
@@ -826,6 +845,7 @@ void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("component_builder"), &GFWorld::component_builder);
 	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "observer_builder", &GFWorld::observer_builder_varargs);
 	godot::ClassDB::bind_method(D_METHOD("query_builder"), &GFWorld::query_builder);
+	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
 	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);

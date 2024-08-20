@@ -24,6 +24,9 @@ namespace godot {
 
 		Ref<GFComponentBuilder> add_member(String, Variant::Type);
 		int get_member_count();
+		GFWorld* get_world();
+		bool is_built();
+		Ref<GFComponentBuilder> set_entity(Variant);
 		Ref<GFComponentBuilder> set_name(String);
 		void build();
 
