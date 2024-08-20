@@ -40,9 +40,8 @@ func test_bools():
 #region Components
 
 class Bools extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = false,
-		b = false,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_BOOL)
+		b_.add_member("b", TYPE_BOOL)
 
 #endregion

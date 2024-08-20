@@ -88,18 +88,16 @@ func test_entity_created_in_singleton():
 #region Classes
 
 class Foo extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		value = 0.0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_FLOAT)
 	var value:float:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
 
 class Stringy extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		a = "",
-		b = "",
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_STRING)
+		b_.add_member("b", TYPE_STRING)
 	var a:String:
 		get: return getm(&"a")
 		set(v): setm(&"a", v)
@@ -108,17 +106,15 @@ class Stringy extends GFComponent:
 		set(v): setm(&"b", v)
 
 class Unadded extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		value = 0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("value", TYPE_INT)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
 
 class Unregistered extends GFComponent:
-	static func _get_members() -> Dictionary: return {
-		value = 0,
-	}
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_STRING)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
