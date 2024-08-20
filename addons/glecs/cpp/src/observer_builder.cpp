@@ -72,7 +72,7 @@ Ref<GFObserverBuilder> GFObserverBuilder::set_events_varargs(
 
 void GFObserverBuilder::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFObserverBuilder::for_each);
-	godot::ClassDB::bind_method(D_METHOD("set_event", "event"), &GFObserverBuilder::set_event);
+	godot::ClassDB::bind_method(D_METHOD("set_event", "index", "event"), &GFObserverBuilder::set_event);
 	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "set_events", &GFObserverBuilder::set_events_varargs);
 }
 

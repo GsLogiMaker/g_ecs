@@ -43,6 +43,5 @@ void GFRegisterableEntity::test_func() {}
 // --------------------------------------------------------
 
 void GFRegisterableEntity::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("register_in_world", "world", "id"), &GFRegisterableEntity::register_in_world);
 	GDVIRTUAL_BIND(_register, "world");
 }

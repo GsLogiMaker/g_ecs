@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-	An entity component system world.
+		An entity component system world.
 	</brief_description>
 	<description>
 	</description>
@@ -12,39 +12,50 @@
 			<return type="int" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
-			Coerces a [Variant] to an ID.
-			How Variants are coerced to IDs goes as follows: [br]- [int] : Used as ID directly. [br]- [String] : Treated as a path and looks up the entity at that path. [br]- [StringName] : Treated as a path and looks up the entity at that path. [br]- [NodePath] : Treated as a path and looks up the entity at that path. [br]- [Vector2i] : Used directly as a relationship pair. [br]- [GFEntity] (and subtypes) : Returns the ID of the entity being referenced. [br]- Everything else : Returns 0 and pushes an error.
+				Coerces a [Variant] to an ID.
+				How Variants are coerced to IDs goes as follows: [br]- [int] : Used as ID directly. [br]- [String] : Treated as a path and looks up the entity at that path. [br]- [StringName] : Treated as a path and looks up the entity at that path. [br]- [NodePath] : Treated as a path and looks up the entity at that path. [br]- [Vector2i] : Used directly as a relationship pair. [br]- [GFEntity] (and subtypes) : Returns the ID of the entity being referenced.[br]- [Script] : If the script extends [GFRegisterableEntity] and is registered with the [GFWorld], then returns the associated ID.[br]- Everything else : Returns [code]0[/code] and pushes an error.
 			</description>
 		</method>
 		<method name="component_builder">
 			<return type="GFComponentBuilder" />
 			<description>
-			Returns a new component builder.
+				Returns a new component builder.
+			</description>
+		</method>
+		<method name="observer_builder" qualifiers="const vararg">
+			<return type="GFObserverBuilder" />
+			<description>
 			</description>
 		</method>
 		<method name="progress">
 			<return type="void" />
 			<param index="0" name="delta" type="float" />
 			<description>
-			Progresses the world by the supplied amount of time.
+				Progresses the world by the supplied amount of time.
 			</description>
 		</method>
 		<method name="query_builder">
 			<return type="GFQueryBuilder" />
 			<description>
-			Returns a new query builder.
+				Returns a new query builder.
+			</description>
+		</method>
+		<method name="register_script">
+			<return type="void" />
+			<param index="0" name="script" type="Script" />
+			<description>
 			</description>
 		</method>
 		<method name="start_rest_api">
 			<return type="void" />
 			<description>
-			Starts the REST API server.
+				Starts the REST API server.
 			</description>
 		</method>
 		<method name="system_builder">
 			<return type="GFSystemBuilder" />
 			<description>
-			Returns a new system builder.
+				Returns a new system builder.
 			</description>
 		</method>
 	</methods>
