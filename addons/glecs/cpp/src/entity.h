@@ -45,7 +45,7 @@ namespace godot {
 		String get_name();
 
 		Ref<GFPair> pair(Variant second);
-		Ref<GFPair> pair_id(ecs_entity_t second_id);
+		ecs_entity_t pair_id(ecs_entity_t second_id);
 
 		// --------------------------------------
 		// --- Unexposed ---

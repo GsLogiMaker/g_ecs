@@ -36,7 +36,7 @@ namespace godot {
 
 		ecs_entity_t coerce_id(Variant);
 		Ref<GFPair> pair(Variant, Variant);
-		Ref<GFPair> pair_ids(ecs_entity_t, ecs_entity_t);
+		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
 		void progress(double delta);
 		void register_script(Ref<Script>);
 		void start_rest_api();

@@ -41,34 +41,20 @@ Ref<GFPair> GFPair::from_id(ecs_entity_t pair_id, GFWorld* world) {
 		// world_ = GlWorld::singleton();
 	}
 	Ref<GFPair> pair = memnew(GFPair(
-		ECS_PAIR_FIRST(pair_id),
-		ECS_PAIR_SECOND(pair_id),
+		pair_id,
 		world
 	));
-	return pair;
-}
-
-Ref<GFPair> GFPair::from_ids(ecs_entity_t first_id, ecs_entity_t second_id, GFWorld* world) {
-	if (ECS_IS_PAIR(first_id)) {
-		ERR(nullptr,
-			"Couldn't assemble pair\n",
-			"First ID is a pair, and pairs cannot contain pairs recursively"
-		);
-	}
-	if (ECS_IS_PAIR(second_id)) {
-		ERR(nullptr,
-			"Couldn't assemble pair\n",
-			"Second ID is a pair, and pairs cannot contain pairs recursively"
-		);
-	}
-	Ref<GFPair> pair = memnew(GFPair(first_id, second_id, world));
 	if (!pair->is_alive()) {
 		ERR(nullptr,
-			"Couldn't create pair reference\n",
+			"Couldn't create pair\n",
 			"World/ID is not valid/alive"
 		);
 	}
 	return pair;
+}
+
+Ref<GFPair> GFPair::from_ids(ecs_entity_t first_id, ecs_entity_t second_id, GFWorld* world) {
+	return from_id(world->pair_ids(first_id, second_id), world);
 }
 
 Ref<GFEntity> GFPair::first() {

@@ -20,6 +20,9 @@ namespace godot {
 		GFPair(ecs_entity_t first, ecs_entity_t second, GFWorld* world):
 			GFEntity(ecs_make_pair(first, second), world)
 			{}
+		GFPair(ecs_entity_t pair_id, GFWorld* world):
+			GFEntity(pair_id, world)
+			{}
 		~GFPair();
 
 		// --------------------------------------

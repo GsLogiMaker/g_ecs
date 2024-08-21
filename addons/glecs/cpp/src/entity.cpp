@@ -151,11 +151,10 @@ Ref<GFEntity> GFEntity::set_name(String name_) {
 }
 
 Ref<GFPair> GFEntity::pair(Variant second) {
-	return pair_id(world->coerce_id(second));
+	return GFPair::from_id(pair_id(world->coerce_id(second)), world);
 }
-Ref<GFPair> GFEntity::pair_id(ecs_entity_t second) {
-	Ref<GFPair> pair = memnew(GFPair(get_id(), second,  world));
-	return pair;
+ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
+	return world->pair_ids(get_id(), second);
 }
 
 // ----------------------------------------------

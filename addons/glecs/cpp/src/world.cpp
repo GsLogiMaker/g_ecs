@@ -530,11 +530,23 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 }
 
 Ref<GFPair> GFWorld::pair(Variant first, Variant second) {
-	return pair_ids(coerce_id(first), coerce_id(second));
+	return GFPair::from_ids(coerce_id(first), coerce_id(second), this);
 }
 
-Ref<GFPair> GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) {
-	return GFPair::from_ids(first, second, this);
+ecs_entity_t GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) {
+	if (ECS_IS_PAIR(first)) {
+		ERR(0,
+			"Could not pair IDs\n",
+			"First ID is a pair, and pairs can not contain pairs recursively"
+		);
+	}
+	if (ECS_IS_PAIR(second)) {
+		ERR(0,
+			"Could not pair IDs\n",
+			"First ID is a pair, and pairs can not contain pairs recursively"
+		);
+	}
+	return ecs_make_pair(first, second);
 }
 
 void GFWorld::progress(double delta) {
