@@ -24,7 +24,7 @@ func test_prefab():
 			b.b = PI
 			)
 
-	var entity:= GFEntity.new(world)
+	var entity:= GFEntity.spawn(world)
 	entity.add_entity(world.pair("flecs/core/IsA", MyPrefab))
 
 	# Test inhereted componets exist entity

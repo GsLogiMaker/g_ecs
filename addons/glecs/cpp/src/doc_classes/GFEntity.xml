@@ -74,7 +74,7 @@
 				Returns [code]true[/code] if the ID of this entity is a pair.
 			</description>
 		</method>
-		<method name="new" qualifiers="static">
+		<method name="spawn" qualifiers="static">
 			<return type="GFEntity" />
 			<param index="0" name="world" type="GFWorld" default="null" />
 			<description>

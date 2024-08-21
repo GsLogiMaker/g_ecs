@@ -14,18 +14,18 @@ func after_all():
 func test_bools():
 	# TODO: Query for relations
 	world.new_system().for_each(func(_delta): pass)
-	var apple:= GFEntity.new(world) \
+	var apple:= GFEntity.spawn(world) \
 		.set_name("Apple")
 
-	GFEntity.new(world).set_name("Eats")
+	GFEntity.spawn(world).set_name("Eats")
 
-	var man:= GFEntity.new(world) \
+	var man:= GFEntity.spawn(world) \
 		.set_name("Man") \
 		.add_relation("Eats", apple)
 
-	var cow:= GFEntity.new(world) \
+	var cow:= GFEntity.spawn(world) \
 		.set_name("Cow")
-	var grass:= GFEntity.new(world) \
+	var grass:= GFEntity.spawn(world) \
 		.set_name("Grass")
 	cow.add_relation("Eats", grass)
 

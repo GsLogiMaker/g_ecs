@@ -10,7 +10,7 @@ func after_all():
 	world.free()
 
 func test_add_entity():
-	var _entity:= GFEntity.new(world) \
+	var _entity:= GFEntity.spawn(world) \
 		.set_name("Test")
 
 	# Can't assert, but should be fine as long as it doesn't crash
@@ -19,8 +19,8 @@ func test_add_entity():
 
 func test_pairs_are_alive():
 	var w:= GFWorld.new()
-	var first:= GFEntity.new(w)
-	var second:= GFEntity.new(w)
+	var first:= GFEntity.spawn(w)
+	var second:= GFEntity.spawn(w)
 	assert_eq(first.is_valid(), true)
 	assert_eq(second.is_valid(), true)
 
@@ -32,12 +32,12 @@ func test_pairs_are_alive():
 func test_world_deletion():
 	var w:= GFWorld.new()
 
-	var e:= GFEntity.new(w) \
+	var e:= GFEntity.spawn(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:Foo = e.get_component(Foo)
 
-	var e2:= GFEntity.new(w) \
+	var e2:= GFEntity.spawn(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo2:Foo = e2.get_component(Foo)
@@ -74,7 +74,7 @@ func test_simple_system():
 			foo.setm(&"vec", 2.67)
 			)
 
-	var entity:= GFEntity.new(world) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 

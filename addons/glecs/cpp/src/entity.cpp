@@ -19,7 +19,7 @@ GFEntity::GFEntity() {
 GFEntity::~GFEntity() {
 }
 
-Ref<GFEntity> GFEntity::new_(GFWorld* world) {
+Ref<GFEntity> GFEntity::spawn(GFWorld* world) {
 	return from(ecs_new(world->raw()), world);
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
@@ -165,7 +165,7 @@ void GFEntity::set_id(ecs_entity_t value) { id = value; }
 void GFEntity::set_world(GFWorld* value) { world = value; }
 
 void GFEntity::_bind_methods() {
-	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("new", "world"), &GFEntity::new_, nullptr);
+	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("spawn", "world"), &GFEntity::spawn, nullptr);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "entity", "world"), &GFEntity::from, nullptr);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from_id", "id", "world"), &GFEntity::from_id, nullptr);
 

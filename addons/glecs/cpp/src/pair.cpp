@@ -17,7 +17,7 @@ GFPair::GFPair() {
 GFPair::~GFPair() {
 }
 
-Ref<GFPair> GFPair::new_() {
+Ref<GFPair> GFPair::spawn() {
 	ERR(nullptr,
 		"Couldn't instantiate entity\n",
 		"Pairs cannot be instantiated. Use \"from\" instead"
@@ -71,7 +71,7 @@ ecs_entity_t GFPair::second_id() {
 }
 
 void GFPair::_bind_methods() {
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new"), &GFPair::new_);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("spawn"), &GFPair::spawn);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "first", "second", "world"), &GFPair::from, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "pair_id", "world"), &GFPair::from_id, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_ids", "first", "second", "world"), &GFPair::from_ids, nullptr);

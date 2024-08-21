@@ -12,7 +12,7 @@ func after_all():
 #region Tests
 
 func test_get_nonexistant_property():
-	var entity:= GFEntity.new(world) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:Foo = entity.get_component(Foo)
@@ -21,7 +21,7 @@ func test_get_nonexistant_property():
 
 
 func test_new_entity_with_unregistered_component():
-	var _entity:= GFEntity.new(world) \
+	var _entity:= GFEntity.spawn(world) \
 		.add_component(Unregistered) \
 		.set_name("Test")
 

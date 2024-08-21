@@ -23,7 +23,7 @@
 				[/codeblock]
 				The [Script] can then be used to reference the built component via coercion.
 				[codeblock]
-				var particle:= GFEntity.new()
+				var particle:= GFEntity.spawn()
 				particle.add_component(Velocity2)
 
 				var vel:Velocity2 = particle.get_component(Velocity2)
@@ -38,7 +38,7 @@
 				Returns a [GFEntity] reference to the entity this component's data is from.
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
-				var entity = GFEntity.new()
+				var entity = GFEntity.spawn()
 				entity.add_component(Vector2C)
 				var vec2 = entity.get_component(Vector2C)
 
@@ -52,7 +52,7 @@
 				Returns the ID of the entity that this component's data is from.
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
-				var entity = GFEntity.new()
+				var entity = GFEntity.spawn()
 				entity.add_component(Vector2C)
 				var vec2 = entity.get_component(Vector2C)
 
@@ -66,7 +66,7 @@
 			<description>
 				Returns the value of a component's member
 				[codeblock]
-				var entity = GFEntity.new()
+				var entity = GFEntity.spawn()
 				entity.add_component("glecs/meta/Vector2")
 				var vec2 = entity.get_component("glecs/meta/Vector2")
 
@@ -81,7 +81,7 @@
 			<description>
 				Sets the value of a component's member
 				[codeblock]
-				var entity = GFEntity.new()
+				var entity = GFEntity.spawn()
 				entity.add_component("glecs/meta/Vector2")
 				var vec2 = entity.get_component("glecs/meta/Vector2")
 

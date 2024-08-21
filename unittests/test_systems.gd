@@ -19,7 +19,7 @@ func test_stuff():
 			boo.b = boo.a
 			)
 
-	var e:= GFEntity.new(world) \
+	var e:= GFEntity.spawn(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 	var bools:Bools = e.get_component(Bools)
