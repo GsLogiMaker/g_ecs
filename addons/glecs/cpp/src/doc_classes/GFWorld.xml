@@ -27,6 +27,23 @@
 			<description>
 			</description>
 		</method>
+		<method name="pair">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Creates and returns a pair from two [Variants]s coerced to IDs.
+				To learn more about Variant coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="pair_ids">
+			<return type="int" />
+			<param index="0" name="first" type="int" />
+			<param index="1" name="second" type="int" />
+			<description>
+				Creates and returns a pair from two IDs.
+			</description>
+		</method>
 		<method name="progress">
 			<return type="void" />
 			<param index="0" name="delta" type="float" />

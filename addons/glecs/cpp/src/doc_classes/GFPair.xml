@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFPair" inherits="GFEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A reference to a pair of entity IDs.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+		<link title="More on Flecs Pairs">https://www.flecs.dev/flecs/md_docs_2Relationships</link>
+	</tutorials>
+	<methods>
+		<method name="first">
+			<return type="GFEntity" />
+			<description>
+				Returns the first part of this pair as an entity.
+			</description>
+		</method>
+		<method name="first_id">
+			<return type="int" />
+			<description>
+				Returns the first part of this pair as an ID.
+			</description>
+		</method>
+		<method name="from" qualifiers="static">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<param index="2" name="world" type="GFWorld" default="null" />
+			<description>
+				Returns a pair from two entity parts.
+			</description>
+		</method>
+		<method name="from_id" qualifiers="static">
+			<return type="GFPair" />
+			<param index="0" name="pair_id" type="int" />
+			<param index="1" name="world" type="GFWorld" default="null" />
+			<description>
+				Returns a pair from a pair ID.
+			</description>
+		</method>
+		<method name="from_ids" qualifiers="static">
+			<return type="GFPair" />
+			<param index="0" name="first" type="int" />
+			<param index="1" name="second" type="int" />
+			<param index="2" name="world" type="GFWorld" default="null" />
+			<description>
+				Returns a pair from two ID parts.
+			</description>
+		</method>
+		<method name="new" qualifiers="static">
+			<return type="GFPair" />
+			<description>
+				Do not call. Pairs can not be instantiated. Overrides [method GFEntity.new].
+			</description>
+		</method>
+		<method name="second">
+			<return type="GFEntity" />
+			<description>
+				Returns the second part of this pair as an entity.
+			</description>
+		</method>
+		<method name="second_id">
+			<return type="int" />
+			<description>
+				Returns the second part of this pair as an ID.
+			</description>
+		</method>
+	</methods>
+</class>

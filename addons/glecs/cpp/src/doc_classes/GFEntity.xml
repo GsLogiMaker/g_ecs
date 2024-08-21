@@ -19,12 +19,21 @@
 		</method>
 		<method name="from" qualifiers="static">
 			<return type="GFEntity" />
-			<param index="0" name="id" type="Variant" />
+			<param index="0" name="entity" type="Variant" />
 			<param index="1" name="world" type="GFWorld" default="null" />
 			<description>
 				Creates a reference to an entity from a [Variant] coerced to an ID.
 				If no world is specified, a default world is used.
 				To learn more about Variant coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="from_id" qualifiers="static">
+			<return type="GFEntity" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="world" type="GFWorld" default="null" />
+			<description>
+				Creates a reference to an entity from an ID.
+				If no world is specified, a default world is used.
 			</description>
 		</method>
 		<method name="get_component">
@@ -38,7 +47,7 @@
 		<method name="get_id">
 			<return type="int" />
 			<description>
-				Returns the ID of this reference's entity.
+				Returns the ID of this entity.
 			</description>
 		</method>
 		<method name="get_name">
@@ -50,7 +59,41 @@
 		<method name="get_world">
 			<return type="GFWorld" />
 			<description>
-				Returns the world this reference's entity is from.
+				Returns the world this entity is from.
+			</description>
+		</method>
+		<method name="is_alive">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this entity is still alive.
+			</description>
+		</method>
+		<method name="is_pair">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the ID of this entity is a pair.
+			</description>
+		</method>
+		<method name="new" qualifiers="static">
+			<return type="GFEntity" />
+			<param index="0" name="world" type="GFWorld" default="null" />
+			<description>
+				Creates a new entity ID and returns a it.
+				If no world is specified, a default world is used.
+			</description>
+		</method>
+		<method name="pair">
+			<return type="GFPair" />
+			<param index="0" name="second" type="Variant" />
+			<description>
+				Creates a [GFPair] where this entity is the first part, and [param second] as the second part.
+			</description>
+		</method>
+		<method name="pair_id">
+			<return type="int" />
+			<param index="0" name="second_id" type="int" />
+			<description>
+				Creates a [GFPair] where this entity is the first part, and [param second_id] as the second part.
 			</description>
 		</method>
 		<method name="set_name">
@@ -58,14 +101,6 @@
 			<param index="0" name="name" type="String" />
 			<description>
 				Sets the name of this entity.
-			</description>
-		</method>
-		<method name="spawn" qualifiers="static">
-			<return type="GFEntity" />
-			<param index="0" name="world" type="GFWorld" default="null" />
-			<description>
-				Creates a new entity and returns a reference to it.
-				If no world is specified, a default world is used.
 			</description>
 		</method>
 	</methods>
