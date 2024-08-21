@@ -25,6 +25,25 @@
 		<method name="observer_builder" qualifiers="const vararg">
 			<return type="GFObserverBuilder" />
 			<description>
+				Returns a new observer builder.
+				Arguments are coerced to IDs and set as the events the observer listens for. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="pair">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Creates and returns a pair from two [Variant]s coerced to IDs.
+				To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="pair_ids">
+			<return type="int" />
+			<param index="0" name="first" type="int" />
+			<param index="1" name="second" type="int" />
+			<description>
+				Creates and returns a pair ID from two IDs.
 			</description>
 		</method>
 		<method name="progress">
@@ -44,6 +63,8 @@
 			<return type="void" />
 			<param index="0" name="script" type="Script" />
 			<description>
+				Registers a [Script] that derives from [GFRegisterableEntity].
+				A [Script], once registered, gets an entity ID created and associated with it. This allows the [Script] to be coerced to the associated ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="start_rest_api">

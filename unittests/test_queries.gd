@@ -18,15 +18,15 @@ func test_optional_terms():
 	w.new_pipeline("2")
 	w.new_pipeline("3")
 
-	var empty:= GFEntity.spawn(w) \
+	var empty:= GFEntity.new(w) \
 		.set_name("Empty")
-	var just_ints:= GFEntity.spawn(w) \
+	var just_ints:= GFEntity.new(w) \
 		.set_name("JustInts") \
 		.add_component(Ints)
-	var just_bools:= GFEntity.spawn(w) \
+	var just_bools:= GFEntity.new(w) \
 		.set_name("JustBools") \
 		.add_component(Bools)
-	var all:= GFEntity.spawn(w) \
+	var all:= GFEntity.new(w) \
 		.set_name("All") \
 		.add_component(Ints) \
 		.add_component(Bools)
@@ -88,9 +88,9 @@ func test_or_operation_terms():
 				#data.bools += 1
 			)
 
-	GFEntity.spawn(w).add_component(Ints)
-	GFEntity.spawn(w).add_component(Bools)
-	GFEntity.spawn(w).add_component(Ints).add_component(Bools)
+	GFEntity.new(w).add_component(Ints)
+	GFEntity.new(w).add_component(Bools)
+	GFEntity.new(w).add_component(Ints).add_component(Bools)
 
 	w.run_pipeline("test", 0.0)
 

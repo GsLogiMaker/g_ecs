@@ -12,7 +12,7 @@ func _build(b: GFComponentBuilder) -> void:
 func get_texture() -> Texture2D: return getm(&"texture")
 func set_texture(v:Texture2D) -> void: return setm(&"texture", v)
 
-static func _registered(w:GFWorld):
+func _register(w:GFWorld):
 	# On Render-Texture set with CanvasItemComponent
 	w.observer_builder("flecs/core/OnSet") \
 		.with(w.pair(Render, Self)) \

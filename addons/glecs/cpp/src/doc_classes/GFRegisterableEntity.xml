@@ -12,7 +12,7 @@
 			<return type="void" />
 			<param index="0" name="world" type="GFWorld" />
 			<description>
-				Override this method to add customize logic when this script is registered to a world and associated with an ID.
+				Override this method to add customize logic that runs when this [Script] is registered with a world.
 				[codeblock]
 				class_name EnemyTag extends GFRegisterableEntity
 

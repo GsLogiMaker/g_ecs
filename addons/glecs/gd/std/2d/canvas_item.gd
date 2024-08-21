@@ -32,7 +32,7 @@ func update_transform_c(pos:Position2DC, rot:Rotation2DC, scale:Scale2DC) -> voi
 		Transform2D(angle, size, 0, loc)
 		)
 
-static func _registered(w:GFWorld):
+func _register(w:GFWorld):
 	# On add
 	w.observer_builder("flecs/core/OnAdd") \
 		.with(Self) \
