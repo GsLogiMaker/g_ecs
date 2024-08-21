@@ -4,6 +4,7 @@
 // needed here because entity.h does not include
 // component.h, but uses forward declaration instead
 #include "component.h"
+#include "pair.h"
 
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -18,31 +19,26 @@ GFEntity::GFEntity() {
 GFEntity::~GFEntity() {
 }
 
-Ref<GFEntity> GFEntity::spawn(GFWorld* world) {
-	GFWorld* world_ = world;
-	if (world_ == nullptr) {
-		// world_ = GlWorld::singleton();
-	}
-
-	Ref<GFEntity> e = Variant(memnew(GFEntity(
-		ecs_new(world_->raw()),
-		world_
-	)));
-	return e;
+Ref<GFEntity> GFEntity::new_(GFWorld* world) {
+	return from(ecs_new(world->raw()), world);
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
+	return from_id(world->coerce_id(entity), world);
+}
+Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	GFWorld* world_ = world;
 	if (world_ == nullptr) {
 		// world_ = GlWorld::singleton();
 	}
-
 	Ref<GFEntity> e = memnew(GFEntity(
-		world_->coerce_id(entity),
+		id,
 		world_
 	));
-
 	if (!e->is_alive()) {
-		return Variant(nullptr);
+		ERR(nullptr,
+			"Couldn't create entity reference\n",
+			"World/ID is not valid/alive"
+		);
 	}
 
 	return e;
@@ -80,10 +76,31 @@ Ref<GFComponent> GFEntity::get_component(Variant component) {
 
 ecs_entity_t GFEntity::get_id() { return id; }
 GFWorld* GFEntity::get_world() { return world; }
+
 bool GFEntity::is_alive() {
-	return world != nullptr
-		&& ObjectDB::get_instance(world->get_instance_id())
-		&& ecs_is_alive(world->raw(), get_id());
+	if (world == nullptr) {
+		return false;
+	}
+	if (!ObjectDB::get_instance(world->get_instance_id())) {
+		return false;
+	}
+	if (is_pair()) {
+		if (!ecs_is_alive(world->raw(), ECS_PAIR_FIRST(get_id()))) {
+			return false;
+		}
+		if (!ecs_is_alive(world->raw(), ECS_PAIR_SECOND(get_id()))) {
+			return false;
+		}
+	} else {
+		if (!ecs_is_alive(world->raw(), get_id())) {
+			return false;
+		}
+	}
+
+	return true;
+}
+bool GFEntity::is_pair() {
+	return ecs_id_is_pair(get_id());
 }
 
 String GFEntity::get_name() {
@@ -133,6 +150,14 @@ Ref<GFEntity> GFEntity::set_name(String name_) {
 	return Ref(this);
 }
 
+Ref<GFPair> GFEntity::pair(Variant second) {
+	return pair_id(world->coerce_id(second));
+}
+Ref<GFPair> GFEntity::pair_id(ecs_entity_t second) {
+	Ref<GFPair> pair = memnew(GFPair(get_id(), second,  world));
+	return pair;
+}
+
 // ----------------------------------------------
 // --- Unexposed ---
 // ----------------------------------------------
@@ -141,8 +166,9 @@ void GFEntity::set_id(ecs_entity_t value) { id = value; }
 void GFEntity::set_world(GFWorld* value) { world = value; }
 
 void GFEntity::_bind_methods() {
-	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("spawn", "world"), &GFEntity::spawn, nullptr);
-	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "id", "world"), &GFEntity::from, nullptr);
+	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("new", "world"), &GFEntity::new_, nullptr);
+	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "entity", "world"), &GFEntity::from, nullptr);
+	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from_id", "id", "world"), &GFEntity::from_id, nullptr);
 
 	godot::ClassDB::bind_method(D_METHOD("add_component", "component"), &GFEntity::add_component);
 	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
@@ -150,5 +176,12 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
 	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
+
+	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
+	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
+
+	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
+	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
+
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
 }

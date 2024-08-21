@@ -13,7 +13,7 @@ func after_all():
 #region Tests
 
 func test_auto_register():
-	GFEntity.spawn(world) \
+	GFEntity.new(world) \
 		.add_component(load("res://components/a_component.gd"))
 
 	assert_eq(

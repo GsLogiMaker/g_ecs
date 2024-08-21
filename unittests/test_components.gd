@@ -12,7 +12,7 @@ func after_all():
 
 
 func test_add_entity():
-	var _entity:= GFEntity.spawn(world)
+	var _entity:= GFEntity.new(world)
 
 	# Can't assert, but should be fine as long as it doesn't crash
 	assert_null(null)
@@ -20,11 +20,11 @@ func test_add_entity():
 
 func test_world_deletion():
 	var w:= GFWorld.new()
-	var e:= GFEntity.spawn(w) \
+	var e:= GFEntity.new(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:= e.get_component(Foo)
-	var e2:= GFEntity.spawn(w) \
+	var e2:= GFEntity.new(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo2:= e2.get_component(Foo)
@@ -49,7 +49,7 @@ func test_world_deletion():
 func test_registration():
 	var w:= GFWorld.new()
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new(world) \
 		.add_component(RegistrationA) \
 		.add_component(RegistrationB) \
 		.set_name("Test")
@@ -74,7 +74,7 @@ func test_simple_system():
 		foo.set_value(Vector2(2, 5))
 		)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 
@@ -86,7 +86,7 @@ func test_simple_system():
 func test_components_in_relationships():
 	var w:= GFWorld.new()
 
-	var e:= GFEntity.spawn(w)
+	var e:= GFEntity.new(w)
 	var foo:= e.add_relation(Targets, Foo) \
 		.get_component(w.pair(Targets, Foo)) as Foo
 

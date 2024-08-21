@@ -6,6 +6,7 @@
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "observer_builder.h"
+#include "pair.h"
 #include "query.h"
 #include "query_builder.h"
 #include "query_iterator.h"
@@ -29,6 +30,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	godot::ClassDB::register_class<GFWorld>();
 
 	godot::ClassDB::register_abstract_class<GFEntity>();
+	godot::ClassDB::register_abstract_class<GFPair>();
 	godot::ClassDB::register_class<GFRegisterableEntity>();
 	godot::ClassDB::register_class<GFComponent>();
 

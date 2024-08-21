@@ -3,8 +3,8 @@
 #include "entity.h"
 #include "component_builder.h"
 #include "godot_cpp/classes/script.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "observer_builder.h"
+#include "pair.h"
 #include "query_builder.h"
 #include "registerable_entity.h"
 #include "system_builder.h"
@@ -529,6 +529,14 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 	);
 }
 
+Ref<GFPair> GFWorld::pair(Variant first, Variant second) {
+	return pair_ids(coerce_id(first), coerce_id(second));
+}
+
+Ref<GFPair> GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) {
+	return GFPair::from_ids(first, second, this);
+}
+
 void GFWorld::progress(double delta) {
 	ecs_progress(raw(), delta);
 }
@@ -849,6 +857,8 @@ void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
+	godot::ClassDB::bind_method(D_METHOD("pair", "first", "second"), &GFWorld::pair);
+	godot::ClassDB::bind_method(D_METHOD("pair_ids", "first", "second"), &GFWorld::pair_ids);
 	godot::ClassDB::bind_method(D_METHOD("progress", "delta"), &GFWorld::progress);
 }
 
