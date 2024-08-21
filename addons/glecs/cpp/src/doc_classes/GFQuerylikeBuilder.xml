@@ -20,7 +20,7 @@
 			<param index="0" name="component" type="Variant" />
 			<description>
 				Adds an optional term to the query.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="or_with">
@@ -28,7 +28,7 @@
 			<param index="0" name="component" type="Variant" />
 			<description>
 				Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="with">
@@ -36,7 +36,7 @@
 			<param index="0" name="component" type="Variant" />
 			<description>
 				Adds a term to the query.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="without">
@@ -44,7 +44,7 @@
 			<param index="0" name="component" type="Variant" />
 			<description>
 				Adds a negative term to the query.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about Variant coercion see [method GFWorld.coerce_id].
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 	</methods>

@@ -29,7 +29,7 @@
 				var vel:Velocity2 = particle.get_component(Velocity2)
 				vel.setm("value", Vector2(2.0, 1.0))
 				[/codeblock]
-				To learn more about Variant coercion see [method GFWorld.coerce_id].
+				To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>
 		<method name="get_source_entity">

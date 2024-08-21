@@ -50,7 +50,7 @@
 		<method name="new" qualifiers="static">
 			<return type="GFPair" />
 			<description>
-				Do not call. Pairs can not be instantiated. Overrides [method GFEntity.new].
+				Do not call, pairs can not be instantiated. Use [method GFPair.from] instead. Overrides [method GFEntity.new].
 			</description>
 		</method>
 		<method name="second">
