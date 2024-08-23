@@ -4,6 +4,14 @@
 		Builder for a new component type.
 	</brief_description>
 	<description>
+		This example shows the creation of a [i]Jump[/i] component:
+		[codeblock]
+		var world:= GFWorld.new()
+		world.component_builder() \
+			.set_name("Jump") \
+			.add_member("jump_velocity", TYPE_FLOAT) \
+			.build()
+		[/codeblock]
 	</description>
 	<tutorials>
 		<link title="More on Flecs Components">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html#components-1</link>

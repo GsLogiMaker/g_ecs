@@ -4,6 +4,26 @@
 		A builder for observers.
 	</brief_description>
 	<description>
+		This example shows the creation of an observer that is run whenever either the [i]Run[/i] or [i]Jump[/i] component is added to an entity and that entity has both the [i]Run[/i] and [i]Jump[/i] components:
+		[codeblock]
+		var world:= GFWorld.new()
+		world.observer_builder("flecs/core/OnAdd") \
+			.with("Run") \
+			.with("Jump") \
+			.for_each(func(run:GFComponent, jump:GFComponent):
+				pass
+				)
+		[/codeblock]
+		This example shows the creation of an observer that is run when the [i]Run[/i] component is added to an entity and that has the [i]Jump[/i] component:
+		[codeblock]
+		var world:= GFWorld.new()
+		world.observer_builder("flecs/core/OnAdd") \
+			.with("Run") \
+			.with("Jump").access_filter() \
+			.for_each(func(run:GFComponent, jump:GFComponent):
+				pass
+				)
+		[/codeblock]
 	</description>
 	<tutorials>
 		<link title="More on Flecs Observers">https://www.flecs.dev/flecs/md_docs_2ObserversManual</link>
