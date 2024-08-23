@@ -4,6 +4,16 @@
 		An iterator over queried entities.
 	</brief_description>
 	<description>
+		The example below shows iteration of a query over entities with the Vector2 component:
+		[codeblock]
+		var query:GFQuery = GFGlobalWorld.query_builder() \
+			.with("glecs/meta/Vector2") \
+			.build()
+
+		for terms:Array[GFComponent] in query.iterate():
+			var vec2_c:= terms[0]
+			print("X: %s, Y %s" % [vec2_c.getm("x"), vec2_c.getm("y")])
+		[/codeblock]
 	</description>
 	<tutorials>
 		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>

@@ -4,6 +4,16 @@
 		A builder for systems.
 	</brief_description>
 	<description>
+		This example shows the creation of a system that runs over entities with the [i]Run[/i] and [i]Jump[/i] components:
+		[codeblock]
+		var world:= GFWorld.new()
+		world.observer_builder() \
+			.with("Run") \
+			.with("Jump") \
+			.for_each(func(run:GFComponent, jump:GFComponent):
+				pass
+				)
+		[/codeblock]
 	</description>
 	<tutorials>
 		<link title="More on Flecs Systems">https://www.flecs.dev/flecs/md_docs_2Systems</link>

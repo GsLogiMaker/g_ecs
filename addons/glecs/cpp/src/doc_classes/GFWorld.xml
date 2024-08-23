@@ -70,12 +70,23 @@
 			<description>
 				Returns a new observer builder.
 				Arguments to this method specify the events (coerced from IDs) that this observer listens for. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				This example shows the creation of an observer that is run whenever the [i]Jump[/i] component is added to an entity:
+				This example shows the creation of an observer that is run whenever either the [i]Run[/i] or [i]Jump[/i] component is added to an entity and that entity has both the [i]Run[/i] and [i]Jump[/i] components:
 				[codeblock]
 				var world:= GFWorld.new()
 				world.observer_builder("flecs/core/OnAdd") \
+				    .with("Run") \
 				    .with("Jump") \
-				    .for_each(func(jump:GFComponent):
+				    .for_each(func(run:GFComponent, jump:GFComponent):
+				        pass
+				        )
+				[/codeblock]
+				This example shows the creation of an observer that is run when the [i]Run[/i] component is added to an entity and that has the [i]Jump[/i] component:
+				[codeblock]
+				var world:= GFWorld.new()
+				world.observer_builder("flecs/core/OnAdd") \
+				    .with("Run") \
+				    .with("Jump").access_filter() \
+				    .for_each(func(run:GFComponent, jump:GFComponent):
 				        pass
 				        )
 				[/codeblock]
@@ -129,10 +140,10 @@
 			<return type="GFQueryBuilder" />
 			<description>
 				Returns a new query builder.
-				This example shows the creation of a query for entities with the [i]Jump[/i] component:
+				This example shows the creation of a query over entities with the [i]Jump[/i] component:
 				[codeblock]
 				var world:= GFWorld.new()
-				world.query_builder() \
+				var query:GFQuery = world.query_builder() \
 				    .with("Jump") \
 				    .build()
 				[/codeblock]
@@ -179,12 +190,13 @@
 			<return type="GFSystemBuilder" />
 			<description>
 				Returns a new system builder.
-				This example shows the creation of a system that runs for entities with the [i]Jump[/i] component:
+				This example shows the creation of a system that runs over entities with the [i]Run[/i] and [i]Jump[/i] components:
 				[codeblock]
 				var world:= GFWorld.new()
 				world.observer_builder() \
+				    .with("Run") \
 				    .with("Jump") \
-				    .for_each(func(jump:GFComponent):
+				    .for_each(func(run:GFComponent, jump:GFComponent):
 				        pass
 				        )
 				[/codeblock]
