@@ -346,12 +346,19 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
 
+Ref<GFRegisterableEntity> GFComponent::new_internal() {
+	return Ref(memnew(GFComponent));
+}
+
 void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
+	godot::ClassDB::bind_method(D_METHOD("_register_internal", "world"), &GFComponent::_register_internal);
 
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
+
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);
 }

@@ -23,25 +23,24 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 // --------------------------------------------------------
 
 void GFRegisterableEntity::register_in_world(
-	GFWorld* world,
-	ecs_entity_t with_id
-) {
-	set_id(with_id);
-	_register_internal(world);
-}
-
-void GFRegisterableEntity::_register_internal(
 	GFWorld* world
 ) {
+	call("_register_internal", world);
 	GDVIRTUAL_CALL(_register, world);
 }
-
-void GFRegisterableEntity::test_func() {}
 
 // --------------------------------------------------------
 // --- Protected ---
 // --------------------------------------------------------
 
+void GFRegisterableEntity::_register_internal(GFWorld*) {}
+
+Ref<GFRegisterableEntity> GFRegisterableEntity::new_internal() {
+	return Ref(memnew(GFRegisterableEntity));
+}
+
 void GFRegisterableEntity::_bind_methods() {
 	GDVIRTUAL_BIND(_register, "world");
+	godot::ClassDB::bind_method(D_METHOD("_register_internal", "world"), &GFRegisterableEntity::_register_internal);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFRegisterableEntity::new_internal);
 }

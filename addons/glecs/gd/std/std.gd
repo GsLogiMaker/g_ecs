@@ -1,5 +1,5 @@
 
-extends GlecsModule
+extends GFModule
 
 #region 2D
 const CanvasItemC:= preload("./2d/canvas_item.gd")

@@ -25,16 +25,16 @@ namespace godot {
 		// --------------------------------------------------------
 
 		GDVIRTUAL1(_register, GFWorld*)
-		virtual void _register_internal(GFWorld*);
-		void test_func();
+		static Ref<GFRegisterableEntity> new_internal();
 
 		// --------------------------------------------------------
 		// --- Unexposed ---
 		// --------------------------------------------------------
 
-		void register_in_world(GFWorld* world, ecs_entity_t id);
+		void register_in_world(GFWorld* world);
 
 	protected:
+		void _register_internal(GFWorld*);
 		static void _bind_methods();
 
 	private:
