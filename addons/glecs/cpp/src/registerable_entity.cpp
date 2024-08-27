@@ -25,15 +25,26 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 void GFRegisterableEntity::register_in_world(
 	GFWorld* world
 ) {
-	call("_register_internal", world);
-	GDVIRTUAL_CALL(_register, world);
+	call_internal_register();
+	call_user_register();
+}
+
+void GFRegisterableEntity::call_internal_register() {
+	this->call("_register_internal");
+}
+
+void GFRegisterableEntity::call_user_register() {
+	this->call("_register_user");
 }
 
 // --------------------------------------------------------
 // --- Protected ---
 // --------------------------------------------------------
 
-void GFRegisterableEntity::_register_internal(GFWorld*) {}
+void GFRegisterableEntity::_register_internal() {}
+void GFRegisterableEntity::_register_user() {
+	GDVIRTUAL_CALL(_register, get_world());
+}
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::new_internal() {
 	return Ref(memnew(GFRegisterableEntity));
@@ -41,6 +52,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::new_internal() {
 
 void GFRegisterableEntity::_bind_methods() {
 	GDVIRTUAL_BIND(_register, "world");
-	godot::ClassDB::bind_method(D_METHOD("_register_internal", "world"), &GFRegisterableEntity::_register_internal);
+	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFRegisterableEntity::_register_internal);
+	godot::ClassDB::bind_method(D_METHOD("_register_user"), &GFRegisterableEntity::_register_user);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFRegisterableEntity::new_internal);
 }

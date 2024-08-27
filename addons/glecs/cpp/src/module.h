@@ -36,11 +36,28 @@ namespace godot {
 		// --------------------------------------
 
 	protected:
-		void _register_internal(GFWorld*);
+		void _register_internal();
+		void _register_user();
 		static void _bind_methods();
 
 
 	private:
+		bool variant_is_registerable_script(Variant constant) {
+			Ref<Script> const_script = constant;
+			if (const_script == nullptr) {
+				// Constant is not a script, skip it
+				return false;
+			}
+			if (!ClassDB::is_parent_class(
+				const_script->get_instance_base_type(),
+				GFRegisterableEntity::get_class_static()
+			)) {
+				// Constant is not a registerable entity script, skip it
+				return false;
+			}
+			return true;
+		}
+
 	};
 
 }

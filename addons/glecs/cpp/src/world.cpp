@@ -515,10 +515,21 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 				return ((GFEntity*) obj)->get_id();
 			}
 			if (obj->is_class(Script::get_class_static())) {
+				Ref<Script> script = value;
+				if (!ClassDB::is_parent_class(
+					script->get_instance_base_type(),
+					GFRegisterableEntity::get_class_static()
+				)) {
+					ERR(0,
+						"Failed to coerce Script to ID\n",
+						"Script ", script, " does not derive from ",
+						GFRegisterableEntity::get_class_static()
+					);
+				}
 				if (!registered_entities.has(obj)) {
 					ERR(0,
 						"Failed to coerce Script to ID\n",
-						"The script ", obj, " has not been registered with world ", this
+						"The script ", script, " has not been registered with world ", this
 					);
 				}
 				return registered_entities.get(obj, 0);
@@ -625,6 +636,70 @@ Ref<GFEntity> GFWorld::register_script(Ref<Script> script) {
 }
 
 ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
+	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
+	ett->call_user_register();
+	return ett->get_id();
+}
+
+Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(Ref<Script> script) {
+	if (!godot::ClassDB::is_parent_class(
+		script->get_instance_base_type(),
+		GFRegisterableEntity::get_class_static()
+	)) {
+		ERR(0,
+			"Could not register script\n",
+			"Script, ", script, ", does not inherit from ", GFRegisterableEntity::get_class_static()
+		);
+	}
+
+	if (registered_entities.has(script)) {
+		return registered_entities[script];
+	}
+
+	ecs_entity_t id = ecs_new(raw());
+	registered_entities[script] = id;
+	if (ecs_get_scope(raw()) != 0) {
+		ecs_add_id(raw(), id, ecs_childof(ecs_get_scope(raw())));
+	}
+
+	Ref<GFRegisterableEntity> reg_ett = ClassDB::instantiate(
+		script->get_instance_base_type()
+	);
+	reg_ett->set_id(id);
+	reg_ett->set_world(this);
+	reg_ett->set_script(script);
+
+	reg_ett->call_internal_register();
+
+	// Set name of registered entity
+	if (ecs_get_name(raw(), id) == nullptr) {
+		// Set name to script's global name if available, but fall back to script path.
+		String name = script->get_global_name();
+		if (name.length() == 0) {
+			// Global name not found, get name from path
+			String path = script->get_path();
+			if (path.length() != 0) {
+				PackedStringArray path_parts = path.get_basename().split("/");
+				name = path_parts[path_parts.size()-1];
+
+				if (!ecs_has_id(raw(), id, EcsModule)) {
+					// Capitalize if entity is not a module
+					name = Utils::into_pascal_case(name);
+				} else {
+					name = name.to_snake_case();
+				}
+			}
+		}
+		if (name.length() != 0) {
+			// Found suitable name, set in entity
+			ecs_set_name(raw(), id, name.utf8());
+		}
+	}
+
+	return reg_ett;
+}
+
+Ref<GFRegisterableEntity> GFWorld::register_new_script_id(Ref<Script> script) {
 	if (!godot::ClassDB::is_parent_class(
 		script->get_instance_base_type(),
 		GFRegisterableEntity::get_class_static()
@@ -657,35 +732,10 @@ ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
 	reg_ett->set_world(this);
 	reg_ett->set_script(script);
 
-	reg_ett->register_in_world(this);
-
-	// Set name of registered entity
-	if (ecs_get_name(raw(), id) == nullptr) {
-		// Set name to script's global name if available, but fall back to script path.
-		String name = script->get_global_name();
-		if (name.length() == 0) {
-			// Global name not found, get name from path
-			String path = script->get_path();
-			if (path.length() != 0) {
-				PackedStringArray path_parts = path.get_basename().split("/");
-				name = path_parts[path_parts.size()-1];
-
-				if (!ecs_has_id(raw(), id, EcsModule)) {
-					// Capitalize if entity is not a module
-					name = Utils::into_pascal_case(name);
-				} else {
-					name = name.to_snake_case();
-				}
-			}
-		}
-		if (name.length() != 0) {
-			// Found suitable name, set in entity
-			ecs_set_name(raw(), id, name.utf8());
-		}
-	}
-
-	return id;
+	return reg_ett;
 }
+
+
 
 void GFWorld::start_rest_api() {
 	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);

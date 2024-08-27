@@ -1,6 +1,5 @@
 
 #include "module.h"
-#include "godot_cpp/classes/ref_counted.hpp"
 #include "registerable_entity.h"
 #include "utils.h"
 #include <stdint.h>
@@ -62,52 +61,75 @@ Ref<GFModule> GFModule::from_id(ecs_entity_t module_id, GFWorld* world_) {
 	return ett;
 }
 
-void GFModule::_register_internal(GFWorld* world) {
-	// Setup module with Flecs
+void GFModule::_register_internal() {
 	ecs_component_desc_t desc = {
 		.entity = get_id(),
 	};
 	ecs_module_init(
-		world->raw(),
+		get_world()->raw(),
 		"TODOSomeName",
 		&desc
 	);
 
-	// Register module's items
+	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
+	ecs_set_scope(get_world()->raw(), get_id());
+
 	Ref<Script> script = get_script();
 	Dictionary constants = script->get_script_constant_map();
 	Array keys = constants.keys();
+
 	for (int i=0; i != keys.size(); i++) {
 		Variant const_val = constants[keys[i]];
-
+		if (!variant_is_registerable_script(const_val)) {
+			continue;
+		}
 		Ref<Script> const_script = const_val;
-		if (const_script == nullptr) {
-			// Constant is not a script, skip it
-			continue;
-		}
 
-		if (!ClassDB::is_parent_class(
-			const_script->get_instance_base_type(),
-			GFRegisterableEntity::get_class_static()
-		)) {
-			// Constant is not a registerable entity script, skip it
-			continue;
-		}
+		// Initialize
+		Ref<GFRegisterableEntity> ett = get_world()->register_script_id_no_user_call(const_script);
 
-		// Register entity
-		ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
-		ecs_set_scope(get_world()->raw(), get_id());
-		ecs_entity_t e_id = world->register_script_id(const_script);
-		ecs_set_scope(get_world()->raw(), old_scope);
-
-		if (ecs_get_name(get_world()->raw(), e_id) == nullptr) {
+		// Maybe set name of registered module
+		if (ecs_get_name(get_world()->raw(), ett->get_id()) == nullptr) {
 			// Entity has no name, give it the name of the constant's key
 			String name = keys[i];
-			ecs_set_name(get_world()->raw(), e_id, name.utf8());
+			ecs_set_name(get_world()->raw(), ett->get_id(), name.utf8());
 		}
 	}
 
-	GFRegisterableEntity::_register_internal(world);
+	ecs_set_scope(get_world()->raw(), old_scope);
+
+	GFRegisterableEntity::_register_internal();
+}
+
+void GFModule::_register_user() {
+	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
+	ecs_set_scope(get_world()->raw(), get_id());
+
+	Ref<Script> script = get_script();
+	Dictionary constants = script->get_script_constant_map();
+	Array keys = constants.keys();
+
+	for (int i=0; i != keys.size(); i++) {
+		Variant const_val = constants[keys[i]];
+		if (!variant_is_registerable_script(const_val)) {
+			continue;
+		}
+		Ref<Script> const_script = const_val;
+
+		// Initialize sub-item
+		Ref<GFRegisterableEntity> ett = ClassDB::instantiate(
+			const_script->get_instance_base_type()
+		);
+		ett->set_id(get_world()->coerce_id(const_script));
+		ett->set_world(get_world());
+		ett->set_script(const_script);
+
+		ett->call_user_register();
+	}
+
+	ecs_set_scope(get_world()->raw(), old_scope);
+
+	GFRegisterableEntity::_register_user();
 }
 
 Ref<GFRegisterableEntity> GFModule::new_internal() {
@@ -118,6 +140,7 @@ void GFModule::_bind_methods() {
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("spawn", "name", "world"), &GFModule::spawn, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "module", "world"), &GFModule::from, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "module_id", "world"), &GFModule::from_id, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("_register_internal", "world"), &GFModule::_register_internal);
+	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFModule::_register_internal);
+	godot::ClassDB::bind_method(D_METHOD("_register_user"), &GFModule::_register_user);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), GFModule::new_internal);
 }

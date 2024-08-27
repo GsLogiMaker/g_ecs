@@ -32,9 +32,14 @@ namespace godot {
 		// --------------------------------------------------------
 
 		void register_in_world(GFWorld* world);
+		// Runs internal register setup code
+		void call_internal_register();
+		// Runs user register setup code
+		void call_user_register();
 
 	protected:
-		void _register_internal(GFWorld*);
+		void _register_internal();
+		void _register_user();
 		static void _bind_methods();
 
 	private:

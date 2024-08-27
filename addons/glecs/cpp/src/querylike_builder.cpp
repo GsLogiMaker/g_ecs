@@ -32,6 +32,31 @@ bool GFQuerylikeBuilder::is_built() {
 	return built;
 }
 
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_default() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutDefault;
+	return Ref(this);
+}
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_filter() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutFilter;
+	return Ref(this);
+}
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_in() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsIn;
+	return Ref(this);
+}
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_inout() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOut;
+	return Ref(this);
+}
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_none() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutNone;
+	return Ref(this);
+}
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
+	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsOut;
+	return Ref(this);
+}
+
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
 
@@ -122,6 +147,14 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 
 void GFQuerylikeBuilder::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFQuerylikeBuilder::is_built);
+
+	godot::ClassDB::bind_method(D_METHOD("access_default"), &GFQuerylikeBuilder::access_default);
+	godot::ClassDB::bind_method(D_METHOD("access_filter"), &GFQuerylikeBuilder::access_filter);
+	godot::ClassDB::bind_method(D_METHOD("access_in"), &GFQuerylikeBuilder::access_in);
+	godot::ClassDB::bind_method(D_METHOD("access_inout"), &GFQuerylikeBuilder::access_inout);
+	godot::ClassDB::bind_method(D_METHOD("access_none"), &GFQuerylikeBuilder::access_none);
+	godot::ClassDB::bind_method(D_METHOD("access_out"), &GFQuerylikeBuilder::access_out);
+
 	godot::ClassDB::bind_method(D_METHOD("with", "component"), &GFQuerylikeBuilder::with);
 	godot::ClassDB::bind_method(D_METHOD("maybe_with", "component"), &GFQuerylikeBuilder::maybe_with);
 	godot::ClassDB::bind_method(D_METHOD("or_with", "component"), &GFQuerylikeBuilder::or_with);

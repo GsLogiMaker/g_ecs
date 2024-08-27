@@ -39,7 +39,7 @@ namespace godot {
 		// --- Unexposed
 		// --------------------------------------
 
-		void _register_internal(GFWorld* world);
+		void _register_internal();
 
 		void set_source_id(ecs_entity_t id);
 
