@@ -54,3 +54,28 @@ EntityResult Utils::variant_type_to_id(Variant::Type type) {
 			);
 	}
 }
+
+String Utils::into_pascal_case(String str) {
+	String new_str = "";
+	bool next_upper = true;
+	for (int i=0; i != str.length(); i++) {
+		char32_t character = str[i];
+		if (!isalpha(character) && !(character >= '0' && character <= '9')) {
+			//Character is not letter or number, don't add to new
+			next_upper = true;
+			continue;
+		}
+		if (next_upper) {
+			// Add uppercase letter
+			new_str += toupper(character);
+			next_upper = false;
+		} else {
+			// Add normal letter
+			new_str += tolower(character);
+		}
+		if (!isalpha(character)) {
+			next_upper = true;
+		}
+	}
+	return new_str;
+}

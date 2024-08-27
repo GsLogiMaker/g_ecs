@@ -20,23 +20,23 @@ GFEntity::~GFEntity() {
 }
 
 Ref<GFEntity> GFEntity::spawn(GFWorld* world) {
-	return from(ecs_new(world->raw()), world);
+	return from_id(ecs_new(world->raw()), world);
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
 	return from_id(world->coerce_id(entity), world);
 }
-Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
-	GFWorld* world_ = world;
-	if (world_ == nullptr) {
-		// world_ = GlWorld::singleton();
+Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world_) {
+	GFWorld* world = world_;
+	if (world == nullptr) {
+		// world = GlWorld::singleton();
 	}
 	Ref<GFEntity> e = memnew(GFEntity(
 		id,
-		world_
+		world
 	));
 	if (!e->is_alive()) {
 		ERR(nullptr,
-			"Couldn't create entity reference\n",
+			"Could not instantiate entity from ID\n",
 			"World/ID is not valid/alive"
 		);
 	}

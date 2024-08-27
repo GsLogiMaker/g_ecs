@@ -30,15 +30,16 @@ Ref<GFPair> GFPair::from(Variant first, Variant second, GFWorld* world) {
 	return from_ids(first_id, second_id, world);
 }
 
-Ref<GFPair> GFPair::from_id(ecs_entity_t pair_id, GFWorld* world) {
+Ref<GFPair> GFPair::from_id(ecs_entity_t pair_id, GFWorld* world_) {
+	GFWorld* world = world_;
+	if (world == nullptr) {
+		// world = GlWorld::singleton();
+	}
 	if (!ECS_IS_PAIR(pair_id)) {
 		ERR(nullptr,
-			"Couldn't create pair reference\n",
+			"Could not instantiate pair from ID\n",
 			"ID is not a pair"
 		);
-	}
-	if (world == nullptr) {
-		// world_ = GlWorld::singleton();
 	}
 	Ref<GFPair> pair = memnew(GFPair(
 		pair_id,
@@ -46,7 +47,7 @@ Ref<GFPair> GFPair::from_id(ecs_entity_t pair_id, GFWorld* world) {
 	));
 	if (!pair->is_alive()) {
 		ERR(nullptr,
-			"Couldn't create pair\n",
+			"Could not instantiate pair from ID\n",
 			"World/ID is not valid/alive"
 		);
 	}

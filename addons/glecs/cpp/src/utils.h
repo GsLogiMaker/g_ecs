@@ -2,6 +2,8 @@
 #ifndef GLECS_UTILS_H
 #define GLECS_UTILS_H
 
+#include "godot_cpp/variant/string.hpp"
+#include <cctype>
 #include <flecs.h>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -86,6 +88,8 @@ namespace godot {
 
 		/// Converts a Variant::Type to an Entity ID
 		static EntityResult variant_type_to_id(Variant::Type type);
+
+		static String into_pascal_case(String str);
 
 	};
 

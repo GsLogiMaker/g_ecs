@@ -21,11 +21,9 @@ GFComponent::GFComponent() {
 GFComponent::~GFComponent() {
 }
 
-void GFComponent::_register_internal(
-	GFWorld* world
-) {
+void GFComponent::_register_internal() {
 	// Build component
-	Ref<GFComponentBuilder> b = world->component_builder();
+	Ref<GFComponentBuilder> b = get_world()->component_builder();
 	if (GDVIRTUAL_IS_OVERRIDDEN(_build)) {
 		b->set_entity(get_id());
 		GDVIRTUAL_CALL(_build, b);
@@ -35,7 +33,7 @@ void GFComponent::_register_internal(
 	}
 
 	// Call super method
-	GFRegisterableEntity::_register_internal(world);
+	GFRegisterableEntity::_register_internal();
 }
 
 void GFComponent::setm(String member, Variant value) {
@@ -346,12 +344,19 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
 
+Ref<GFRegisterableEntity> GFComponent::new_internal() {
+	return Ref(memnew(GFComponent));
+}
+
 void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
+	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
+
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);
 }

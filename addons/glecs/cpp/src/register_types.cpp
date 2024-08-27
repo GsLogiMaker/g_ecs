@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
+#include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
 #include "query.h"
@@ -33,6 +34,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	godot::ClassDB::register_abstract_class<GFPair>();
 	godot::ClassDB::register_class<GFRegisterableEntity>();
 	godot::ClassDB::register_class<GFComponent>();
+	godot::ClassDB::register_class<GFModule>();
 
 	godot::ClassDB::register_abstract_class<GFComponentBuilder>();
 	godot::ClassDB::register_abstract_class<GFQuery>();

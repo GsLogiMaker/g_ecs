@@ -58,8 +58,8 @@ namespace godot {
 		static void _bind_methods();
 
 	private:
-		ecs_entity_t id;
-		GFWorld* world;
+		ecs_entity_t id {0};
+		GFWorld* world {0};
 	};
 
 }

@@ -34,6 +34,12 @@ namespace godot {
 		int get_term_count();
 		GFWorld* get_world();
 		bool is_built();
+		Ref<GFQuerylikeBuilder> access_default();
+		Ref<GFQuerylikeBuilder> access_filter();
+		Ref<GFQuerylikeBuilder> access_in();
+		Ref<GFQuerylikeBuilder> access_inout();
+		Ref<GFQuerylikeBuilder> access_none();
+		Ref<GFQuerylikeBuilder> access_out();
 		Ref<GFQuerylikeBuilder> with(Variant component);
 		Ref<GFQuerylikeBuilder> maybe_with(Variant component);
 		Ref<GFQuerylikeBuilder> or_with(Variant component);

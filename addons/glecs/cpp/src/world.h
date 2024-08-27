@@ -16,6 +16,8 @@ namespace godot {
 	class GFObserverBuilder;
 	class GFQueryBuilder;
 	class GFSystemBuilder;
+	class GFEntity;
+	class GFRegisterableEntity;
 	class GFPair;
 
 	class GFWorld : public Object {
@@ -38,7 +40,12 @@ namespace godot {
 		Ref<GFPair> pair(Variant, Variant);
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
 		void progress(double delta);
-		void register_script(Ref<Script>);
+
+		Ref<GFEntity> register_script(Ref<Script>);
+		ecs_entity_t register_script_id(Ref<Script>);
+		Ref<GFRegisterableEntity> register_new_script_id(Ref<Script> script);
+		Ref<GFRegisterableEntity> register_script_id_no_user_call(Ref<Script> script);
+
 		void start_rest_api();
 		static ecs_entity_t variant_type_to_id(Variant::Type);
 		static Variant::Type id_to_variant_type(ecs_entity_t);

@@ -39,9 +39,11 @@ namespace godot {
 		// --- Unexposed
 		// --------------------------------------
 
-		void _register_internal(GFWorld* world) override;
+		void _register_internal();
 
 		void set_source_id(ecs_entity_t id);
+
+		static Ref<GFRegisterableEntity> new_internal();
 
 	protected:
 		static void _bind_methods();
@@ -56,7 +58,7 @@ namespace godot {
 
 
 	private:
-		ecs_entity_t source_entity_id;
+		ecs_entity_t source_entity_id {0};
 	};
 
 }
