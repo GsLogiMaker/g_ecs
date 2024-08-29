@@ -29,11 +29,17 @@ namespace godot {
 
 		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
 
+		static Ref<GFComponent> spawn(GFWorld*);
+		static Ref<GFComponent> from(Variant c, Variant e, GFWorld*);
+		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
+
 		Variant getm(String);
 		void setm(String, Variant);
 
 		Ref<GFEntity> get_source_entity();
 		ecs_entity_t get_source_id();
+
+		bool is_alive();
 
 		// --------------------------------------
 		// --- Unexposed

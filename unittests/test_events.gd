@@ -124,7 +124,7 @@ func test_on_add_event_with_objects():
 #region Components
 
 class Ints extends GFComponent:
-	static func _build(b:GFComponentBuilder) -> Dictionary:
+	func _build(b:GFComponentBuilder) -> void:
 		b.add_member("a", TYPE_INT)
 		b.add_member("b", TYPE_INT)
 	var a:int:
@@ -135,7 +135,7 @@ class Ints extends GFComponent:
 		set(v): setm(&"b", v)
 
 class Textures extends GFComponent:
-	static func _build(b:GFComponentBuilder) -> Dictionary:
+	func _build(b:GFComponentBuilder) -> void:
 		b.add_member("a", TYPE_OBJECT)
 		b.add_member("b", TYPE_OBJECT)
 	var a:Texture2D:

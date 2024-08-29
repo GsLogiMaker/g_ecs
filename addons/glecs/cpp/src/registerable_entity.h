@@ -31,6 +31,9 @@ namespace godot {
 		// --- Unexposed ---
 		// --------------------------------------------------------
 
+		static Ref<GFRegisterableEntity> from_id(ecs_entity_t id, GFWorld* world);
+		static Ref<GFRegisterableEntity> from_script(Ref<Script>, GFWorld*);
+
 		void register_in_world(GFWorld* world);
 		// Runs internal register setup code
 		void call_internal_register();

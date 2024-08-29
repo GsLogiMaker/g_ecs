@@ -7,7 +7,6 @@
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/packed_string_array.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
-#include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
 #include "query_builder.h"
@@ -520,19 +519,31 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 					script->get_instance_base_type(),
 					GFRegisterableEntity::get_class_static()
 				)) {
+					// Script does not inherit registerable entity
 					ERR(0,
 						"Failed to coerce Script to ID\n",
 						"Script ", script, " does not derive from ",
 						GFRegisterableEntity::get_class_static()
 					);
 				}
-				if (!registered_entities.has(obj)) {
+				if (!registered_entity_ids.has(script)) {
+					// Script is not registered
+					return register_script_id(script);
+					// TODO: implement option to turn off auto registering
+
+					// ERR(0,
+					// 	"Failed to coerce Script to ID\n",
+					// 	"The script ", script, " has not been registered with world ", this
+					// );
+				}
+				ecs_entity_t id = registered_entity_ids.get(obj, 0);
+				if (id == 0) {
 					ERR(0,
 						"Failed to coerce Script to ID\n",
-						"The script ", script, " has not been registered with world ", this
+						"Script ", script, " is not registerd in world"
 					);
 				}
-				return registered_entities.get(obj, 0);
+				return id;
 			}
 			ERR(0,
 				"Failed to coerce Object to ID\n",
@@ -582,12 +593,6 @@ void GFWorld::progress(double delta) {
 	ecs_progress(raw(), delta);
 }
 
-GFWorld* GFWorld::singleton() {
-	Object* singleton = Engine::get_singleton()
-		->get_singleton(GFWorld::SINGLETON_NAME);
-	return Object::cast_to<GFWorld>(singleton);
-}
-
 Ref<GFComponentBuilder> GFWorld::component_builder() {
 	Ref<GFComponentBuilder> builder = memnew(GFComponentBuilder);
 	builder->set_world(this);
@@ -631,8 +636,10 @@ Ref<GFSystemBuilder> GFWorld::system_builder() {
 	return builder;
 }
 
-Ref<GFEntity> GFWorld::register_script(Ref<Script> script) {
-	return GFEntity::from_id(register_script_id(script), this);
+Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
+	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
+	ett->call_user_register();
+	return ett;
 }
 
 ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
@@ -646,28 +653,32 @@ Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(Ref<Script> s
 		script->get_instance_base_type(),
 		GFRegisterableEntity::get_class_static()
 	)) {
-		ERR(0,
+		ERR(nullptr,
 			"Could not register script\n",
-			"Script, ", script, ", does not inherit from ", GFRegisterableEntity::get_class_static()
+			"Script, ", script, ", does not inherit from ",
+			GFRegisterableEntity::get_class_static()
 		);
 	}
 
-	if (registered_entities.has(script)) {
-		return registered_entities[script];
+	if (registered_entity_ids.has(script)) {
+		Ref<GFRegisterableEntity> reg_ett
+			= GFRegisterableEntity::from_script(script, this);
+		ERR(reg_ett,
+			"Could not register script\n",
+			"Script ", script, " is already registered"
+		);
+		return reg_ett;
 	}
 
 	ecs_entity_t id = ecs_new(raw());
-	registered_entities[script] = id;
+	registered_entity_ids[script] = id;
+	registered_entity_scripts[id] = script;
 	if (ecs_get_scope(raw()) != 0) {
 		ecs_add_id(raw(), id, ecs_childof(ecs_get_scope(raw())));
 	}
 
-	Ref<GFRegisterableEntity> reg_ett = ClassDB::instantiate(
-		script->get_instance_base_type()
-	);
-	reg_ett->set_id(id);
-	reg_ett->set_world(this);
-	reg_ett->set_script(script);
+	Ref<GFRegisterableEntity> reg_ett
+		= GFRegisterableEntity::from_script(script, this);
 
 	reg_ett->call_internal_register();
 
@@ -699,44 +710,6 @@ Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(Ref<Script> s
 	return reg_ett;
 }
 
-Ref<GFRegisterableEntity> GFWorld::register_new_script_id(Ref<Script> script) {
-	if (!godot::ClassDB::is_parent_class(
-		script->get_instance_base_type(),
-		GFRegisterableEntity::get_class_static()
-	)) {
-		ERR(0,
-			"Could not register script\n",
-			"Script, ", script, ", does not inherit from ", GFRegisterableEntity::get_class_static()
-		);
-	}
-
-	if (registered_entities.has(script)) {
-		return registered_entities[script];
-	}
-
-	ecs_entity_t id = ecs_new(raw());
-	registered_entities[script] = id;
-	if (ecs_get_scope(raw()) != 0) {
-		ecs_add_id(raw(), id, ecs_childof(ecs_get_scope(raw())));
-	}
-
-	Ref<GFRegisterableEntity> reg_ett = ClassDB::instantiate(script->get_instance_base_type());
-	if (reg_ett == nullptr) {
-		// This condition should be impossible
-		ERR(0,
-			"Failed to register script\n",
-			"Could not create object to attach script to"
-		);
-	}
-	reg_ett->set_id(id);
-	reg_ett->set_world(this);
-	reg_ett->set_script(script);
-
-	return reg_ett;
-}
-
-
-
 void GFWorld::start_rest_api() {
 	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);
 	EcsRest rest = (EcsRest)EcsRest();
@@ -764,6 +737,32 @@ Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
 // ----------------------------------------------
 // --- Unexposed ---
 // ----------------------------------------------
+
+ecs_entity_t GFWorld::get_registered_id(Ref<Script> script) {
+	return registered_entity_ids.get(script, 0);
+}
+
+Ref<Script> GFWorld::get_registered_script(ecs_entity_t id) {
+	return registered_entity_scripts.get(id, nullptr);
+}
+
+GFWorld* GFWorld::world_or_singleton(GFWorld* world) {
+	if (
+		world == nullptr
+		|| !UtilityFunctions::is_instance_id_valid(
+			world->get_instance_id()
+		)
+	) {
+		return GFWorld::singleton();
+	}
+	return world;
+}
+
+GFWorld* GFWorld::singleton() {
+	Object* singleton = Engine::get_singleton()
+		->get_singleton(GFWorld::SINGLETON_NAME);
+	return Object::cast_to<GFWorld>(singleton);
+}
 
 void GFWorld::copy_component_ptr(
 	const void* src_ptr,

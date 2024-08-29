@@ -48,16 +48,16 @@ func test_new_entity_with_unregistered_component():
 func test_creating_entity_by_new():
 	# Test that an entity is invalidated by being deleted
 	var e:= GFEntity.spawn(world)
-	assert_eq(e.is_valid(), true)
+	assert_eq(e.is_alive(), true)
 	e.delete()
-	assert_eq(e.is_valid(), false)
+	assert_eq(e.is_alive(), false)
 
 	# Test that an entity is invalidated by its world being deleted
 	var w:= GFWorld.new()
 	var e2:= GFEntity.spawn(w)
-	assert_eq(e2.is_valid(), true)
+	assert_eq(e2.is_alive(), true)
 	w.free()
-	assert_eq(e2.is_valid(), false)
+	assert_eq(e2.is_alive(), false)
 
 func test_entity_from():
 	var id:= 0
@@ -73,10 +73,10 @@ func test_entity_from():
 
 func test_entity_created_in_singleton():
 	var e:= GFEntity.spawn()
-	assert_eq(e.is_valid(), true)
+	assert_eq(e.is_alive(), true)
 
 	var e2:= GFEntity.spawn(GFGlobalWorld)
-	assert_eq(e2.is_valid(), true)
+	assert_eq(e2.is_alive(), true)
 
 	assert_eq(e.get_world(), e2.get_world())
 
@@ -89,7 +89,7 @@ func test_entity_created_in_singleton():
 
 class Foo extends GFComponent:
 	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("a", TYPE_FLOAT)
+		b_.add_member("value", TYPE_FLOAT)
 	var value:float:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
@@ -114,7 +114,7 @@ class Unadded extends GFComponent:
 
 class Unregistered extends GFComponent:
 	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("a", TYPE_STRING)
+		b_.add_member("value", TYPE_STRING)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)

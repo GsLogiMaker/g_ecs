@@ -1,6 +1,7 @@
 
 #include "component.h"
 #include "component_builder.h"
+#include "entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
@@ -8,6 +9,7 @@
 #include "registerable_entity.h"
 #include "utils.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <stdint.h>
 #include <flecs.h>
@@ -19,6 +21,28 @@ using namespace godot;
 GFComponent::GFComponent() {
 }
 GFComponent::~GFComponent() {
+}
+
+Ref<GFComponent> GFComponent::spawn(GFWorld* world_) {
+	ERR(NULL,
+		"Could not instantiate ", get_class_static(), "\n",
+		"Use ", get_class_static(), ".from or ",
+		get_class_static(), ".from_id instead."
+	);
+}
+Ref<GFComponent> GFComponent::from(Variant comp, Variant entity, GFWorld* world) {
+	return from_id(world->coerce_id(comp), world->coerce_id(entity), world);
+}
+Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GFWorld* world) {
+	if (!ecs_has_id(world->raw(), comp, ecs_id(EcsComponent))) {
+		ERR(nullptr,
+			"Could not instantiate ", get_class_static(), "\n",
+			"ID is not a component"
+		);
+	}
+	Ref<GFComponent> component = from_id_template<GFComponent>(comp, world);
+	component->set_source_id(entity);
+	return component;
 }
 
 void GFComponent::_register_internal() {
@@ -340,6 +364,12 @@ ecs_entity_t GFComponent::get_source_id() {
 	return source_entity_id;
 }
 
+bool GFComponent::is_alive() {
+	GFEntity* entity = this;
+	return entity->is_alive()
+		&& ecs_has_id(get_world()->raw(), get_source_id(), get_id());
+}
+
 void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
@@ -352,11 +382,16 @@ void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 
+	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("spawn", "world"), &GFComponent::spawn, nullptr);
+	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from", "component", "world"), &GFComponent::from, nullptr);
+	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from_id", "id", "world"), &GFComponent::from_id, nullptr);
+
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
+	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFComponent::is_alive);
 
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);
 }

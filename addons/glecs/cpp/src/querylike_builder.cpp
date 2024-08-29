@@ -183,17 +183,17 @@ QueryIterationContext::QueryIterationContext(
 		switch (terms[i].oper) {
 			case ecs_oper_kind_t::EcsAnd:
 			case ecs_oper_kind_t::EcsOptional:
-				comp_ref_per_term.append(Variant(Ref(memnew(
-					GFComponent(0, terms[i].id, get_world())
-				))));
+				comp_ref_per_term.append(
+					GFComponent::from_id(terms[i].id, 0, get_world())
+				);
 				comp_ref_args.append(Variant());
 				break;
 			case ecs_oper_kind_t::EcsOr:
-				comp_ref_per_term.append(Variant(Ref(memnew(
-					GFComponent(0, terms[i].id, get_world())
-				))));
+				comp_ref_per_term.append(
+					GFComponent::from_id(terms[i].id, 0, get_world())
+				);
 				// OR terms must always be followed by another term, so
-				// there's guarentied to be another term after this one
+				// there's guaranteed to be another term after this one
 				if (terms[i+1].oper == ecs_oper_kind_t::EcsNot) {
 					// NOT terms don't add args for term, so add
 					// it here instead
@@ -219,11 +219,10 @@ GFWorld* QueryIterationContext::get_world() {
 
 void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity_index) {
 	for (int comp_i=0; comp_i != comp_ref_args.size(); comp_i++) {
-		Object* obj = comp_ref_args[comp_i];
-		if (obj == nullptr) {
+		Ref<GFComponent> comp = comp_ref_args[comp_i];
+		if (comp == nullptr) {
 			continue;
 		}
-		GFComponent* comp = obj->cast_to<GFComponent>(obj);
 		comp->set_source_id(it->entities[entity_index]);
 	}
 }
@@ -256,7 +255,7 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 					comp_ref_args[i_arg] = comp_ref_per_term[term_i];
 					i_arg += 1;
 					// Skip terms till OR chain is exited.
-					// There is guarentied to be another none OR term at the
+					// There is guaranteed to be another none OR term at the
 					// end of the chain, so we don't need to check for the end of
 					// the terms list.
 					while (terms[term_i].oper == ecs_oper_kind_t::EcsOr) {

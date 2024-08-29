@@ -41,9 +41,9 @@ namespace godot {
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
 		void progress(double delta);
 
-		Ref<GFEntity> register_script(Ref<Script>);
+		Ref<GFRegisterableEntity> register_script(Ref<Script>);
 		ecs_entity_t register_script_id(Ref<Script>);
-		Ref<GFRegisterableEntity> register_new_script_id(Ref<Script> script);
+		ecs_entity_t register_new_script_id(Ref<Script> script);
 		Ref<GFRegisterableEntity> register_script_id_no_user_call(Ref<Script> script);
 
 		void start_rest_api();
@@ -99,6 +99,13 @@ namespace godot {
 		static ecs_entity_t glecs_meta_packed_vector3_array;
 		static ecs_entity_t glecs_meta_packed_color_array;
 
+		/// Returns the ID which was registered with the given Script.
+		/// Returns 0 if the entity has no registered script.
+		ecs_entity_t get_registered_id(Ref<Script> script);
+		/// Returns the script which was registered with the given ID.
+		/// Returns null if the entity has no registered script.
+		Ref<Script> get_registered_script(ecs_entity_t id);
+
 		void copy_component_ptr(const void*, void*, ecs_entity_t);
 		void copy_gd_type_ptr(const void*, void*, ecs_entity_t);
 		void deinit_component_ptr(void*, ecs_entity_t);
@@ -106,6 +113,7 @@ namespace godot {
 		void init_component_ptr(void*, ecs_entity_t, Variant);
 		void init_gd_type_ptr(void*, ecs_entity_t);
 
+		static GFWorld* world_or_singleton(GFWorld* world);
 		static GFWorld* singleton();
 		ecs_world_t* raw();
 
@@ -114,7 +122,10 @@ namespace godot {
 
 	private:
 		ecs_world_t* _raw;
-		Dictionary registered_entities;
+		/// Maps registered scripts to entity IDs
+		Dictionary registered_entity_ids;
+		/// Maps entity IDs to their registered scripts
+		Dictionary registered_entity_scripts;
 
 		template<typename T>
 		static void gd_type_ctor(

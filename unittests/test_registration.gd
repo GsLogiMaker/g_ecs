@@ -19,7 +19,7 @@ func test_auto_register():
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_component.gd"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 
@@ -29,19 +29,19 @@ func test_register_module():
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_module.gd"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_module.gd/SubEntity"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_module.gd/b_module/MyBComponent"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 
@@ -51,7 +51,7 @@ func test_register_component_script():
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_component.gd"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 
@@ -61,7 +61,7 @@ func test_register_entity_script():
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/components/a_entity.gd"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 
@@ -72,13 +72,13 @@ func test_register_sub_class():
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/Foo"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 	assert_eq(
 		world.get_child_entity(
 			"Glecs/Scripts/Bar"
-		).is_valid(),
+		).is_alive(),
 		true,
 	)
 
@@ -89,7 +89,7 @@ func test_register_sub_class():
 	#assert_eq(
 		#world.get_child_entity(
 			#"Glecs/Scripts/Foo"
-		#).is_valid(),
+		#).is_alive(),
 		#true,
 	#)
 

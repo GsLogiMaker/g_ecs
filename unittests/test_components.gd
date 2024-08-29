@@ -33,17 +33,17 @@ func test_world_deletion():
 	foo2.set_value(Vector2(125.1, 3.3))
 
 	e2.free()
-	assert_eq(e2.is_valid(), false)
-	assert_eq(foo2.is_valid(), false)
+	assert_eq(e2.is_alive(), false)
+	assert_eq(foo2.is_alive(), false)
 
 	foo.free()
-	assert_eq(e.is_valid(), true)
-	assert_eq(foo.is_valid(), false)
+	assert_eq(e.is_alive(), true)
+	assert_eq(foo.is_alive(), false)
 
 	w.free()
 	assert_eq(is_instance_valid(w), false)
-	assert_eq(e.is_valid(), false)
-	assert_eq(foo.is_valid(), false)
+	assert_eq(e.is_alive(), false)
+	assert_eq(foo.is_alive(), false)
 
 
 func test_registration():
@@ -87,7 +87,7 @@ func test_components_in_relationships():
 	var w:= GFWorld.new()
 
 	var e:= GFEntity.spawn(w)
-	var foo:= e.add_relation(Targets, Foo) \
+	var foo:= e.add_pair(Targets, Foo) \
 		.get_component(w.pair(Targets, Foo)) as Foo
 
 	foo.set_value(Vector2(54, 6))

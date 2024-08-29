@@ -1,5 +1,5 @@
 
-extends GlecsModule
+extends GFModule
 
 const DictionaryC:= preload("res://components/dictionary.gd")
 

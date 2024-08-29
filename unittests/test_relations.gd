@@ -21,13 +21,13 @@ func test_bools():
 
 	var man:= GFEntity.spawn(world) \
 		.set_name("Man") \
-		.add_relation("Eats", apple)
+		.add_pair("Eats", apple)
 
 	var cow:= GFEntity.spawn(world) \
 		.set_name("Cow")
 	var grass:= GFEntity.spawn(world) \
 		.set_name("Grass")
-	cow.add_relation("Eats", grass)
+	cow.add_pair("Eats", grass)
 
 	world.progress(0.0)
 
@@ -35,6 +35,7 @@ func test_bools():
 
 	man.free()
 	apple.free()
+
 #endregion
 
 #region Components

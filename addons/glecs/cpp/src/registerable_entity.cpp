@@ -22,6 +22,28 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 // --- Unexposed ---
 // --------------------------------------------------------
 
+Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(ecs_entity_t id, GFWorld* world_) {
+	return from_id_template<GFRegisterableEntity>(id, world_);
+}
+
+Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, GFWorld* world) {
+	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
+		script->get_instance_base_type()
+	);
+	e->set_id(world->get_registered_id(script));
+	e->set_world(world);
+	e->set_script(script);
+
+	if (!e->is_alive()) {
+		ERR(nullptr,
+			"Could not instantiate", script->get_instance_base_type(), " from ID\n",
+			"World/ID is not valid/alive"
+		);
+	}
+
+	return e;
+}
+
 void GFRegisterableEntity::register_in_world(
 	GFWorld* world
 ) {

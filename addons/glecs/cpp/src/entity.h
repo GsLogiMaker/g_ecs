@@ -3,9 +3,11 @@
 #define GL_ENTITY_H
 
 #include "godot_cpp/variant/variant.hpp"
+#include "utils.h"
 #include "world.h"
 
 #include <cassert>
+#include <cstdint>
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
 
@@ -20,7 +22,7 @@ namespace godot {
 
 	public:
 		GFEntity();
-		GFEntity(ecs_entity_t id_, GFWorld* world_): id(id_), world(world_) {}
+		GFEntity(ecs_entity_t id_, GFWorld* world_): id(id_), world_instance_id(world_->get_instance_id()) {}
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
 		~GFEntity();
 
@@ -34,6 +36,8 @@ namespace godot {
 
 		Ref<GFEntity> add_component(Variant);
 		Ref<GFComponent> get_component(Variant);
+
+		void delete_();
 
 		ecs_entity_t get_id();
 		GFWorld* get_world();
@@ -51,6 +55,27 @@ namespace godot {
 		// --- Unexposed ---
 		// --------------------------------------
 
+		template<typename T>
+		static Ref<T> from_id_template(ecs_entity_t id, GFWorld* world_) {
+			GFWorld* world = GFWorld::world_or_singleton(world_);
+
+			Ref<GFEntity> e;
+			e = Ref(memnew(T));
+			e->set_id(id);
+			e->set_world(world);
+			e->set_script(world->get_registered_script(id));
+
+			if (!e->is_alive()) {
+				ERR(nullptr,
+					"Could not instantiate", T::get_class_static(), " from ID\n",
+					"World/ID is not valid/alive"
+				);
+			}
+
+			return e;
+		}
+
+
 		void set_id(ecs_entity_t);
 		void set_world(GFWorld*);
 
@@ -59,7 +84,7 @@ namespace godot {
 
 	private:
 		ecs_entity_t id {0};
-		GFWorld* world {0};
+		uint64_t world_instance_id {0};
 	};
 
 }
