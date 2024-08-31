@@ -47,7 +47,7 @@ func test_world_deletion():
 
 
 func test_registration():
-	var w:= GFWorld.new()
+	var w:= world
 
 	var e:= GFEntity.spawn(world) \
 		.add_component(RegistrationA) \
@@ -64,15 +64,13 @@ func test_registration():
 	assert_almost_eq(e.get_component(RegistrationA).get_result(), 14.0, .001)
 	assert_almost_eq(e.get_component(RegistrationB).get_result(), 33.0, .001)
 
-	w.free()
-
 
 func test_simple_system():
-	var a = world.system_builder()
-	var b = a.with(Foo)
-	b.for_each(func(_delta:float, foo:Foo):
-		foo.set_value(Vector2(2, 5))
-		)
+	world.system_builder() \
+		.with(Foo) \
+		.for_each(func(foo:Foo):
+			foo.set_value(Vector2(2, 5))
+			)
 
 	var entity:= GFEntity.spawn(world) \
 		.add_component(Foo) \
@@ -142,11 +140,11 @@ class RegistrationA extends GFComponent:
 	func set_result(v:float) -> void:
 		setm(&"result", v)
 
-	func _register(world: GFWorld):
-		world.system_builder() \
+	func _register(w: GFWorld):
+		w.system_builder() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
-			.for_each(func(_delta:float, reg_a:RegistrationA, reg_b:RegistrationB):
+			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
 				reg_a.set_result(reg_a.get_value() + reg_b.get_value())
 				)
 
@@ -169,7 +167,7 @@ class RegistrationB extends GFComponent:
 		world.system_builder() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
-			.for_each(func(_delta:float, reg_a:RegistrationA, reg_b:RegistrationB):
+			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
 				reg_b.set_result(reg_a.get_value() * reg_b.get_value())
 				)
 
