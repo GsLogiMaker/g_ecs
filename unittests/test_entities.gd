@@ -114,7 +114,7 @@ class Unadded extends GFComponent:
 
 class Unregistered extends GFComponent:
 	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("value", TYPE_STRING)
+		b_.add_member("value", TYPE_INT)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)

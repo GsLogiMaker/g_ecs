@@ -32,10 +32,71 @@ Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	return from_id_template<GFEntity>(id, world);
 }
 
-Ref<GFEntity> GFEntity::add_component(Variant component) {
+Ref<GFEntity> GFEntity::add_component(Variant component, Variant data) {
 	GFWorld* w = get_world();
-	ecs_entity_t component_id = w->coerce_id(component);
-	ecs_add_id(w->raw(), get_id(), component_id);
+
+	ecs_entity_t c_id = w->coerce_id(component);
+
+	if (ECS_IS_PAIR(c_id)) {
+		add_pair(
+			ECS_PAIR_FIRST(c_id),
+			ECS_PAIR_SECOND(c_id),
+			data
+		);
+		return Ref(this);
+	}
+
+	if (!ecs_has_id(w->raw(), c_id, ecs_id(EcsComponent))) {
+		ERR(Ref(this),
+			"Failed to add component to entity\n",
+			"ID coerced from ", component, " is not a component"
+		);
+	}
+
+	ecs_add_id(w->raw(), get_id(), c_id);
+
+	if (data != Variant()) {
+		set_component(c_id, data);
+	}
+
+	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::add_entity(Variant entity, Variant data) {
+	GFWorld* w = get_world();
+
+	ecs_add_id(w->raw(), get_id(), w->coerce_id(entity));
+	if (data != Variant()) {
+		set_component(entity, data);
+	}
+
+	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::add_pair(Variant first, Variant second, Variant data) {
+	GFWorld* w = get_world();
+
+	ecs_entity_t first_id = w->coerce_id(first);
+	ecs_entity_t second_id = w->coerce_id(second);
+	ecs_entity_t pair_id = w->pair_ids(first_id, second_id);
+	add_entity(pair_id, data);
+
+	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::add_tag(Variant tag) {
+	GFWorld* w = get_world();
+
+	ecs_entity_t tag_id = w->coerce_id(tag);
+	if (ecs_has(w->raw(), tag_id, EcsComponent)) {
+		ERR(Ref(this),
+			"Failed to add tag to entity\n",
+			"ID, ", tag_id, "is a component, not a tag\n"
+			"(Tags are any non-component entity)"
+		);
+	}
+
+	ecs_add_id(w->raw(), get_id(), tag_id);
 
 	return Ref(this);
 }
@@ -59,6 +120,44 @@ Ref<GFComponent> GFEntity::get_component(Variant component) {
 	}
 
 	return c;
+}
+
+Ref<GFEntity> GFEntity::set_component(Variant component, Variant data) {
+	GFWorld* world = get_world();
+
+	ecs_entity_t id = world->coerce_id(component);
+
+	if (!ECS_IS_PAIR(id)) {
+		if (!ecs_has(world->raw(), id, EcsComponent)) {
+			ERR(Ref(this),
+				"Failed to set data in component\n",
+				"ID, ", id, "is not a component"
+			);
+		}
+	} else {
+		ecs_entity_t first_id = ECS_PAIR_FIRST(id);
+		ecs_entity_t second_id = ECS_PAIR_SECOND(id);
+		if (
+			!ecs_has_id(world->raw(), first_id, ecs_id(EcsComponent))
+			&& !ecs_has_id(world->raw(), second_id, ecs_id(EcsComponent))
+		) {
+			// ID is not a component, err
+			ERR(Ref(this),
+				"Failed to set data in pair\n",
+				"Neither ID ", first_id,
+				" nor ", second_id, "are components"
+			);
+		}
+	}
+
+	// TODO: change build_data_from_variant to a static method
+	Ref(memnew(GFComponent(get_id(), id, world)))
+		->build_data_from_variant(
+			data,
+			ecs_get_mut_id(world->raw(), get_id(), id)
+		);
+
+	return Ref(this);
 }
 
 void GFEntity::delete_() {
@@ -162,8 +261,12 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "entity", "world"), &GFEntity::from, nullptr);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from_id", "id", "world"), &GFEntity::from_id, nullptr);
 
-	godot::ClassDB::bind_method(D_METHOD("add_component", "component"), &GFEntity::add_component);
+	godot::ClassDB::bind_method(D_METHOD("add_component", "component", "data"), &GFEntity::add_component, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("add_entity", "entity", "data"), &GFEntity::add_entity, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("add_pair", "first", "second", "data"), &GFEntity::add_pair, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &GFEntity::add_tag);
 	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
+	godot::ClassDB::bind_method(D_METHOD("set_component", "component", "value"), &GFEntity::set_component);
 
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 

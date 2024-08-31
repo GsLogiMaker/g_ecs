@@ -5,7 +5,7 @@ var world:GFWorld
 
 func before_all():
 	world = GFWorld.new()
-	world.new_pipeline(&"test")
+	#world.new_pipeline(&"test")
 
 func after_all():
 	world.free()
@@ -14,12 +14,16 @@ func after_all():
 
 func test_optional_terms():
 	var w:= world
-	w.new_pipeline("1")
-	w.new_pipeline("2")
-	w.new_pipeline("3")
+	var data:Dictionary = {ints=0, bools=0}
+	var callable:= func(ints, bools):
+		if ints:
+			data.ints += 1
+		if bools:
+			data.bools += 1
 
 	var empty:= GFEntity.spawn(w) \
-		.set_name("Empty")
+		.set_name("Empty") \
+		.add_component(Bools)
 	var just_ints:= GFEntity.spawn(w) \
 		.set_name("JustInts") \
 		.add_component(Ints)
@@ -31,70 +35,49 @@ func test_optional_terms():
 		.add_component(Ints) \
 		.add_component(Bools)
 
-	var data:Dictionary = {i=0, ints=0, bools=0}
-	var callable:= func(ints, bools):
-		data.i += 1
-		if ints:
-			data.ints += 1
-		if bools:
-			data.bools += 1
-
-	data.i = 0
 	data.ints = 0
 	data.bools = 0
-	w.new_system(&"1") \
-		.maybe_with(Ints) \
-		.maybe_with(Bools) \
-		.for_each(callable)
-	w.run_pipeline(&"1", 0.0)
-	assert_eq(data.ints, 2)
-	assert_eq(data.bools, 2)
-
-	data.i = 0
-	data.ints = 0
-	data.bools = 0
-	w.new_system(&"2") \
+	w.system_builder() \
 		.with(Ints) \
 		.maybe_with(Bools) \
 		.for_each(callable)
-	w.run_pipeline(&"2", 0.0)
-	assert_eq(data.i, 2)
+	w.progress(0.0)
 	assert_eq(data.ints, 2)
 	assert_eq(data.bools, 1)
 
-	data.i = 0
 	data.ints = 0
 	data.bools = 0
-	w.new_system(&"3") \
+	w.system_builder() \
 		.maybe_with(Ints) \
 		.with(Bools) \
 		.for_each(callable)
-	w.run_pipeline(&"3", 0.0)
-	assert_eq(data.i, 2)
-	assert_eq(data.ints, 1)
-	assert_eq(data.bools, 2)
+	w.progress(0.0)
+	assert_eq(data.ints, 1 + (2)) # Extra 2 from previous system running
+	assert_eq(data.bools, 3 + (1)) # Extra 1 from previous system running
 
 func test_or_operation_terms():
 	var w:= world
 
 	var data:= {ints=0, bools=0}
-	w.new_system("test") \
-		.or_with(Bools).with(Ints) \
-		.for_each(func(bools:Bools, ints:Ints):
-			prints(bools, ints)
-			#if term is Ints:
-				#data.ints += 1
-			#if term is Bools:
-				#data.bools += 1
+	w.system_builder() \
+		.with(Bools).or_with(Ints) \
+		.for_each(func(bools_or_ints:GFComponent):
+			if bools_or_ints is Ints:
+				data.ints += 1
+			if bools_or_ints is Bools:
+				data.bools += 1
 			)
 
+	GFEntity.spawn(w).add_component(Ints)
+	GFEntity.spawn(w).add_component(Ints)
 	GFEntity.spawn(w).add_component(Ints)
 	GFEntity.spawn(w).add_component(Bools)
 	GFEntity.spawn(w).add_component(Ints).add_component(Bools)
 
-	w.run_pipeline("test", 0.0)
+	w.progress(0.0)
 
-	prints(data)
+	assert_eq(data.ints, 3)
+	assert_eq(data.bools, 2)
 
 #endregion
 

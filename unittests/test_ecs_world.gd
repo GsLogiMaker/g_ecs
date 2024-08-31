@@ -68,7 +68,7 @@ func test_world_deletion():
 	assert_eq(foo.is_alive(), false)
 
 func test_simple_system():
-	world.new_system() \
+	world.system_builder() \
 		.with(Foo) \
 		.for_each(func(_delta:float, foo:Foo):
 			foo.setm(&"vec", 2.67)

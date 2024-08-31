@@ -2,6 +2,7 @@
 #ifndef GL_ENTITY_H
 #define GL_ENTITY_H
 
+#include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -34,8 +35,13 @@ namespace godot {
 		static Ref<GFEntity> from(Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
-		Ref<GFEntity> add_component(Variant);
+		Ref<GFEntity> add_component(Variant, Variant data);
+		Ref<GFEntity> add_entity(Variant, Variant data);
+		Ref<GFEntity> add_pair(Variant, Variant, Variant data);
+		Ref<GFEntity> add_tag(Variant);
+
 		Ref<GFComponent> get_component(Variant);
+		Ref<GFEntity> set_component(Variant, Variant data);
 
 		void delete_();
 
@@ -63,7 +69,19 @@ namespace godot {
 			e = Ref(memnew(T));
 			e->set_id(id);
 			e->set_world(world);
-			e->set_script(world->get_registered_script(id));
+
+			Ref<Script> script = world->get_registered_script(id);
+			if (
+				script != nullptr
+				&& ClassDB::is_parent_class(
+					T::get_class_static(),
+					script->get_instance_base_type()
+				)
+			) {
+				// Set script if entity is registered and the script
+				// inherits from this level of entity
+				e->set_script(script);
+			}
 
 			if (!e->is_alive()) {
 				ERR(nullptr,

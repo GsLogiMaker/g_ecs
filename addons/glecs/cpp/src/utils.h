@@ -3,6 +3,7 @@
 #define GLECS_UTILS_H
 
 #include "godot_cpp/variant/string.hpp"
+#include "godot_cpp/variant/variant.hpp"
 #include <cctype>
 #include <flecs.h>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -87,9 +88,15 @@ namespace godot {
 		}
 
 		/// Converts a Variant::Type to an Entity ID
+		static Variant primitive_value_to_variant(const void*, ecs_primitive_kind_t);
+		static Variant::Type primitive_type_to_variant(ecs_primitive_kind_t);
 		static EntityResult variant_type_to_id(Variant::Type type);
 
 		static String into_pascal_case(String str);
+
+		static void set_gd_struct_from_variant(const Variant value, const ecs_entity_t, void* out);
+		static void set_primitive_from_variant(const Variant value, const ecs_primitive_kind_t, void* out);
+		static void set_type_from_variant(const Variant value, const ecs_entity_t, const ecs_world_t*, void* out);
 
 	};
 

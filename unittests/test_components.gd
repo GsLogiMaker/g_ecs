@@ -32,11 +32,11 @@ func test_world_deletion():
 	foo.set_value(Vector2(24.3, 2.1))
 	foo2.set_value(Vector2(125.1, 3.3))
 
-	e2.free()
+	e2.delete()
 	assert_eq(e2.is_alive(), false)
 	assert_eq(foo2.is_alive(), false)
 
-	foo.free()
+	foo.delete()
 	assert_eq(e.is_alive(), true)
 	assert_eq(foo.is_alive(), false)
 
@@ -64,11 +64,11 @@ func test_registration():
 	assert_almost_eq(e.get_component(RegistrationA).get_result(), 14.0, .001)
 	assert_almost_eq(e.get_component(RegistrationB).get_result(), 33.0, .001)
 
-	w.queue_free()
+	w.free()
 
 
 func test_simple_system():
-	var a = world.new_system()
+	var a = world.system_builder()
 	var b = a.with(Foo)
 	b.for_each(func(_delta:float, foo:Foo):
 		foo.set_value(Vector2(2, 5))
@@ -83,12 +83,13 @@ func test_simple_system():
 	assert_eq(entity.get_component(Foo).get_value(), Vector2(2, 5))
 
 
+# test components components_in_relationships
 func test_components_in_relationships():
 	var w:= GFWorld.new()
 
 	var e:= GFEntity.spawn(w)
-	var foo:= e.add_pair(Targets, Foo) \
-		.get_component(w.pair(Targets, Foo)) as Foo
+	var foo:Foo = e.add_pair(Targets, Foo) \
+		.get_component(w.pair(Targets, Foo))
 
 	foo.set_value(Vector2(54, 6))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
@@ -96,7 +97,7 @@ func test_components_in_relationships():
 	foo = e.get_component(w.pair(Targets, Foo))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
 
-	w.queue_free()
+	w.free()
 
 
 class Targets extends GFRegisterableEntity: pass
@@ -142,7 +143,7 @@ class RegistrationA extends GFComponent:
 		setm(&"result", v)
 
 	func _register(world: GFWorld):
-		world.new_system() \
+		world.system_builder() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(_delta:float, reg_a:RegistrationA, reg_b:RegistrationB):
@@ -165,7 +166,7 @@ class RegistrationB extends GFComponent:
 		setm(&"result", v)
 
 	func _register(world:GFWorld):
-		world.new_system() \
+		world.system_builder() \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(_delta:float, reg_a:RegistrationA, reg_b:RegistrationB):

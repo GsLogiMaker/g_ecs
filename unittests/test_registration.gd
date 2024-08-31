@@ -12,86 +12,87 @@ func after_all():
 
 #region Tests
 
-func test_auto_register():
+func test_auto_register_script():
 	GFEntity.spawn(world) \
 		.add_component(load("res://components/a_component.gd"))
 
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_component.gd"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
 
-func test_register_module():
-	world.register(load("res://components/a_module.gd"))
+func test_register_script_module():
+	world.register_script(load("res://components/a_module.gd"))
 
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_module.gd"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_module.gd/SubEntity"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_module.gd/b_module/MyBComponent"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
 
-func test_register_component_script():
-	world.register(load("res://components/a_component.gd"))
+func test_register_script_component_script():
+	world.register_script(load("res://components/a_component.gd"))
 
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_component.gd"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
 
-func test_register_entity_script():
-	world.register(load("res://components/a_entity.gd"))
+func test_register_script_entity_script():
+	world.register_script(load("res://components/a_entity.gd"))
 
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/components/a_entity.gd"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
 
-func test_register_sub_class():
-	world.register(Foo, "Foo")
-	world.register(Bar, "Bar")
+func test_register_script_sub_class():
+	world.register_script(Foo)
+	world.register_script(Bar)
 
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/Foo"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
-	assert_eq(
-		world.get_child_entity(
+	assert_ne(
+		world.lookup(
 			"Glecs/Scripts/Bar"
-		).is_alive(),
-		true,
+		),
+		null,
 	)
 
-#func test_name_conflic():
-	#world.register(Foo, "Foo")
-	#world.register(Bar, "Foo")
-#
-	#assert_eq(
-		#world.get_child_entity(
-			#"Glecs/Scripts/Foo"
-		#).is_alive(),
-		#true,
-	#)
+func test_name_conflic():
+	GFEntity.spawn(world) \
+		.set_name("Foo")
+	world.register_script(Foo)
+
+	assert_ne(
+		world.lookup(
+			"Foo"
+		).is_alive(),
+		null,
+	)
 
 #endregion
 

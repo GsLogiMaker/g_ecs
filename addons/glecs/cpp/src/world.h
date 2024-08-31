@@ -37,6 +37,7 @@ namespace godot {
 		Ref<GFSystemBuilder> system_builder();
 
 		ecs_entity_t coerce_id(Variant);
+		Ref<GFEntity> lookup(String);
 		Ref<GFPair> pair(Variant, Variant);
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
 		void progress(double delta);
@@ -98,6 +99,7 @@ namespace godot {
 		static ecs_entity_t glecs_meta_packed_vector2_array;
 		static ecs_entity_t glecs_meta_packed_vector3_array;
 		static ecs_entity_t glecs_meta_packed_color_array;
+		static ecs_entity_t glecs_meta_packed_vector4_array;
 
 		/// Returns the ID which was registered with the given Script.
 		/// Returns 0 if the entity has no registered script.

@@ -12,12 +12,11 @@ func after_all():
 #region Tests
 
 func test_bools():
-	# TODO: Query for relations
-	world.new_system().for_each(func(_delta): pass)
 	var apple:= GFEntity.spawn(world) \
 		.set_name("Apple")
 
-	GFEntity.spawn(world).set_name("Eats")
+	GFEntity.spawn(world) \
+		.set_name("Eats")
 
 	var man:= GFEntity.spawn(world) \
 		.set_name("Man") \
@@ -31,10 +30,11 @@ func test_bools():
 
 	world.progress(0.0)
 
-	assert_eq(true, true)
+	# TODO: Test queries for relations
+	world.query_builder().build()
 
-	man.free()
-	apple.free()
+	man.delete()
+	apple.delete()
 
 #endregion
 

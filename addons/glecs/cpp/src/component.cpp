@@ -5,6 +5,7 @@
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/packed_int64_array.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "registerable_entity.h"
 #include "utils.h"
@@ -368,6 +369,60 @@ bool GFComponent::is_alive() {
 	GFEntity* entity = this;
 	return entity->is_alive()
 		&& ecs_has_id(get_world()->raw(), get_source_id(), get_id());
+}
+
+void GFComponent::build_data_from_variant(
+	Variant vari,
+	void* output
+) {
+	ecs_world_t* raw = get_world()->raw();
+
+	const EcsStruct* struct_data = ecs_get(raw, get_id(), EcsStruct);
+	if (struct_data == nullptr) {
+		ERR(/**/,
+			"Could not build data from Variant\n",
+			"Component is not a struct."
+		);
+	}
+
+	switch (vari.get_type()) {
+		case Variant::DICTIONARY: {
+			Dictionary dict = vari;
+			Array keys = dict.keys();
+			for (int i=0; i != keys.size(); i++) {
+				String member_name = keys[i];
+				Variant value = dict[member_name];
+				const EcsMember* member_data = get_member_data(member_name);
+				if (member_data == nullptr) {
+					// No member with that name exists, skip
+					continue;
+				}
+				void* member_ptr = reinterpret_cast<void*>(
+					reinterpret_cast<uint8_t*>(output) + member_data->offset
+				);
+				// Set member from dictionary
+				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+			}
+		}
+		case Variant::ARRAY: {
+			Array arr = vari;
+			for (int i=0; i != arr.size() && i != ecs_vec_size(&struct_data->members); i++) {
+				// Iterate the combined sizes of the passed array and the members vector
+				Variant value = arr[i];
+				ecs_member_t* member_data = ecs_vec_get_t(&struct_data->members, ecs_member_t, i);
+				void* member_ptr = reinterpret_cast<void*>(
+					reinterpret_cast<uint8_t*>(output) + member_data->offset
+				);
+				// Set member from array
+				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+			}
+		}
+		default: ERR(/**/,
+			"Could not build data from Variant\n",
+			"Variant type ", Variant::get_type_name(vari.get_type()),
+			" can't be built into component data."
+		);
+	}
 }
 
 void GFComponent::set_source_id(ecs_entity_t id) {

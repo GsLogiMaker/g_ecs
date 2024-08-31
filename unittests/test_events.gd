@@ -35,16 +35,16 @@ func test_on_add_event():
 
 	assert_eq(i, 2)
 
-	e.free()
-	e2.free()
-	e3.free()
-	e4.free()
+	e.delete()
+	e2.delete()
+	e3.delete()
+	e4.delete()
 
-
-func test_on_init_event():
+# test events on_set_event
+func test_on_set_event():
 	i = 0
 
-	world.observer_builder("glecs/core/on_init") \
+	world.observer_builder("flecs/core/on_set") \
 		.with(Ints) \
 		.for_each(func(ints: Ints):
 			self.i += ints.a + ints.b
@@ -64,30 +64,10 @@ func test_on_init_event():
 
 	assert_eq(i, 2 + 31 + 99 + 2)
 
-	e.free()
-	e2.free()
-	e3.free()
-	e4.free()
-
-
-func test_on_set_event():
-	i = 0
-	var w:= GFWorld.new()
-
-	w.observer_builder("flecs/core/OnSet") \
-		.with(Ints) \
-		.for_each(func(ints:Ints):
-			self.i += ints.a + ints.b
-			)
-
-	var e:= GFEntity.spawn(w) \
-		.add_component(Ints, [2, 6])
-	var ints_c:Ints = e.get_component(Ints)
-
-	ints_c.a = 15
-	ints_c.b = 45
-
-	assert_eq(i, (2 + 6) + (15 + 6) + (15 + 45))
+	e.delete()
+	e2.delete()
+	e3.delete()
+	e4.delete()
 
 
 func test_on_add_event_with_objects():
@@ -105,7 +85,7 @@ func test_on_add_event_with_objects():
 	assert_eq(e.get_component(Textures).a, null)
 	assert_eq(e.get_component(Textures).b, null)
 
-	e.free()
+	e.delete()
 
 	# In this test, the loaded textures will be auto freed by Godot if Glecs
 	# does not properly take ownership of them.
@@ -117,7 +97,7 @@ func test_on_add_event_with_objects():
 	assert_eq(e2.get_component(Textures).a, load("res://icon.png"))
 	assert_eq(e2.get_component(Textures).b, load("res://icon.svg"))
 
-	e2.free()
+	e2.delete()
 
 #endregion
 

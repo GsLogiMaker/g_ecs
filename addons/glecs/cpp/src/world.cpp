@@ -69,6 +69,7 @@ ecs_entity_t GFWorld::glecs_meta_packed_string_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector2_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector3_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
+ecs_entity_t GFWorld::glecs_meta_packed_vector4_array = 0;
 
 GFWorld::GFWorld() {
 	_raw = ecs_init();
@@ -153,6 +154,7 @@ GFWorld::GFWorld() {
 	glecs_meta_packed_vector2_array = ecs_new(_raw);
 	glecs_meta_packed_vector3_array = ecs_new(_raw);
 	glecs_meta_packed_color_array = ecs_new(_raw);
+	glecs_meta_packed_vector4_array = ecs_new(_raw);
 
 	define_gd_literal("nil", ecs_primitive_kind_t::EcsUPtr, &glecs_meta_nil);
 	define_gd_literal("bool", ecs_primitive_kind_t::EcsBool, &glecs_meta_bool);
@@ -482,6 +484,7 @@ GFWorld::GFWorld() {
 	define_gd_component<PackedVector2Array>("PackedVector2Array", &glecs_meta_packed_vector2_array);
 	define_gd_component<PackedVector3Array>("PackedVector3Array", &glecs_meta_packed_vector3_array);
 	define_gd_component<PackedColorArray>("PackedColorArray", &glecs_meta_packed_color_array);
+	define_gd_component<PackedVector4Array>("PackedVector4Array", &glecs_meta_packed_vector4_array);
 
 	#undef DEFINE_GD_COMPONENT
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
@@ -569,6 +572,20 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 	);
 }
 
+Ref<GFEntity> GFWorld::lookup(String path) {
+	const char* path_ptr = path.utf8().get_data();
+	ecs_entity_t id = ecs_lookup_path_w_sep(
+		raw(),
+		0,
+		path_ptr,
+		"/",
+		"/root/",
+		false
+	);
+
+	return GFEntity::from_id(id, this);
+}
+
 Ref<GFPair> GFWorld::pair(Variant first, Variant second) {
 	return GFPair::from_ids(coerce_id(first), coerce_id(second), this);
 }
@@ -638,8 +655,15 @@ Ref<GFSystemBuilder> GFWorld::system_builder() {
 
 Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
+	if (ett == nullptr) {
+		return nullptr;
+	}
 	ett->call_user_register();
 	return ett;
+}
+
+bool is_valid_data(char c) {
+	return (c <= '9' && c >= '0') || c == ',';
 }
 
 ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
@@ -743,6 +767,32 @@ ecs_entity_t GFWorld::get_registered_id(Ref<Script> script) {
 }
 
 Ref<Script> GFWorld::get_registered_script(ecs_entity_t id) {
+	if (ecs_id_is_pair(id)) {
+		Ref<Script> first = registered_entity_scripts.get(
+			ECS_PAIR_FIRST(id),
+			nullptr
+		);
+		Ref<Script> second = registered_entity_scripts.get(
+			ECS_PAIR_SECOND(id),
+			nullptr
+		);
+		if (first != nullptr && second != nullptr) {
+			if (ClassDB::is_parent_class(
+				second->get_instance_base_type(),
+				GFComponent::get_class_static()
+			)) {
+				return second;
+			}
+			return first;
+		}
+		if (first != nullptr) {
+			return first;
+		}
+		if (second != nullptr) {
+			return second;
+		}
+		return nullptr;
+	}
 	return registered_entity_scripts.get(id, nullptr);
 }
 
@@ -987,6 +1037,7 @@ void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
+	godot::ClassDB::bind_method(D_METHOD("lookup", "path"), &GFWorld::lookup);
 	godot::ClassDB::bind_method(D_METHOD("pair", "first", "second"), &GFWorld::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_ids", "first", "second"), &GFWorld::pair_ids);
 	godot::ClassDB::bind_method(D_METHOD("progress", "delta"), &GFWorld::progress);

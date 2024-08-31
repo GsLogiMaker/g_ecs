@@ -12,8 +12,9 @@ func after_all():
 
 #region Tests
 
+# test prefab prefab
 func test_prefab():
-	world.new_system() \
+	world.system_builder() \
 		.with(Foo) \
 		.with(Bar) \
 		.for_each(func(_delta:float, f:Foo, b:Bar):
@@ -25,9 +26,12 @@ func test_prefab():
 			)
 
 	var entity:= GFEntity.spawn(world)
-	entity.add_entity(world.pair("flecs/core/IsA", MyPrefab))
+	var isa:= world.coerce_id("flecs/core/IsA")
+	var myprefab:= world.coerce_id(MyPrefab)
+	var pair:= world.pair(isa, myprefab)
+	entity.add_entity(pair)
 
-	# Test inhereted componets exist entity
+	# Test inhereted components exist entity
 	var foo:Foo = entity.get_component(Foo)
 	var bar:Bar = entity.get_component(Bar)
 	assert_ne(foo, null)
@@ -52,22 +56,36 @@ func test_prefab():
 #region Components
 
 class Foo extends GFComponent:
+	var a:bool:
+		get: return getm("a")
+		set(v): setm("a", v)
+	var b:int:
+		get: return getm("b")
+		set(v): setm("b", v)
+	var c:float:
+		get: return getm("c")
+		set(v): setm("c", v)
 	func _build(b_: GFComponentBuilder) -> void:
 		b_.add_member("a", TYPE_BOOL)
 		b_.add_member("b", TYPE_INT)
 		b_.add_member("c", TYPE_FLOAT)
 
 class Bar extends GFComponent:
+	var a:Vector2:
+		get: return getm("a")
+		set(v): setm("a", v)
+	var b:float:
+		get: return getm("b")
+		set(v): setm("b", v)
 	func _build(b_: GFComponentBuilder) -> void:
 		b_.add_member("a", TYPE_VECTOR2)
 		b_.add_member("b", TYPE_FLOAT)
 
 class MyPrefab extends GFRegisterableEntity:
-
 	func _register(world:GFWorld) -> void:
-		var p:= GFEntity.from(MyPrefab, world)
-		p.add_entity("flecs/core/Prefab")
-		p.add_component(Foo, [true, 23, 2.33])
-		p.add_component(Bar, [Vector2(2, 1.1), 5.6])
+		GFEntity.from(MyPrefab, world) \
+			.add_entity("flecs/core/Prefab") \
+			.add_component(Foo, [true, 23, 2.33]) \
+			.add_component(Bar, [Vector2(2, 1.1), 5.6])
 
 #endregion
