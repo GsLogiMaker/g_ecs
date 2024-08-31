@@ -142,6 +142,17 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 		delete (QueryIterationContext*) ptr;
 	};
 
+	if (callable.get_argument_count() != ctx->comp_ref_args.size()) {
+		ERR(ctx,
+			"Failed to setup query context\n",
+			"Query expected a callable with ",
+			ctx->comp_ref_args.size(),
+			" arguments, but got callable with ",
+			callable.get_argument_count(),
+			" arguments."
+		);
+	}
+
 	return ctx;
 }
 
