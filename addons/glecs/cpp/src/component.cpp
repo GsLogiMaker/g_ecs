@@ -81,6 +81,7 @@ void GFComponent::setm(String member, Variant value) {
 
 	// Return member
 	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
 }
 
 Variant GFComponent::getm(String member) {

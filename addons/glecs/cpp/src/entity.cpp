@@ -156,6 +156,7 @@ Ref<GFEntity> GFEntity::set_component(Variant component, Variant data) {
 			data,
 			ecs_get_mut_id(world->raw(), get_id(), id)
 		);
+	ecs_modified_id(world->raw(), get_id(), id);
 
 	return Ref(this);
 }
