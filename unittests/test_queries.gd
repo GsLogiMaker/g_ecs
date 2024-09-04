@@ -3,11 +3,11 @@ extends GutTest
 
 var world:GFWorld
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
 	#world.new_pipeline(&"test")
 
-func after_all():
+func after_each():
 	world.free()
 
 #region Tests

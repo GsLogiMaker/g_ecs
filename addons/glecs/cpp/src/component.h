@@ -38,6 +38,8 @@ namespace godot {
 
 		Ref<GFEntity> get_source_entity();
 		ecs_entity_t get_source_id();
+		int get_data_size();
+		int get_data_alignment();
 
 		bool is_alive();
 

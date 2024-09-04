@@ -1,2 +1,2 @@
 
-extends GFEntity
+extends GFRegisterableEntity

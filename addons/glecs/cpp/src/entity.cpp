@@ -165,6 +165,15 @@ void GFEntity::delete_() {
 }
 
 ecs_entity_t GFEntity::get_id() { return id; }
+String GFEntity::get_path() {
+	return String(ecs_get_path_w_sep(
+		get_world()->raw(),
+		0,
+		get_id(),
+		"/",
+		"/root/"
+	));
+}
 GFWorld* GFEntity::get_world() { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
@@ -271,6 +280,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
+	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
 	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
 

@@ -847,7 +847,7 @@ void GFWorld::copy_gd_type_ptr(
 	}
 	case(Variant::Type::BOOL): *(bool*)dst_ptr = *(bool*)src_ptr; break;
 	case(Variant::Type::INT): *(int64_t*)dst_ptr = *(int64_t*)src_ptr; break;
-	case(Variant::Type::FLOAT): *(float*)dst_ptr = *(float*)src_ptr; break;
+	case(Variant::Type::FLOAT): *(double*)dst_ptr = *(double*)src_ptr; break;
 	case(Variant::Type::STRING): *(String*)dst_ptr = *(String*)src_ptr; break;
 	case(Variant::Type::VECTOR2): *(Vector2*)dst_ptr = *(Vector2*)src_ptr; break;
 	case(Variant::Type::VECTOR2I): *(Vector2i*)dst_ptr = *(Vector2i*)src_ptr; break;
@@ -882,6 +882,7 @@ void GFWorld::copy_gd_type_ptr(
 	case(Variant::Type::PACKED_VECTOR2_ARRAY): *(PackedVector2Array*)dst_ptr = *(PackedVector2Array*)src_ptr; break;
 	case(Variant::Type::PACKED_VECTOR3_ARRAY): *(PackedVector3Array*)dst_ptr = *(PackedVector3Array*)src_ptr; break;
 	case(Variant::Type::PACKED_COLOR_ARRAY): *(PackedColorArray*)dst_ptr = *(PackedColorArray*)src_ptr; break;
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): *(PackedVector4Array*)dst_ptr = *(PackedVector4Array*)src_ptr; break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be deinitialized";
 	}
 }

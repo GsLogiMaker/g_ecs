@@ -80,139 +80,7 @@ void GFComponent::setm(String member, Variant value) {
 	}
 
 	// Return member
-	set_member_value_as_type(member_ptr, value, member_data->type);
-}
-
-void GFComponent::set_member_value_as_primitive(
-	void* ptr,
-	Variant value,
-	ecs_primitive_kind_t primitive
-) {
-	int8_t value_char;
-
-	#define EXPECT_VARIANT(VALUE, VARIANT_TYPE) \
-		VoidResult r = Utils::check_variant_matches(VALUE, VARIANT_TYPE); \
-		if (!r.is_ok()) { ERR(/**/, \
-			r.unwrap_err() \
-		); } \
-
-	#define SET_MEMBER(variant_type, real_type) \
-		{ \
-			EXPECT_VARIANT(value, Variant::variant_type); \
-			*(real_type*) ptr = value; \
-		}
-	#define SET_MEMBER_CHAR() \
-		{ \
-			EXPECT_VARIANT(value, Variant::INT); \
-			uint8_t intermediate = value; \
-			*(char*) ptr = intermediate; \
-		}
-	#define SET_MEMBER_ETT() \
-		{ \
-			ecs_entity_t id = get_world()->coerce_id(value); \
-			*(ecs_entity_t*) ptr = id; \
-		}
-
-	switch (primitive) {
-		case ecs_primitive_kind_t::EcsBool: SET_MEMBER(BOOL, bool); break;
-		case ecs_primitive_kind_t::EcsByte: SET_MEMBER(INT, uint8_t); break;
-		case ecs_primitive_kind_t::EcsU8: SET_MEMBER(INT, uint8_t); break;
-		case ecs_primitive_kind_t::EcsU16: SET_MEMBER(INT, uint16_t); break;
-		case ecs_primitive_kind_t::EcsU32: SET_MEMBER(INT, uint32_t); break;
-		case ecs_primitive_kind_t::EcsU64: SET_MEMBER(INT, uint64_t); break;
-		case ecs_primitive_kind_t::EcsI8: SET_MEMBER(INT, int8_t); break;
-		case ecs_primitive_kind_t::EcsI16: SET_MEMBER(INT, int16_t); break;
-		case ecs_primitive_kind_t::EcsI32: SET_MEMBER(INT, int32_t); break;
-		case ecs_primitive_kind_t::EcsI64: SET_MEMBER(INT, int64_t); break;
-		case ecs_primitive_kind_t::EcsF32: SET_MEMBER(FLOAT, float); break;
-		case ecs_primitive_kind_t::EcsF64: SET_MEMBER(FLOAT, double); break;
-		case ecs_primitive_kind_t::EcsChar: SET_MEMBER_CHAR(); break;
-		case ecs_primitive_kind_t::EcsString: ERR(/**/, "TODO: Concerned about memory management");
-		case ecs_primitive_kind_t::EcsEntity: SET_MEMBER_ETT(); break;
-		case ecs_primitive_kind_t::EcsId: SET_MEMBER_ETT(); break;
-		case ecs_primitive_kind_t::EcsUPtr: ERR(/**/, "Can't hanlde uptr");
-		case ecs_primitive_kind_t::EcsIPtr: ERR(/**/, "Can't hanlde iptr");
-		default:
-			ERR(/**/,
-				"Unhandled type"
-			);
-	}
-
-	#undef SET_MEMBER
-	#undef SET_MEMBER_CHAR
-	#undef SET_MEMBER_ETT
-}
-
-void GFComponent::set_member_value_as_type(
-	void* ptr,
-	Variant value,
-	ecs_entity_t type
-) {
-	ecs_world_t* raw = get_world()->raw();
-	Variant::Type vari_type = get_world()->id_to_variant_type(type);
-
-	#define SET_MEMBER(variant_type, real_type) \
-		EXPECT_VARIANT(value, Variant::variant_type); \
-		*(real_type*) ptr = value;
-
-	switch (vari_type) {
-	case(Variant::Type::NIL): {
-		if (type == GFWorld::glecs_meta_real) {
-			SET_MEMBER(FLOAT, real_t); return;
-		}
-		if (ecs_has_id(raw, type, ecs_id(EcsPrimitive))) {
-			return set_member_value_as_primitive(
-				ptr,
-				value,
-				ecs_get(raw, type, EcsPrimitive)->kind
-			);
-		}
-
-		ERR(/**/,
-			"Can't set member\nType ", ecs_get_name(raw, type), " is not handled"
-		);
-	}
-	case(Variant::Type::BOOL): { SET_MEMBER(BOOL, bool); return; }
-	case(Variant::Type::INT): { SET_MEMBER(INT, int64_t); return; }
-	case(Variant::Type::FLOAT): { SET_MEMBER(FLOAT, float); return; }
-	case(Variant::Type::STRING): { SET_MEMBER(STRING, String); return; }
-	case(Variant::Type::VECTOR2): { SET_MEMBER(VECTOR2, Vector2); return; }
-	case(Variant::Type::VECTOR2I): { SET_MEMBER(VECTOR2I, Vector2i); return; }
-	case(Variant::Type::RECT2): { SET_MEMBER(RECT2, Rect2); return; }
-	case(Variant::Type::RECT2I): { SET_MEMBER(RECT2I, Rect2i); return; }
-	case(Variant::Type::VECTOR3): { SET_MEMBER(VECTOR3, Vector3); return; }
-	case(Variant::Type::VECTOR3I): { SET_MEMBER(VECTOR3I, Vector3i); return; }
-	case(Variant::Type::TRANSFORM2D): { SET_MEMBER(TRANSFORM2D, Transform2D); return; }
-	case(Variant::Type::VECTOR4): { SET_MEMBER(VECTOR4, Vector4); return; }
-	case(Variant::Type::VECTOR4I): { SET_MEMBER(VECTOR4I, Vector4i); return; }
-	case(Variant::Type::PLANE): { SET_MEMBER(PLANE, Plane); return; }
-	case(Variant::Type::QUATERNION): { SET_MEMBER(QUATERNION, Quaternion); return; }
-	case(Variant::Type::AABB): { SET_MEMBER(AABB, AABB); return; }
-	case(Variant::Type::BASIS): { SET_MEMBER(BASIS, Basis); return; }
-	case(Variant::Type::TRANSFORM3D): { SET_MEMBER(TRANSFORM3D, Transform3D); return; }
-	case(Variant::Type::PROJECTION): { SET_MEMBER(PROJECTION, Projection); return; }
-	case(Variant::Type::COLOR): { SET_MEMBER(COLOR, Color); return; }
-	case(Variant::Type::STRING_NAME): { SET_MEMBER(STRING_NAME, StringName); return; }
-	case(Variant::Type::NODE_PATH): { SET_MEMBER(NODE_PATH, NodePath); return; }
-	case(Variant::Type::RID): { SET_MEMBER(RID, RID); return; }
-	case(Variant::Type::OBJECT): { SET_MEMBER(OBJECT, Variant); return; }
-	case(Variant::Type::CALLABLE): { SET_MEMBER(CALLABLE, Callable); return; }
-	case(Variant::Type::SIGNAL): { SET_MEMBER(SIGNAL, Signal); return; }
-	case(Variant::Type::DICTIONARY): { SET_MEMBER(DICTIONARY, Dictionary); return; }
-	case(Variant::Type::ARRAY): { SET_MEMBER(ARRAY, Array); return; }
-	case(Variant::Type::PACKED_BYTE_ARRAY): { SET_MEMBER(PACKED_BYTE_ARRAY, PackedByteArray); return; }
-	case(Variant::Type::PACKED_INT32_ARRAY): { SET_MEMBER(PACKED_INT32_ARRAY, PackedInt32Array); return; }
-	case(Variant::Type::PACKED_INT64_ARRAY): { SET_MEMBER(PACKED_INT64_ARRAY, PackedInt64Array); return; }
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): { SET_MEMBER(PACKED_FLOAT32_ARRAY, PackedFloat32Array); return; }
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): { SET_MEMBER(PACKED_FLOAT64_ARRAY, PackedFloat64Array); return; }
-	case(Variant::Type::PACKED_STRING_ARRAY): { SET_MEMBER(PACKED_STRING_ARRAY, PackedStringArray); return; }
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): { SET_MEMBER(PACKED_VECTOR2_ARRAY, PackedVector2Array); return; }
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): { SET_MEMBER(PACKED_VECTOR3_ARRAY, PackedVector3Array); return; }
-	case(Variant::Type::PACKED_COLOR_ARRAY): { SET_MEMBER(PACKED_COLOR_ARRAY, PackedColorArray); return; }
-	case(Variant::Type::VARIANT_MAX): throw "Can't set set member\\nVARIANt_MAX is not a valid type";
-	}
-
-	#undef SET_MEMBER
+	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
 }
 
 Variant GFComponent::getm(String member) {
@@ -232,7 +100,6 @@ Variant GFComponent::getm(String member) {
 			"Member value is null"
 		);
 	}
-
 
 	return member_value_as_type(member_value_ptr, member_data->type);
 }
@@ -316,7 +183,7 @@ Variant GFComponent::member_value_as_type(
 	}
 	case(Variant::Type::BOOL): return Variant( *(bool*) ptr );
 	case(Variant::Type::INT): return Variant( *(int64_t*) ptr );
-	case(Variant::Type::FLOAT): return Variant( *(float*) ptr );
+	case(Variant::Type::FLOAT): return Variant( *(double*) ptr );
 	case(Variant::Type::STRING): return Variant( *(String*) ptr );
 	case(Variant::Type::VECTOR2): return Variant( *(Vector2*) ptr );
 	case(Variant::Type::VECTOR2I): return Variant( *(Vector2i*) ptr );
@@ -351,6 +218,7 @@ Variant GFComponent::member_value_as_type(
 	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *(PackedVector2Array*) ptr );
 	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *(PackedVector3Array*) ptr );
 	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *(PackedColorArray*) ptr );
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *(PackedVector4Array*) ptr );
 	case(Variant::Type::VARIANT_MAX): throw "Can't get type VARIANT_MAX";
 	}
 
@@ -363,6 +231,13 @@ Ref<GFEntity> GFComponent::get_source_entity() {
 
 ecs_entity_t GFComponent::get_source_id() {
 	return source_entity_id;
+}
+
+int GFComponent::get_data_size() {
+	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->size;
+}
+int GFComponent::get_data_alignment() {
+	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->alignment;
 }
 
 bool GFComponent::is_alive() {
@@ -397,25 +272,28 @@ void GFComponent::build_data_from_variant(
 					// No member with that name exists, skip
 					continue;
 				}
-				void* member_ptr = reinterpret_cast<void*>(
-					reinterpret_cast<uint8_t*>(output) + member_data->offset
+				void* member_ptr = (void*)(
+					((uint8_t*)output) + member_data->offset
 				);
 				// Set member from dictionary
 				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
 			}
+			break;
 		}
 		case Variant::ARRAY: {
 			Array arr = vari;
 			for (int i=0; i != arr.size() && i != ecs_vec_size(&struct_data->members); i++) {
 				// Iterate the combined sizes of the passed array and the members vector
 				Variant value = arr[i];
+
 				ecs_member_t* member_data = ecs_vec_get_t(&struct_data->members, ecs_member_t, i);
-				void* member_ptr = reinterpret_cast<void*>(
-					reinterpret_cast<uint8_t*>(output) + member_data->offset
+				void* member_ptr = (void*)(
+					((uint8_t*)output) + member_data->offset
 				);
 				// Set member from array
 				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
 			}
+			break;
 		}
 		default: ERR(/**/,
 			"Could not build data from Variant\n",
@@ -446,6 +324,8 @@ void GFComponent::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
+	godot::ClassDB::bind_method(D_METHOD("get_data_size"), &GFComponent::get_data_size);
+	godot::ClassDB::bind_method(D_METHOD("get_data_alignment"), &GFComponent::get_data_alignment);
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFComponent::is_alive);
 
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);

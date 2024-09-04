@@ -46,6 +46,7 @@ namespace godot {
 		void delete_();
 
 		ecs_entity_t get_id();
+		String get_path();
 		GFWorld* get_world();
 
 		bool is_alive();

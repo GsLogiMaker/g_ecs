@@ -76,6 +76,9 @@ namespace godot {
 	class Utils {
 	public:
 		static VoidResult check_variant_matches(Variant value, Variant::Type type) {
+			if (value.get_type() == Variant::NIL && type == Variant::OBJECT) {
+				return VoidResult::Ok(0);
+			}
 			if (value.get_type() != type) {
 				return VoidResult(
 					String("Expected variant value \"") + String(value)

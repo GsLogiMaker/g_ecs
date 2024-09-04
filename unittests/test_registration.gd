@@ -18,7 +18,7 @@ func test_auto_register_script():
 
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_component.gd"
+			"AComponent"
 		),
 		null,
 	)
@@ -28,19 +28,19 @@ func test_register_script_module():
 
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_module.gd"
+			"a_module"
 		),
 		null,
 	)
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_module.gd/SubEntity"
+			"a_module/SubEntity"
 		),
 		null,
 	)
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_module.gd/b_module/MyBComponent"
+			"a_module/b_module/MyBComponent"
 		),
 		null,
 	)
@@ -50,7 +50,7 @@ func test_register_script_component_script():
 
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_component.gd"
+			"AComponent"
 		),
 		null,
 	)
@@ -60,26 +60,26 @@ func test_register_script_entity_script():
 
 	assert_ne(
 		world.lookup(
-			"Glecs/Scripts/components/a_entity.gd"
+			"AEntity"
 		),
 		null,
 	)
 
 func test_register_script_sub_class():
-	world.register_script(Foo)
-	world.register_script(Bar)
+	var foo:= world.register_script(Foo).set_name("Foo")
+	var bar:= world.register_script(Bar).set_name("Bar")
 
-	assert_ne(
+	assert_eq(
 		world.lookup(
-			"Glecs/Scripts/Foo"
-		),
-		null,
+			"Foo"
+		).get_id(),
+		foo.get_id(),
 	)
-	assert_ne(
+	assert_eq(
 		world.lookup(
-			"Glecs/Scripts/Bar"
-		),
-		null,
+			"Bar"
+		).get_id(),
+		bar.get_id(),
 	)
 
 func test_name_conflic():

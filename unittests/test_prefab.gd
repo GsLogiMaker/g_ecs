@@ -17,7 +17,7 @@ func test_prefab():
 	world.system_builder() \
 		.with(Foo) \
 		.with(Bar) \
-		.for_each(func(_delta:float, f:Foo, b:Bar):
+		.for_each(func(f:Foo, b:Bar):
 			f.b += 1
 			f.c += 1.3
 			b.a.x += f.c
@@ -82,10 +82,9 @@ class Bar extends GFComponent:
 		b_.add_member("b", TYPE_FLOAT)
 
 class MyPrefab extends GFRegisterableEntity:
-	func _register(world:GFWorld) -> void:
-		GFEntity.from(MyPrefab, world) \
-			.add_entity("flecs/core/Prefab") \
-			.add_component(Foo, [true, 23, 2.33]) \
-			.add_component(Bar, [Vector2(2, 1.1), 5.6])
+	func _register(_world:GFWorld) -> void:
+		add_entity("flecs/core/Prefab")
+		add_component(Foo, [true, 23, 2.33])
+		add_component(Bar, [Vector2(2, 1.1), 5.6])
 
 #endregion

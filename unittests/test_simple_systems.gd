@@ -54,7 +54,7 @@ func test_pipelines():
 func test_bools():
 	world.system_builder() \
 		.with(Bools) \
-		.for_each(func(_delta, x:Bools):
+		.for_each(func(x:Bools):
 			x.b = x.a
 			x.a = not x.b
 			)
@@ -63,8 +63,6 @@ func test_bools():
 		.add_component(Bools) \
 		.set_name("Test")
 
-	world.progress(0.0)
-	world.progress(0.0)
 	world.progress(0.0)
 
 	assert_eq(entity.get_component(Bools).a, true)
@@ -75,7 +73,7 @@ func test_bools():
 func test_ints():
 	world.system_builder() \
 		.with(Ints) \
-		.for_each(func(_delta, x:Ints):
+		.for_each(func(x:Ints):
 			x.b *= 2
 			x.a += x.b
 			)
@@ -96,12 +94,10 @@ func test_ints():
 func test_floats():
 	world.system_builder() \
 		.with(Floats) \
-		.for_each(func(_delta, x:Floats):
+		.for_each(func(x:Floats):
 			x.b *= 2
 			x.a += x.b
 			)
-	get_process_delta_time()
-	get_physics_process_delta_time()
 
 	var entity:= GFEntity.spawn(world) \
 		.add_component(Floats) \
@@ -116,17 +112,18 @@ func test_floats():
 
 	entity.delete()
 
+# test simple_systems strings
 func test_strings():
 	world.system_builder() \
 		.with(Strings) \
-		.for_each(func(_delta, x:Strings):
+		.for_each(func(x:Strings):
 			x.b += "em"
 			x.a += x.b
 			)
 
 	var entity:= GFEntity.spawn(world) \
-		.set_name("Test")
-	entity.add_component(Strings, ["", "po"])
+		.set_name("Test") \
+		.add_component(Strings, ["", "po"])
 	var strings:Strings = entity.get_component(Strings)
 	assert_eq(strings.a, "")
 	assert_eq(strings.b, "po")
@@ -143,7 +140,7 @@ func test_strings():
 func test_byte_arrays():
 	world.system_builder() \
 		.with(ByteArrays) \
-		.for_each(func(_delta, x:ByteArrays):
+		.for_each(func(x:ByteArrays):
 			for i in range(x.a.size()):
 				x.a[i] += x.b[i]
 			)
@@ -162,22 +159,27 @@ func test_byte_arrays():
 
 	entity.delete()
 
+# test simple_systems textures
 func test_textures():
 	world.system_builder() \
 		.with(Textures) \
-		.for_each(func(_delta, x:Textures):
+		.for_each(func(x:Textures):
 			x.a = x.b
 			)
 
 	var entity:= GFEntity.spawn(world) \
 		.add_component(Textures) \
 		.set_name("Test")
+	prints("r")
 	entity.get_component(Textures).a = null
+	prints("t")
 	entity.get_component(Textures).b = load("res://icon.svg")
 
 	# Assert that setting Object to null works
 	assert_eq(entity.get_component(Textures).b, load("res://icon.svg"))
+	prints("a")
 	entity.get_component(Textures).b = null
+	prints("b")
 	assert_eq(entity.get_component(Textures).b, null)
 	entity.get_component(Textures).b = load("res://icon.svg")
 
@@ -209,7 +211,7 @@ func test_ref_counts():
 func test_arrays():
 	world.system_builder() \
 		.with(Arrays) \
-		.for_each(func(_delta, x:Arrays):
+		.for_each(func(x:Arrays):
 			for i in mini(x.a.size(), x.b.size()):
 				x.b[i] += x.a[i]
 			)
@@ -232,7 +234,7 @@ func test_arrays():
 func test_dicts():
 	world.system_builder() \
 		.with(Dicts) \
-		.for_each(func(_delta, x:Dicts):
+		.for_each(func(x:Dicts):
 			x.b["value"] += x.a["add_by"]
 			)
 
