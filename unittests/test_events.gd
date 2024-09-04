@@ -2,7 +2,6 @@
 extends GutTest
 
 var world:GFWorld
-var i:= 0
 
 func before_all():
 	world = GFWorld.new()
@@ -13,12 +12,12 @@ func after_all():
 #region Tests
 
 func test_on_add_event():
-	i = 0
+	var data:= {i=0}
 
 	world.observer_builder("flecs/core/OnAdd") \
 		.with(Ints) \
 		.for_each(func(_ints: Ints):
-			self.i += 1
+			data.i += 1
 			)
 
 	var e:= GFEntity.spawn(world) \
@@ -33,7 +32,7 @@ func test_on_add_event():
 
 	e3.add_component(Ints)
 
-	assert_eq(i, 2)
+	assert_eq(data.i, 2)
 
 	e.delete()
 	e2.delete()
@@ -42,12 +41,12 @@ func test_on_add_event():
 
 # test events on_set_event
 func test_on_set_event():
-	i = 0
-
-	world.observer_builder("flecs/core/on_set") \
+	var data:= {i=0}
+	world.observer_builder("flecs/core/OnSet") \
 		.with(Ints) \
 		.for_each(func(ints: Ints):
-			self.i += ints.a + ints.b
+			prints(data.i, ints.a, ints.b)
+			data.i += ints.a + ints.b
 			)
 
 	var e:= GFEntity.spawn(world) \
@@ -62,7 +61,7 @@ func test_on_set_event():
 
 	e3.add_component(Ints, [99, 2])
 
-	assert_eq(i, 2 + 31 + 99 + 2)
+	assert_eq(data.i, 2 + 31 + 99 + 2)
 
 	e.delete()
 	e2.delete()
@@ -71,17 +70,17 @@ func test_on_set_event():
 
 
 func test_on_add_event_with_objects():
-	i = 0
+	var data:= {i=0}
 	world.observer_builder("flecs/core/OnAdd") \
 		.with(Textures) \
 		.for_each(func(_ints: Textures):
-			self.i += 1
+			data.i += 1
 			)
 
 	var e:= GFEntity.spawn(world) \
 		.add_component(Textures) \
 		.set_name("WithInts")
-	assert_eq(i, 1)
+	assert_eq(data.i, 1)
 	assert_eq(e.get_component(Textures).a, null)
 	assert_eq(e.get_component(Textures).b, null)
 
@@ -89,11 +88,11 @@ func test_on_add_event_with_objects():
 
 	# In this test, the loaded textures will be auto freed by Godot if Glecs
 	# does not properly take ownership of them.
-	i = 0
+	data.i = 0
 	var e2:= GFEntity.spawn(world) \
 		.set_name("WithTextures")
 	e2.add_component(Textures, [load("res://icon.png"), load("res://icon.svg")])
-	assert_eq(i, 1)
+	assert_eq(data.i, 1)
 	assert_eq(e2.get_component(Textures).a, load("res://icon.png"))
 	assert_eq(e2.get_component(Textures).b, load("res://icon.svg"))
 
