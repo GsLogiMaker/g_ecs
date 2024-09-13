@@ -45,7 +45,6 @@ func test_on_set_event():
 	world.observer_builder("flecs/core/OnSet") \
 		.with(Ints) \
 		.for_each(func(ints: Ints):
-			prints(data.i, ints.a, ints.b)
 			data.i += ints.a + ints.b
 			)
 

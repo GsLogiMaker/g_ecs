@@ -26,7 +26,6 @@ func test_stuff():
 		.set_name("Test")
 	world.register_script(Bools)
 	var bools = e.get_component(Bools)
-	prints(bools, bools.get_script(), bools.get_script().get_global_name())
 	bools.a = true
 	bools.b = false
 

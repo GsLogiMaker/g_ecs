@@ -11,8 +11,7 @@ func after_all():
 
 #region Tests
 
-func test_pipelines():
-	pass
+# func test_pipelines():
 	#world.new_pipeline(&"first")
 	#world.new_pipeline(&"second")
 #
@@ -170,16 +169,12 @@ func test_textures():
 	var entity:= GFEntity.spawn(world) \
 		.add_component(Textures) \
 		.set_name("Test")
-	prints("r")
 	entity.get_component(Textures).a = null
-	prints("t")
 	entity.get_component(Textures).b = load("res://icon.svg")
 
 	# Assert that setting Object to null works
 	assert_eq(entity.get_component(Textures).b, load("res://icon.svg"))
-	prints("a")
 	entity.get_component(Textures).b = null
-	prints("b")
 	assert_eq(entity.get_component(Textures).b, null)
 	entity.get_component(Textures).b = load("res://icon.svg")
 

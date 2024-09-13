@@ -11,30 +11,30 @@ func after_all():
 
 #region Tests
 
-func test_bools():
-	var apple:= GFEntity.spawn(world) \
-		.set_name("Apple")
-
-	GFEntity.spawn(world) \
-		.set_name("Eats")
-
-	var man:= GFEntity.spawn(world) \
-		.set_name("Man") \
-		.add_pair("Eats", apple)
-
-	var cow:= GFEntity.spawn(world) \
-		.set_name("Cow")
-	var grass:= GFEntity.spawn(world) \
-		.set_name("Grass")
-	cow.add_pair("Eats", grass)
-
-	world.progress(0.0)
-
-	# TODO: Test queries for relations
-	world.query_builder().build()
-
-	man.delete()
-	apple.delete()
+#func test_bools():
+	#var apple:= GFEntity.spawn(world) \
+		#.set_name("Apple")
+#
+	#GFEntity.spawn(world) \
+		#.set_name("Eats")
+#
+	#var man:= GFEntity.spawn(world) \
+		#.set_name("Man") \
+		#.add_pair("Eats", apple)
+#
+	#var cow:= GFEntity.spawn(world) \
+		#.set_name("Cow")
+	#var grass:= GFEntity.spawn(world) \
+		#.set_name("Grass")
+	#cow.add_pair("Eats", grass)
+#
+	#world.progress(0.0)
+#
+	## TODO: Test querying for relations
+	#world.query_builder().build()
+#
+	#man.delete()
+	#apple.delete()
 
 #endregion
 

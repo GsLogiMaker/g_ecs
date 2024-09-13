@@ -5,7 +5,7 @@ reloadable = true
 
 [libraries]
 
-linux.release.x86_64 = "./bin/libglecs.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "./bin/libglecs.linux.template_release.x86_64.so"
 linux.debug.x86_64 = "./bin/libglecs.linux.template_debug.x86_64.so"
 
 windows.release.x86_64 = "./bin/release/glecs.dll"

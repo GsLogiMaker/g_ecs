@@ -11,7 +11,7 @@ addons/gut/gui/GutSceneTheme.tres
 unittest_log.xml
 test_results.xml
 
-logs/*
+logs/*.log
 
 # Ignore C++ build files
 addons/glecs/cpp/.sconsign.dblite
