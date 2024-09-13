@@ -62,17 +62,17 @@ jobs:
     - name: 🏔️ Define library cache key in env
       run: |
         printf "*** Setting key in env***"
-        echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+        printf "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define cpp cache key
       run: |
         printf "*** Setting key ***"
-        echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
+        printf "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define includes cache key
       run: |
         printf "*** Setting key ***"
-        echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
+        printf "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
 
     # --- Restore caches ---
 
@@ -116,12 +116,12 @@ jobs:
     - name: 🏔️ Define library cache key in env
       run: |
         printf "*** Setting key in env***"
-        echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+        printf "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
     - name: 🏔️ Define library cache key in output
       id: set_cache_key
       run: |
         printf "*** Setting key ***"
-        echo "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
+        printf "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
 
     # --- Save caches ---
 
