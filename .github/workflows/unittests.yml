@@ -17,11 +17,13 @@ jobs:
           # Linux
           - platform: linux
             arch: x86_64
-            os: ubuntu-latest
             glecs_lib: libglecs.linux.template_debug.x86_64.so
-          # - target: i686-unknown-linux-gnu
-          #   os: ubuntu-latest
-          #   glecs_lib: libglecs.so
+            os: ubuntu-latest
+          - platform: linux
+            arc: arm64
+            target: i686-unknown-linux-gnu
+            glecs_lib: libglecs.linux.template_debug.arm64.so
+            os: windows-latest
           # # Mac
           # - target: aarch64-apple-darwin
           #   os: macos-latest
@@ -86,15 +88,17 @@ jobs:
         path: addons/glecs/cpp/include
         key: ${{ env.include_key }}
 
-    # ---  ---
+    # --- Platform specific setup ---
 
     # - name: 🐧 Install GCC multilib for Linux i686 build
     #   if: ${{ matrix.target == 'i686-unknown-linux-gnu' && runner.os == 'Linux'}}
     #   run: sudo apt-get install gcc-multilib
 
-    # - name: 🪟 Install mingw for Windows build
+    # - name: 🪟 Install mingw for cross compiling from Linux to Windows
     #   if: ${{ matrix.target == 'x86_64-pc-windows-gnu' && runner.os == 'Linux' }}
-    #   run: sudo apt install gcc-mingw-w64
+    #   run: |
+    #     sudo apt install g++-mingw-w64-x86-64
+    #     sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
     # --- Compile Glecs ---
 
@@ -104,8 +108,7 @@ jobs:
 
     - name: Build C++ code
       run: |
-        cd addons/glecs/cpp
-        scons platform=${{ matrix.platform }} arch=${{ matrix.arch }}
+        scons --directory=addons/glecs/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
       #target=template_release
 
     # --- Define bin key ---
