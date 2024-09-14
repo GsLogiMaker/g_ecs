@@ -33,9 +33,9 @@ jobs:
           #   glecs_lib: libglecs.dylib
           # Windows
           - platform: windows
-          arch: x86_64
-          glecs_lib: libglecs.windows.template_debug.x86_64.dll
-          os: ubuntu-latest
+            arch: x86_64
+            glecs_lib: libglecs.windows.template_debug.x86_64.dll
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     outputs:
       # Linux

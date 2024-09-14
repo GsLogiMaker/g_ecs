@@ -1,9 +1,21 @@
 
 extends Control
 
+const GutConfig:= preload('res://addons/gut/gut_config.gd')
+const GutEditorGlobals:= preload('res://addons/gut/gui/editor_globals.gd')
+
 var mutex:= Mutex.new()
 
 var world:= GFWorld.new()
+
+var gut_runner:= preload("res://addons/gut/gui/GutRunner.tscn").instantiate()
+var gut_config:GutConfig= GutConfig.new()
+
+func _enter_tree() -> void:
+	gut_config.load_options(GutEditorGlobals.editor_run_gut_config_path)
+	gut_runner.ran_from_editor = false
+	gut_runner.set_gut_config(gut_config)
+	add_child(gut_runner)
 
 func _ready() -> void:
 	world.start_rest_api()
@@ -11,10 +23,20 @@ func _ready() -> void:
 	prints("Input ready")
 	var thread:= Thread.new()
 	thread.start(func():
+	##(func():
 		while true:
 			var stdin:= OS.read_string_from_stdin().strip_edges()
-			if stdin in ["exit", "quit", "close", "continue"]:
+			var args:= stdin.split(" ")
+			if args[0] in ["exit", "quit", "close", "continue"]:
 				break
+			if args[0] in ["test"]:
+				gut_config.options.tests = [args[1]] if args.size() > 1 else []
+				gut_config.options.unit_test_name = args[2] if args.size() > 2 else ""
+				gut_runner.run_tests.call_deferred()
+				continue
+			if args[0] in ["reset"]:
+				get_tree().change_scene_to_file.call_deferred("res://main.tscn")
+				continue
 			do_test.call_deferred()
 		)
 
@@ -37,8 +59,19 @@ func do_test():
 	test_script_register()
 	prints("Test done")
 
+class MyModule extends GFModule:
+	class SubModule extends GFModule:
+		const import_MyComponent = MyComponent
+		const import_std = preload("res://addons/glecs/gd/std/std.gd")
+
+	class SubModuleNamed extends GFModule:
+		func _register(_w:GFWorld) -> void:
+			set_name("MyNamedModule woo!")
+
 func test_script_register():
-	GFPair.from("flecs/core/IsA", "")
+	world.register_script(MyModule)
+	prints("Registered module", world.coerce_id(MyModule))
+	GFEntity.spawn()
 
 class MyComponent extends GFComponent:
 	func _build(builder: GFComponentBuilder) -> void:
