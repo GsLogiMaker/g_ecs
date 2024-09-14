@@ -23,7 +23,7 @@ jobs:
             arc: arm64
             target: i686-unknown-linux-gnu
             glecs_lib: libglecs.linux.template_debug.arm64.so
-            os: windows-latest
+            os: ubuntu-latest
           # # Mac
           # - target: aarch64-apple-darwin
           #   os: macos-latest
@@ -62,17 +62,17 @@ jobs:
     - name: 🏔️ Define library cache key in env
       run: |
         printf "*** Setting key in env***"
-        printf "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+        echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define cpp cache key
       run: |
         printf "*** Setting key ***"
-        printf "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
+        echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define includes cache key
       run: |
         printf "*** Setting key ***"
-        printf "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
+        echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
 
     # --- Restore caches ---
 
@@ -94,11 +94,11 @@ jobs:
     #   if: ${{ matrix.target == 'i686-unknown-linux-gnu' && runner.os == 'Linux'}}
     #   run: sudo apt-get install gcc-multilib
 
-    # - name: 🪟 Install mingw for cross compiling from Linux to Windows
-    #   if: ${{ matrix.target == 'x86_64-pc-windows-gnu' && runner.os == 'Linux' }}
-    #   run: |
-    #     sudo apt install g++-mingw-w64-x86-64
-    #     sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+    - name: 🪟 Install mingw for cross compiling from Linux to Windows
+      if: ${{ matrix.target == 'x86_64-pc-windows-gnu' && runner.os == 'Linux' }}
+      run: |
+        sudo apt install g++-mingw-w64-x86-64
+        sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
     # --- Compile Glecs ---
 
@@ -116,12 +116,12 @@ jobs:
     - name: 🏔️ Define library cache key in env
       run: |
         printf "*** Setting key in env***"
-        printf "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+        echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
     - name: 🏔️ Define library cache key in output
       id: set_cache_key
       run: |
         printf "*** Setting key ***"
-        printf "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
+        echo "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
 
     # --- Save caches ---
 
