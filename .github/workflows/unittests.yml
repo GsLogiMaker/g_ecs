@@ -92,11 +92,11 @@ jobs:
     # --- Platform specific setup ---
 
     # - name: 🐧 Install GCC multilib for Linux i686 build
-    #   if: ${{ matrix.target == 'i686-unknown-linux-gnu' && runner.os == 'Linux'}}
+    #   if: ${{ matrix.platform == 'linux' && matrix.arch == 'i686' && runner.os == 'Linux'}}
     #   run: sudo apt-get install gcc-multilib
 
     - name: 🪟 Install mingw for cross compiling from Linux to Windows
-      if: ${{ matrix.target == 'windows' && runner.os == 'Linux' }}
+      if: ${{ matrix.platform == 'windows' && runner.os == 'Linux' }}
       run: |
         sudo apt install g++-mingw-w64-x86-64
         sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
