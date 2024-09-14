@@ -96,7 +96,7 @@ jobs:
     #   run: sudo apt-get install gcc-multilib
 
     - name: 🪟 Install mingw for cross compiling from Linux to Windows
-      if: ${{ matrix.target == 'x86_64-pc-windows-gnu' && runner.os == 'Linux' }}
+      if: ${{ matrix.target == 'windows' && runner.os == 'Linux' }}
       run: |
         sudo apt install g++-mingw-w64-x86-64
         sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
