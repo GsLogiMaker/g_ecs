@@ -8,8 +8,8 @@ reloadable = true
 linux.release.x86_64 = "./bin/libglecs.linux.template_release.x86_64.so"
 linux.debug.x86_64 = "./bin/libglecs.linux.template_debug.x86_64.so"
 
-windows.release.x86_64 = "./bin/release/glecs.dll"
-windows.debug.x86_64 = "./bin/debug/glecs.dll"
+windows.release.x86_64 = "./bin/release/libglecs.windows.template_release.x86_64.dll"
+windows.debug.x86_64 = "./bin/debug/libglecs.windows.template_debug.x86_64.dll"
 
 macos.release.x86_64 = "./bin/release/libglecs.dylib"
 macos.debug.x86_64 = "./bin/debug/libglecs.dylib"
