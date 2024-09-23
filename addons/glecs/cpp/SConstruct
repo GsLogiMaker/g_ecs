@@ -36,9 +36,6 @@ def main():
     else:
         env.Append(CXXFLAGS=['-std=c++20'])
 
-    if "windows" in platform:
-        env.Append(CXXFLAGS=["-mwindows"])
-
     # For reference:
     # - CCFLAGS are compilation flags shared between C and C++
     # - CFLAGS are for C-specific compilation flags

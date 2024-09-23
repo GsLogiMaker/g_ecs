@@ -24,11 +24,12 @@ jobs:
           #   target: i686-unknown-linux-gnu
           #   glecs_lib: libglecs.linux.template_debug.arm64.so
           #   os: ubuntu-latest
-          # # Mac
+          # Mac
+          - platform: macos
+            arch: x86_64
+            glecs_lib: libglecs.macos.template_debug.x86_64.dylib
+            os: macos-latest
           # - target: aarch64-apple-darwin
-          #   os: macos-latest
-          #   glecs_lib: libglecs.dylib
-          # - target: x86_64-apple-darwin
           #   os: macos-latest
           #   glecs_lib: libglecs.dylib
           # Windows
@@ -42,8 +43,8 @@ jobs:
       bin_key_linux_x86_64: ${{ steps.set_cache_key.outputs.bin_key_linux_x86_64 }}
       # i686-linux_bin_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_bin_key }}
       # Mac
-      # aarch64-mac_bin_key: ${{ steps.set_cache_key.outputs.x86_64-apple-darwin_bin_key }}
-      # x86_64-mac_bin_key: ${{ steps.set_cache_key.outputs.aarch64-apple-darwin_bin_key }}
+      bin_key_mac_x86_64: ${{ steps.set_cache_key.outputs.bin_key_mac_x86_64 }}
+      # bin_key_mac_i686: ${{ steps.set_cache_key.outputs.bin_key_mac_i686 }}
       # Windows
       bin_key_windows_x86_64: ${{ steps.set_cache_key.outputs.bin_key_windows_x86_64 }}
     steps:
