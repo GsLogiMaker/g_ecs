@@ -29,9 +29,12 @@ def main():
 
     # Set cpp version
     for item in env['CXXFLAGS']:
-        if "-std=" in item:
+        if "std" in item:
             env['CXXFLAGS'].remove(item)
-    env.Append(CXXFLAGS=['-std=c++20'])
+    if "windows" in platform :
+        env.Append(CXXFLAGS=['/std:c++20'])
+    else:
+        env.Append(CXXFLAGS=['-std=c++20'])
 
     if "windows" in platform:
         env.Append(CXXFLAGS=["-mwindows"])
