@@ -35,17 +35,17 @@ jobs:
           - platform: windows
             arch: x86_64
             glecs_lib: libglecs.windows.template_debug.x86_64.dll
-            os: ubuntu-latest
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     outputs:
       # Linux
       bin_key_linux_x86_64: ${{ steps.set_cache_key.outputs.bin_key_linux_x86_64 }}
-      i686-linux_bin_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_bin_key }}
+      # i686-linux_bin_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_bin_key }}
       # Mac
-      aarch64-mac_bin_key: ${{ steps.set_cache_key.outputs.x86_64-apple-darwin_bin_key }}
-      x86_64-mac_bin_key: ${{ steps.set_cache_key.outputs.aarch64-apple-darwin_bin_key }}
+      # aarch64-mac_bin_key: ${{ steps.set_cache_key.outputs.x86_64-apple-darwin_bin_key }}
+      # x86_64-mac_bin_key: ${{ steps.set_cache_key.outputs.aarch64-apple-darwin_bin_key }}
       # Windows
-      x86_64-windows_bin_key: ${{ steps.set_cache_key.outputs.x86_64-pc-windows-gnu_bin_key }}
+      bin_key_windows_x86_64: ${{ steps.set_cache_key.outputs.bin_key_windows_x86_64 }}
     steps:
     - name: 🐙 Setup git environment
       uses: actions/checkout@v4
@@ -60,20 +60,20 @@ jobs:
 
     # --- Define keys ---
 
-    - name: 🏔️ Define library cache key in env
-      run: |
-        printf "*** Setting key in env***"
-        echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+    - name: 🏔️ Define library cache key in env Linux
+      # if: ${{ matrix.platform == 'linux'}}
+      shell: cmd
+      run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
 
-    - name: 🏔️ Define cpp cache key
-      run: |
-        printf "*** Setting key ***"
-        echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
+    - name: 🏔️ Define cpp cache key Linux
+      # if: ${{ matrix.platform == 'linux'}}
+      shell: cmd
+      run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
 
-    - name: 🏔️ Define includes cache key
-      run: |
-        printf "*** Setting key ***"
-        echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
+    - name: 🏔️ Define includes cache key Linux
+      # if: ${{ matrix.platform == 'linux'}}
+      shell: cmd
+      run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
 
     # --- Restore caches ---
 
