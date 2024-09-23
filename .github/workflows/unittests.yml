@@ -62,17 +62,14 @@ jobs:
 
     - name: 🏔️ Define library cache key in env Linux
       # if: ${{ matrix.platform == 'linux'}}
-      shell: cmd
       run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define cpp cache key Linux
       # if: ${{ matrix.platform == 'linux'}}
-      shell: cmd
       run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define includes cache key Linux
       # if: ${{ matrix.platform == 'linux'}}
-      shell: cmd
       run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
 
     # --- Restore caches ---
