@@ -28,7 +28,9 @@ def main():
     shlib_suffix:str = env["SHLIBSUFFIX"]
 
     # Set cpp version
-    env['CXXFLAGS'].remove('-std=c++17')
+    for item in env['CXXFLAGS']:
+        if "-std=" in item:
+            env['CXXFLAGS'].remove(item)
     env.Append(CXXFLAGS=['-std=c++20'])
 
     if "windows" in platform:
