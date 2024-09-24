@@ -173,25 +173,36 @@ jobs:
             key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
             enableCrossOsArchive: true
 
-        - name: 🤖 Run Godot unit tests
+        - name: 🤖 Setup Godot
           id: run-godot-tests
-          uses: croconut/godot-tester@v5.1
+          uses: lihop/setup-godot@v2
           with:
-            # required
-            version: "4.3"
-            is-mono: "false"
-            # the folder with your project.godot file in it
-            path: "./"
-            # the ratio of tests that must pass for this action to pass
-            # e.g. 0.6 means 60% of your tests must pass
-            minimum-pass: "1.0"
-            # the directory containing Gut tests
-            test-dir: "res://unittests"
-            # default is GUTs default: 'res://.gutconfig.json'; set this to load a different config file
-            config-file: "res://.gut_editor_config.json"
-            # relative path to the xml file to read / write GUT's results from, recommended
-            # for direct-scene users to check this file if you have issues
-            result-output-file: "test_results.xml"
+            version: 4.3-stable
+            bits: 64
+            mono: false
+
+        - name: Run Glecs tests
+          run: godot --headless --script unittests.gd
+
+        # - name: 🤖 Run Godot unit tests
+        #   id: run-godot-tests
+        #   uses: croconut/godot-tester@v5.1
+        #   with:
+        #     # required
+        #     version: "4.3"
+        #     is-mono: "false"
+        #     # the folder with your project.godot file in it
+        #     path: "./"
+        #     # the ratio of tests that must pass for this action to pass
+        #     # e.g. 0.6 means 60% of your tests must pass
+        #     minimum-pass: "1.0"
+        #     # the directory containing Gut tests
+        #     test-dir: "res://unittests"
+        #     # default is GUTs default: 'res://.gutconfig.json'; set this to load a different config file
+        #     config-file: "res://.gut_editor_config.json"
+        #     # relative path to the xml file to read / write GUT's results from, recommended
+        #     # for direct-scene users to check this file if you have issues
+        #     result-output-file: "test_results.xml"
 
         - name: 📄 Print Godot logs
           if: failure() && steps.run-godot-tests.outcome != 'success'
@@ -202,13 +213,6 @@ jobs:
             echo "***"
             echo ""
             printf "$(cat logs/godot.log)\n"
-
-            echo ""
-            echo "***"
-            echo "GODOT TEST RESULTS"
-            echo "***"
-            echo ""
-            echo $(cat test_results.xml)
 
             echo ""
             echo "***"
