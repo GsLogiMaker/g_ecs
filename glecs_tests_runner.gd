@@ -47,7 +47,22 @@ func run_tests():
 			or props.passing == 0
 		):
 			# Test suite failed. Exit with error code.
-			get_tree().quit(1)
+			prints("Closing with error...")
+			#get_tree().quit(1)
+			OS.crash("Glecs unittest(s) failed")
 			return
-		get_tree().quit(OK)
+			
+		var since_try_kill:= 0.0
+		while true:
+			prints("Closing with passing...")
+			get_tree().quit(OK)
+			await get_tree().process_frame
+			since_try_kill +=- get_process_delta_time()
+			if since_try_kill >= 5.0:
+				# Program won't quit. Force
+				# kill program. (Exit code will be an error)
+				OS.kill(OS.get_process_id())
+			if since_try_kill >= 10.0:
+				# Give up
+				break
 		return
