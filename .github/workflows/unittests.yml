@@ -184,7 +184,7 @@ jobs:
         - name: Run Godot import
           run: godot --headless --import
 
-          - name: Run Glecs tests
+        - name: Run Glecs tests
           run: godot --headless --script unittests.gd
 
         # - name: 🤖 Run Godot unit tests
