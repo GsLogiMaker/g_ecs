@@ -173,7 +173,7 @@ jobs:
             key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
             enableCrossOsArchive: true
 
-        - name: 🤖 Setup Godot
+        - name: 🤖 Setup Godot binary
           id: run-godot-tests
           uses: lihop/setup-godot@v2
           with:
@@ -181,7 +181,10 @@ jobs:
             bits: 64
             mono: false
 
-        - name: Run Glecs tests
+        - name: Run Godot import
+          run: godot --headless --import
+
+          - name: Run Glecs tests
           run: godot --headless --script unittests.gd
 
         # - name: 🤖 Run Godot unit tests
