@@ -1,7 +1,7 @@
 
 extends SceneTree
 
-const TestRunner:= preload("res://glecs_test_runner.tscn")
+const TestRunner:= preload("res://glecs_tests_runner.tscn")
 
 func _initialize():
 	change_scene_to_packed(TestRunner)

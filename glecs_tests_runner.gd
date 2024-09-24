@@ -33,7 +33,12 @@ func run_tests():
 			.get_results_dictionary(gut_runner._gut) \
 			.test_scripts \
 			.props
-		if props.pending + props.failures + props.errors != 0:
+		if (
+			props.size() == 0
+			or props.pending + props.failures + props.errors != 0
+			or props.tests != props.passing
+			or props.passing == 0
+		):
 			get_tree().quit(1)
 			return
 		get_tree().quit(OK)
