@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://den2fqny506nx"]
+
+[ext_resource type="Script" path="res://glecs_tests_runner.gd" id="1_b4pvv"]
+
+[node name="GlecsUnittests" type="Node"]
+script = ExtResource("1_b4pvv")
+exit_on_test_completion = true
