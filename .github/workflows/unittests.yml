@@ -149,7 +149,13 @@ jobs:
 
   run_test_suite:
     needs: compile_glecs
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
         - name: 🐙 Setup git environment
           uses: actions/checkout@v4

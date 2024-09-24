@@ -543,7 +543,7 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 				if (id == 0) {
 					ERR(0,
 						"Failed to coerce Script to ID\n",
-						"Script ", script, " is not registerd in world"
+						"Script ", script, " is not registered in world"
 					);
 				}
 				return id;
@@ -952,6 +952,7 @@ void GFWorld::deinit_gd_type_ptr(
 	case(Variant::Type::PACKED_VECTOR2_ARRAY): (*(PackedVector2Array*)ptr).~PackedVector2Array(); break;
 	case(Variant::Type::PACKED_VECTOR3_ARRAY): (*(PackedVector3Array*)ptr).~PackedVector3Array(); break;
 	case(Variant::Type::PACKED_COLOR_ARRAY): (*(PackedColorArray*)ptr).~PackedColorArray(); break;
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): (*(PackedVector4Array*)ptr).~PackedVector4Array(); break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be deinitialized";
 	}
 }
@@ -1018,6 +1019,7 @@ void GFWorld::init_gd_type_ptr(
 	case(Variant::Type::PACKED_VECTOR2_ARRAY): new(ptr) PackedVector2Array(); break;
 	case(Variant::Type::PACKED_VECTOR3_ARRAY): new(ptr) PackedVector3Array(); break;
 	case(Variant::Type::PACKED_COLOR_ARRAY): new(ptr) PackedColorArray(); break;
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): new(ptr) PackedVector4Array(); break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be initialized";
 	}
 }

@@ -1,7 +1,6 @@
 
 #include "entity.h"
 #include "godot_cpp/classes/script.hpp"
-#include "registerable_entity.h"
 #include "utils.h"
 // needed here because entity.h does not include
 // component.h, but uses forward declaration instead

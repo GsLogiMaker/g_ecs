@@ -152,8 +152,8 @@ Variant GFComponent::member_value_as_primitive(
 		case ecs_primitive_kind_t::EcsI64: return *(int64_t*) ptr;
 		case ecs_primitive_kind_t::EcsF32: return *(float*) ptr;
 		case ecs_primitive_kind_t::EcsF64: return *(double*) ptr;
-		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\nCan't hanlde uptr");
-		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\nCan't hanlde iptr");
+		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\nCan't handle uptr");
+		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\nCan't handle iptr");
 		case ecs_primitive_kind_t::EcsString: return *(char**) ptr;
 		case ecs_primitive_kind_t::EcsEntity: return *(ecs_entity_t*) ptr;
 		case ecs_primitive_kind_t::EcsId: return *(ecs_entity_t*) ptr;

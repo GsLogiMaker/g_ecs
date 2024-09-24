@@ -1,7 +1,6 @@
 
 #include "registerable_entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 
 #include <flecs.h>
 #include <godot_cpp/core/class_db.hpp>
