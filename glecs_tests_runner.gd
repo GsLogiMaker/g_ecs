@@ -35,10 +35,18 @@ func run_tests():
 			.props
 		if (
 			props.size() == 0
+			or null in [
+				props.get("pending"),
+				props.get("failures"),
+				props.get("errors"),
+				props.get("tests"),
+				props.get("passing"),
+			]
 			or props.pending + props.failures + props.errors != 0
 			or props.tests != props.passing
 			or props.passing == 0
 		):
+			# Test suite failed. Exit with error code.
 			get_tree().quit(1)
 			return
 		get_tree().quit(OK)
