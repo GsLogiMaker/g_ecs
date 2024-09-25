@@ -26,7 +26,6 @@ func run_tests():
 	gut_config.options.tests = []
 	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
-	prints("post run tests A")
 	
 	# Wait for tests up to 10 seconds
 	var data:= {tests_done = false}

@@ -174,7 +174,6 @@ jobs:
             enableCrossOsArchive: true
 
         - name: 🤖 Setup Godot binary
-          id: run-godot-tests
           uses: lihop/setup-godot@v2
           with:
             version: 4.3-stable
@@ -185,6 +184,7 @@ jobs:
           run: godot --headless --import
 
         - name: Run Glecs tests
+          id: run-godot-tests
           run: godot --headless --script unittests.gd
 
         # - name: 🤖 Run Godot unit tests
