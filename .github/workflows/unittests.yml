@@ -213,19 +213,12 @@ jobs:
         - name: 📝 Run Glecs tests
           id: run-godot-tests
           shell: bash
-          run: godot --headless --script unittests.gd
+          run: godot --script unittests.gd --headless --verbose
 
         - name: 📄 Debug print when tests error
           shell: bash
           if: failure() && steps.run-godot-tests.outcome != 'success'
           run: |
-            echo ""
-            echo "***"
-            echo "GODOT LOG"
-            echo "***"
-            echo ""
-            printf "$(cat logs/godot.log)\n"
-
             echo ""
             echo "***"
             echo "LS"
