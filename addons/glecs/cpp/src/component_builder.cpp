@@ -115,7 +115,7 @@ void GFComponentBuilder::build() {
 		.move = GFComponentBuilder::move,
 		.binding_ctx = new HooksBindingContext(world),
 		.binding_ctx_free = [](void* ptr) {
-			HooksBindingContext* ctx = (HooksBindingContext*)ptr;
+			HooksBindingContext* ctx = static_cast<HooksBindingContext*>(ptr);
 			delete ctx;
 		}
 	}; ecs_set_hooks_id(raw, component_id, &hooks);
@@ -144,21 +144,21 @@ void GFComponentBuilder::_bind_methods() {
 // **********************************************
 
 void GFComponentBuilder::ctor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
-	uint8_t* list = (uint8_t*)ptr;
-	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
+	uint8_t* list = static_cast<uint8_t*>(ptr);
+	HooksBindingContext* ctx = static_cast<HooksBindingContext*>(type_info->hooks.binding_ctx);
 
 	for (int i=0; i != count; i++) {
 		uint8_t* item = &list[i*type_info->size];
-		ctx->world->init_component_ptr((void*)item, type_info->component, Variant());
+		ctx->world->init_component_ptr(static_cast<void*>(item), type_info->component, Variant());
 	}
 }
 void GFComponentBuilder::dtor(void* ptr, int32_t count, const ecs_type_info_t* type_info) {
-	uint8_t* list = (uint8_t*)ptr;
-	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
+	uint8_t* list = static_cast<uint8_t*>(ptr);
+	HooksBindingContext* ctx = static_cast<HooksBindingContext*>(type_info->hooks.binding_ctx);
 
 	for (int i=0; i != count; i++) {
 		uint8_t* item = &list[i*type_info->size];
-		ctx->world->deinit_component_ptr((void*)item, type_info->component);
+		ctx->world->deinit_component_ptr(static_cast<void*>(item), type_info->component);
 	}
 }
 void GFComponentBuilder::copy(
@@ -167,15 +167,15 @@ void GFComponentBuilder::copy(
 	int32_t count,
 	const ecs_type_info_t* type_info
 ) {
-	const uint8_t* src_list = (const uint8_t*)src_ptr;
-	uint8_t* dst_list = (uint8_t*)dst_ptr;
-	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
+	const uint8_t* src_list = static_cast<const uint8_t*>(src_ptr);
+	uint8_t* dst_list = static_cast<uint8_t*>(dst_ptr);
+	HooksBindingContext* ctx = static_cast<HooksBindingContext*>(type_info->hooks.binding_ctx);
 
 	for (int i=0; i != count; i++) {
 		const uint8_t* src = &src_list[i*type_info->size];
 		uint8_t* dst = &dst_list[i*type_info->size];
 
-		ctx->world->copy_component_ptr((const void*)src, (void*)dst, type_info->component);
+		ctx->world->copy_component_ptr(static_cast<const void*>(src), static_cast<void*>(dst), type_info->component);
 	}
 }
 void GFComponentBuilder::move(
@@ -184,15 +184,15 @@ void GFComponentBuilder::move(
 	int32_t count,
 	const ecs_type_info_t* type_info
 ) {
-	uint8_t* src_list = (uint8_t*)src_ptr;
-	uint8_t* dst_list = (uint8_t*)dst_ptr;
-	HooksBindingContext* ctx = (HooksBindingContext*) type_info->hooks.binding_ctx;
+	uint8_t* src_list = static_cast<uint8_t*>(src_ptr);
+	uint8_t* dst_list = static_cast<uint8_t*>(dst_ptr);
+	HooksBindingContext* ctx = static_cast<HooksBindingContext*>(type_info->hooks.binding_ctx);
 
 	for (int i=0; i != count; i++) {
 		uint8_t* src = &src_list[i*type_info->size];
 		uint8_t* dst = &dst_list[i*type_info->size];
 
-		ctx->world->copy_component_ptr((void*)src, (void*)dst, type_info->component);
+		ctx->world->copy_component_ptr(static_cast<void*>(src), static_cast<void*>(dst), type_info->component);
 	}
 }
 

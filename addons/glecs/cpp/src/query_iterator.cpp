@@ -35,7 +35,9 @@ bool GFQueryIterator::_iter_next(Variant arg) {
 		);
 	}
 
-	QueryIterationContext* ctx = (QueryIterationContext*) iterator.query->binding_ctx;
+	QueryIterationContext* ctx = static_cast<QueryIterationContext*>(
+		iterator.query->binding_ctx
+	);
 
 	if (index == iterator.count) {
 		index = 0;
@@ -51,7 +53,9 @@ bool GFQueryIterator::_iter_next(Variant arg) {
 	return !is_done();
 }
 Variant GFQueryIterator::_iter_get(Variant arg) {
-	QueryIterationContext* ctx = (QueryIterationContext*) iterator.query->binding_ctx;
+	QueryIterationContext* ctx = static_cast<QueryIterationContext*>(
+		iterator.query->binding_ctx
+	);
 	return ctx->comp_ref_args;
 }
 

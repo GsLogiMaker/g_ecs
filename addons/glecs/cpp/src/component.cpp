@@ -107,8 +107,10 @@ Variant GFComponent::getm(String member) {
 
 void* GFComponent::get_member_ptr_mut_at(int offset) {
 	ecs_world_t* raw = get_world()->raw();
-	int8_t* bytes = (int8_t*) ecs_get_mut_id(raw, get_source_id(), get_id());
-	return (void*) &bytes[offset];
+	int8_t* bytes = static_cast<int8_t*>(
+		ecs_get_mut_id(raw, get_source_id(), get_id())
+	);
+	return static_cast<void*>(&bytes[offset]);
 }
 
 const EcsMember* GFComponent::get_member_data(String member) {
@@ -139,24 +141,24 @@ Variant GFComponent::member_value_as_primitive(
 	ecs_primitive_kind_t primitive
 ) {
 	switch (primitive) {
-		case ecs_primitive_kind_t::EcsBool: return *(bool*) ptr;
-		case ecs_primitive_kind_t::EcsChar: return *(char*) ptr;
-		case ecs_primitive_kind_t::EcsByte: return *(uint8_t*) ptr;
-		case ecs_primitive_kind_t::EcsU8: return *(uint8_t*) ptr;
-		case ecs_primitive_kind_t::EcsU16: return *(uint16_t*) ptr;
-		case ecs_primitive_kind_t::EcsU32: return *(uint32_t*) ptr;
-		case ecs_primitive_kind_t::EcsU64: return *(uint64_t*) ptr;
-		case ecs_primitive_kind_t::EcsI8: return *(int8_t*) ptr;
-		case ecs_primitive_kind_t::EcsI16: return *(int16_t*) ptr;
-		case ecs_primitive_kind_t::EcsI32: return *(int32_t*) ptr;
-		case ecs_primitive_kind_t::EcsI64: return *(int64_t*) ptr;
-		case ecs_primitive_kind_t::EcsF32: return *(float*) ptr;
-		case ecs_primitive_kind_t::EcsF64: return *(double*) ptr;
+		case ecs_primitive_kind_t::EcsBool: return *static_cast<bool*>(ptr);
+		case ecs_primitive_kind_t::EcsChar: return *static_cast<char*>(ptr);
+		case ecs_primitive_kind_t::EcsByte: return *static_cast<uint8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU8: return *static_cast<uint8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU16: return *static_cast<uint16_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU32: return *static_cast<uint32_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU64: return *static_cast<uint64_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI8: return *static_cast<int8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI16: return *static_cast<int16_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI32: return *static_cast<int32_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI64: return *static_cast<int64_t*>(ptr);
+		case ecs_primitive_kind_t::EcsF32: return *static_cast<float*>(ptr);
+		case ecs_primitive_kind_t::EcsF64: return *static_cast<double*>(ptr);
 		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\nCan't handle uptr");
 		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\nCan't handle iptr");
-		case ecs_primitive_kind_t::EcsString: return *(char**) ptr;
-		case ecs_primitive_kind_t::EcsEntity: return *(ecs_entity_t*) ptr;
-		case ecs_primitive_kind_t::EcsId: return *(ecs_entity_t*) ptr;
+		case ecs_primitive_kind_t::EcsString: return *static_cast<char**>(ptr);
+		case ecs_primitive_kind_t::EcsEntity: return *static_cast<ecs_entity_t*>(ptr);
+		case ecs_primitive_kind_t::EcsId: return *static_cast<ecs_entity_t*>(ptr);
 		default: ERR(nullptr, "Can't get primitive\nUnknown primitive type");
 	}
 }
@@ -182,44 +184,44 @@ Variant GFComponent::member_value_as_type(
 			"Can't convert type ", ecs_get_name(raw, type), " to Variant"
 		);
 	}
-	case(Variant::Type::BOOL): return Variant( *(bool*) ptr );
-	case(Variant::Type::INT): return Variant( *(int64_t*) ptr );
-	case(Variant::Type::FLOAT): return Variant( *(double*) ptr );
-	case(Variant::Type::STRING): return Variant( *(String*) ptr );
-	case(Variant::Type::VECTOR2): return Variant( *(Vector2*) ptr );
-	case(Variant::Type::VECTOR2I): return Variant( *(Vector2i*) ptr );
-	case(Variant::Type::RECT2): return Variant( *(Rect2*) ptr );
-	case(Variant::Type::RECT2I): return Variant( *(Rect2i*) ptr );
-	case(Variant::Type::VECTOR3): return Variant( *(Vector3*) ptr );
-	case(Variant::Type::VECTOR3I): return Variant( *(Vector3i*) ptr );
-	case(Variant::Type::TRANSFORM2D): return Variant( *(Transform2D*) ptr );
-	case(Variant::Type::VECTOR4): return Variant( *(Vector4*) ptr );
-	case(Variant::Type::VECTOR4I): return Variant( *(Vector4i*) ptr );
-	case(Variant::Type::PLANE): return Variant( *(Plane*) ptr );
-	case(Variant::Type::QUATERNION): return Variant( *(Quaternion*) ptr );
-	case(Variant::Type::AABB): return Variant( *(AABB*) ptr );
-	case(Variant::Type::BASIS): return Variant( *(Basis*) ptr );
-	case(Variant::Type::TRANSFORM3D): return Variant( *(Transform3D*) ptr );
-	case(Variant::Type::PROJECTION): return Variant( *(Projection*) ptr );
-	case(Variant::Type::COLOR): return Variant( *(Color*) ptr );
-	case(Variant::Type::STRING_NAME): return Variant( *(StringName*) ptr );
-	case(Variant::Type::NODE_PATH): return Variant( *(NodePath*) ptr );
-	case(Variant::Type::RID): return Variant( *(RID*) ptr );
-	case(Variant::Type::OBJECT): return Variant( *(Variant*) ptr );
-	case(Variant::Type::CALLABLE): return Variant( *(Callable*) ptr );
-	case(Variant::Type::SIGNAL): return Variant( *(Signal*) ptr );
-	case(Variant::Type::DICTIONARY): return *(Dictionary*) ptr;
-	case(Variant::Type::ARRAY): return *(Array*) ptr;
-	case(Variant::Type::PACKED_BYTE_ARRAY): return Variant( *(PackedByteArray*) ptr );
-	case(Variant::Type::PACKED_INT32_ARRAY): return Variant( *(PackedInt32Array*) ptr );
-	case(Variant::Type::PACKED_INT64_ARRAY): return Variant( *(PackedInt64Array*) ptr );
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): return Variant( *(PackedFloat32Array*) ptr );
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): return Variant( *(PackedFloat64Array*) ptr );
-	case(Variant::Type::PACKED_STRING_ARRAY): return Variant( *(PackedStringArray*) ptr );
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *(PackedVector2Array*) ptr );
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *(PackedVector3Array*) ptr );
-	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *(PackedColorArray*) ptr );
-	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *(PackedVector4Array*) ptr );
+	case(Variant::Type::BOOL): return Variant( *static_cast<bool*>(ptr) );
+	case(Variant::Type::INT): return Variant( *static_cast<int64_t*>(ptr) );
+	case(Variant::Type::FLOAT): return Variant( *static_cast<double*>(ptr) );
+	case(Variant::Type::STRING): return Variant( *static_cast<String*>(ptr) );
+	case(Variant::Type::VECTOR2): return Variant( *static_cast<Vector2*>(ptr) );
+	case(Variant::Type::VECTOR2I): return Variant( *static_cast<Vector2i*>(ptr) );
+	case(Variant::Type::RECT2): return Variant( *static_cast<Rect2*>(ptr) );
+	case(Variant::Type::RECT2I): return Variant( *static_cast<Rect2i*>(ptr) );
+	case(Variant::Type::VECTOR3): return Variant( *static_cast<Vector3*>(ptr) );
+	case(Variant::Type::VECTOR3I): return Variant( *static_cast<Vector3i*>(ptr) );
+	case(Variant::Type::TRANSFORM2D): return Variant( *static_cast<Transform2D*>(ptr) );
+	case(Variant::Type::VECTOR4): return Variant( *static_cast<Vector4*>(ptr) );
+	case(Variant::Type::VECTOR4I): return Variant( *static_cast<Vector4i*>(ptr) );
+	case(Variant::Type::PLANE): return Variant( *static_cast<Plane*>(ptr) );
+	case(Variant::Type::QUATERNION): return Variant( *static_cast<Quaternion*>(ptr) );
+	case(Variant::Type::AABB): return Variant( *static_cast<AABB*>(ptr) );
+	case(Variant::Type::BASIS): return Variant( *static_cast<Basis*>(ptr) );
+	case(Variant::Type::TRANSFORM3D): return Variant( *static_cast<Transform3D*>(ptr) );
+	case(Variant::Type::PROJECTION): return Variant( *static_cast<Projection*>(ptr) );
+	case(Variant::Type::COLOR): return Variant( *static_cast<Color*>(ptr) );
+	case(Variant::Type::STRING_NAME): return Variant( *static_cast<StringName*>(ptr) );
+	case(Variant::Type::NODE_PATH): return Variant( *static_cast<NodePath*>(ptr) );
+	case(Variant::Type::RID): return Variant( *static_cast<RID*>(ptr) );
+	case(Variant::Type::OBJECT): return Variant( *static_cast<Variant*>(ptr) );
+	case(Variant::Type::CALLABLE): return Variant( *static_cast<Callable*>(ptr) );
+	case(Variant::Type::SIGNAL): return Variant( *static_cast<Signal*>(ptr) );
+	case(Variant::Type::DICTIONARY): return *static_cast<Dictionary*>(ptr);
+	case(Variant::Type::ARRAY): return *static_cast<Array*>(ptr);
+	case(Variant::Type::PACKED_BYTE_ARRAY): return Variant( *static_cast<PackedByteArray*>(ptr) );
+	case(Variant::Type::PACKED_INT32_ARRAY): return Variant( *static_cast<PackedInt32Array*>(ptr) );
+	case(Variant::Type::PACKED_INT64_ARRAY): return Variant( *static_cast<PackedInt64Array*>(ptr) );
+	case(Variant::Type::PACKED_FLOAT32_ARRAY): return Variant( *static_cast<PackedFloat32Array*>(ptr) );
+	case(Variant::Type::PACKED_FLOAT64_ARRAY): return Variant( *static_cast<PackedFloat64Array*>(ptr) );
+	case(Variant::Type::PACKED_STRING_ARRAY): return Variant( *static_cast<PackedStringArray*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *static_cast<PackedVector2Array*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *static_cast<PackedVector3Array*>(ptr) );
+	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *static_cast<PackedColorArray*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *static_cast<PackedVector4Array*>(ptr) );
 	case(Variant::Type::VARIANT_MAX): throw "Can't get type VARIANT_MAX";
 	}
 
@@ -273,8 +275,8 @@ void GFComponent::build_data_from_variant(
 					// No member with that name exists, skip
 					continue;
 				}
-				void* member_ptr = (void*)(
-					((uint8_t*)output) + member_data->offset
+				void* member_ptr = static_cast<void*>(
+					static_cast<uint8_t*>(output) + member_data->offset
 				);
 				// Set member from dictionary
 				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
@@ -288,8 +290,8 @@ void GFComponent::build_data_from_variant(
 				Variant value = arr[i];
 
 				ecs_member_t* member_data = ecs_vec_get_t(&struct_data->members, ecs_member_t, i);
-				void* member_ptr = (void*)(
-					((uint8_t*)output) + member_data->offset
+				void* member_ptr = static_cast<void*>(
+					static_cast<uint8_t*>(output) + member_data->offset
 				);
 				// Set member from array
 				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);

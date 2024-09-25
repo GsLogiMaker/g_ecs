@@ -135,7 +135,7 @@ namespace godot {
 			int32_t count,
 			const ecs_type_info_t* type_info
 		) {
-			T* list = (T*)ptr;
+			T* list = static_cast<T*>(ptr);
 			for (int i=0; i != count; i++) {
 				new(&list[i]) T();
 			}
@@ -147,7 +147,7 @@ namespace godot {
 			int32_t count,
 			const ecs_type_info_t* type_info
 		) {
-			T* list = (T*)ptr;
+			T* list = static_cast<T*>(ptr);
 			for (int i=0; i != count; i++) {
 				list[i].~T();
 			}
@@ -160,8 +160,8 @@ namespace godot {
 			int32_t count,
 			const ecs_type_info_t* type_info
 		) {
-			T* dst_list = (T*)dst_ptr;
-			const T* src_list = (const T*)src_ptr;
+			T* dst_list = static_cast<T*>(dst_ptr);
+			const T* src_list = static_cast<const T*>(src_ptr);
 			for (int i=0; i != count; i++) {
 				dst_list[i] = T(src_list[i]);
 			}
@@ -174,8 +174,8 @@ namespace godot {
 			int32_t count,
 			const ecs_type_info_t* type_info
 		) {
-			T* dst_list = (T*)dst_ptr;
-			T* src_list = (T*)src_ptr;
+			T* dst_list = static_cast<T*>(dst_ptr);
+			T* src_list = static_cast<T*>(src_ptr);
 			for (int i=0; i != count; i++) {
 				dst_list[i] = T(src_list[i]);
 			}

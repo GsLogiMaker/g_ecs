@@ -19,10 +19,7 @@ GFModule::~GFModule() {
 
 Ref<GFModule> GFModule::spawn(String name, GFWorld* world_) {
 	CharString name_utf8 = name.utf8();
-	GFWorld* world = world_;
-	if (world == nullptr) {
-		// world = GlWorld::singleton();
-	}
+	GFWorld* world = GFWorld::world_or_singleton(world_);
 	ecs_component_desc_t comp_desc = {0};
 	ecs_entity_t module_id = ecs_module_init(
 		world->raw(),
@@ -38,10 +35,7 @@ Ref<GFModule> GFModule::from(Variant module, GFWorld* world) {
 }
 
 Ref<GFModule> GFModule::from_id(ecs_entity_t module_id, GFWorld* world_) {
-	GFWorld* world = world_;
-	if (world == nullptr) {
-		// world = GlWorld::singleton();
-	}
+	GFWorld* world = GFWorld::world_or_singleton(world_);
 	if (!ecs_has_id(world->raw(), module_id, EcsModule)) {
 		ERR(nullptr,
 			"Could not instantiate module from ID\n",

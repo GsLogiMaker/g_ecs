@@ -139,7 +139,7 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 	);
 	query_desc.binding_ctx = ctx;
 	query_desc.binding_ctx_free = [](void* ptr) {
-		delete (QueryIterationContext*) ptr;
+		delete static_cast<QueryIterationContext*>(ptr);
 	};
 
 	if (callable.get_argument_count() != ctx->comp_ref_args.size()) {
@@ -292,7 +292,7 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 }
 
 void QueryIterationContext::iterator_callback(ecs_iter_t* it) {
-	QueryIterationContext* ctx = (QueryIterationContext*) it->query->binding_ctx;
+	QueryIterationContext* ctx = static_cast<QueryIterationContext*>(it->query->binding_ctx);
 	ctx->update_component_terms(it);
 	for (int i=0; i != it->count; i++) {
 		ctx->update_component_entities(it, i);

@@ -36,18 +36,18 @@ Variant::Type Utils::primitive_type_to_variant(ecs_primitive_kind_t primi_kind) 
 
 Variant Utils::primitive_value_to_variant(const void* primi_ptr, ecs_primitive_kind_t primi_kind) {
 	switch (primi_kind) {
-	case EcsBool: return (bool*)(primi_ptr);
-	case EcsU8: return (uint8_t*)(primi_ptr);
-	case EcsU16: return (uint16_t*)(primi_ptr);
-	case EcsU32: return (uint32_t*)(primi_ptr);
-	case EcsU64: return (uint64_t*)(primi_ptr);
-	case EcsI8: return (int8_t*)(primi_ptr);
-	case EcsI16: return (int16_t*)(primi_ptr);
-	case EcsI32: return (int32_t*)(primi_ptr);
-	case EcsI64: return (int64_t*)(primi_ptr);
-	case EcsF32: return (real_t*)(primi_ptr);
-	case EcsF64: return (double*)(primi_ptr);
-	case EcsId: return (ecs_entity_t*)(primi_ptr);
+	case EcsBool: return static_cast<const bool*>(primi_ptr);
+	case EcsU8: return static_cast<const uint8_t*>(primi_ptr);
+	case EcsU16: return static_cast<const uint16_t*>(primi_ptr);
+	case EcsU32: return static_cast<const uint32_t*>(primi_ptr);
+	case EcsU64: return static_cast<const uint64_t*>(primi_ptr);
+	case EcsI8: return static_cast<const int8_t*>(primi_ptr);
+	case EcsI16: return static_cast<const int16_t*>(primi_ptr);
+	case EcsI32: return static_cast<const int32_t*>(primi_ptr);
+	case EcsI64: return static_cast<const int64_t*>(primi_ptr);
+	case EcsF32: return static_cast<const real_t*>(primi_ptr);
+	case EcsF64: return static_cast<const double*>(primi_ptr);
+	case EcsId: return static_cast<const ecs_entity_t*>(primi_ptr);
 	case EcsChar: ERR(Variant(), "Can not convert char primitive type to Variant");
 	case EcsByte: ERR(Variant(), "Can not convert byte primitive type to Variant");
 	case EcsUPtr: ERR(Variant(), "Can not convert UPointer primitive type to Variant");
@@ -117,44 +117,44 @@ void Utils::set_gd_struct_from_variant(
 	Variant::Type type = GFWorld::id_to_variant_type(gd_struct);
 	switch (type) {
         case Variant::NIL: ERR(/**/, "Can't set nil");
-        case Variant::BOOL: *((bool*)out) = value; break;
-        case Variant::INT: *((int64_t*)out) = value; break;
-        case Variant::FLOAT: *(double*)(out) = value; break;
-        case Variant::STRING: *((String*)out) = value; break;
-        case Variant::VECTOR2: *((Vector2*)out) = value; break;
-        case Variant::VECTOR2I: *((Vector2i*)out) = value; break;
-        case Variant::RECT2: *((Rect2*)out) = value; break;
-        case Variant::RECT2I: *((Rect2i*)out) = value; break;
-        case Variant::VECTOR3: *((Vector3*)out) = value; break;
-        case Variant::VECTOR3I: *((Vector3i*)out) = value; break;
-        case Variant::TRANSFORM2D: *((Transform2D*)out) = value; break;
-        case Variant::VECTOR4: *((Vector4*)out) = value; break;
-        case Variant::VECTOR4I: *((Vector4i*)out) = value; break;
-        case Variant::PLANE: *((Plane*)out) = value; break;
-        case Variant::QUATERNION: *((Quaternion*)out) = value; break;
-        case Variant::AABB: *((AABB*)out) = value; break;
-        case Variant::BASIS: *((Basis*)out) = value; break;
-        case Variant::TRANSFORM3D: *((Transform3D*)out) = value; break;
-        case Variant::PROJECTION: *((Projection*)out) = value; break;
-        case Variant::COLOR: *((Color*)out) = value; break;
-        case Variant::STRING_NAME: *((StringName*)out) = value; break;
-        case Variant::NODE_PATH: *((NodePath*)out) = value; break;
-        case Variant::RID: *((RID*)out) = value; break;
-        case Variant::OBJECT: *((Variant*)out) = value; break;
-        case Variant::CALLABLE: *((Callable*)out) = value; break;
-        case Variant::SIGNAL: *((Signal*)out) = value; break;
-        case Variant::DICTIONARY: *((Dictionary*)out) = value; break;
-        case Variant::ARRAY: *((Array*)out) = value; break;
-        case Variant::PACKED_BYTE_ARRAY: *((PackedByteArray*)out) = value; break;
-        case Variant::PACKED_INT32_ARRAY: *((PackedInt32Array*)out) = value; break;
-        case Variant::PACKED_INT64_ARRAY: *((PackedInt64Array*)out) = value; break;
-        case Variant::PACKED_FLOAT32_ARRAY: *((PackedFloat32Array*)out) = value; break;
-        case Variant::PACKED_FLOAT64_ARRAY: *((PackedFloat64Array*)out) = value; break;
-        case Variant::PACKED_STRING_ARRAY: *((PackedStringArray*)out) = value; break;
-        case Variant::PACKED_VECTOR2_ARRAY: *((PackedVector2Array*)out) = value; break;
-        case Variant::PACKED_VECTOR3_ARRAY: *((PackedVector3Array*)out) = value; break;
-        case Variant::PACKED_COLOR_ARRAY: *((PackedColorArray*)out) = value; break;
-        case Variant::PACKED_VECTOR4_ARRAY: *((PackedVector4Array*)out) = value; break;
+        case Variant::BOOL: *static_cast<bool*>(out) = value; break;
+        case Variant::INT: *static_cast<int64_t*>(out) = value; break;
+        case Variant::FLOAT: *static_cast<double*>(out) = value; break;
+        case Variant::STRING: *static_cast<String*>(out) = value; break;
+        case Variant::VECTOR2: *static_cast<Vector2*>(out) = value; break;
+        case Variant::VECTOR2I: *static_cast<Vector2i*>(out) = value; break;
+        case Variant::RECT2: *static_cast<Rect2*>(out) = value; break;
+        case Variant::RECT2I: *static_cast<Rect2i*>(out) = value; break;
+        case Variant::VECTOR3: *static_cast<Vector3*>(out) = value; break;
+        case Variant::VECTOR3I: *static_cast<Vector3i*>(out) = value; break;
+        case Variant::TRANSFORM2D: *static_cast<Transform2D*>(out) = value; break;
+        case Variant::VECTOR4: *static_cast<Vector4*>(out) = value; break;
+        case Variant::VECTOR4I: *static_cast<Vector4i*>(out) = value; break;
+        case Variant::PLANE: *static_cast<Plane*>(out) = value; break;
+        case Variant::QUATERNION: *static_cast<Quaternion*>(out) = value; break;
+        case Variant::AABB: *static_cast<AABB*>(out) = value; break;
+        case Variant::BASIS: *static_cast<Basis*>(out) = value; break;
+        case Variant::TRANSFORM3D: *static_cast<Transform3D*>(out) = value; break;
+        case Variant::PROJECTION: *static_cast<Projection*>(out) = value; break;
+        case Variant::COLOR: *static_cast<Color*>(out) = value; break;
+        case Variant::STRING_NAME: *static_cast<StringName*>(out) = value; break;
+        case Variant::NODE_PATH: *static_cast<NodePath*>(out) = value; break;
+        case Variant::RID: *static_cast<RID*>(out) = value; break;
+        case Variant::OBJECT: *static_cast<Variant*>(out) = value; break;
+        case Variant::CALLABLE: *static_cast<Callable*>(out) = value; break;
+        case Variant::SIGNAL: *static_cast<Signal*>(out) = value; break;
+        case Variant::DICTIONARY: *static_cast<Dictionary*>(out) = value; break;
+        case Variant::ARRAY: *static_cast<Array*>(out) = value; break;
+        case Variant::PACKED_BYTE_ARRAY: *static_cast<PackedByteArray*>(out) = value; break;
+        case Variant::PACKED_INT32_ARRAY: *static_cast<PackedInt32Array*>(out) = value; break;
+        case Variant::PACKED_INT64_ARRAY: *static_cast<PackedInt64Array*>(out) = value; break;
+        case Variant::PACKED_FLOAT32_ARRAY: *static_cast<PackedFloat32Array*>(out) = value; break;
+        case Variant::PACKED_FLOAT64_ARRAY: *static_cast<PackedFloat64Array*>(out) = value; break;
+        case Variant::PACKED_STRING_ARRAY: *static_cast<PackedStringArray*>(out) = value; break;
+        case Variant::PACKED_VECTOR2_ARRAY: *static_cast<PackedVector2Array*>(out) = value; break;
+        case Variant::PACKED_VECTOR3_ARRAY: *static_cast<PackedVector3Array*>(out) = value; break;
+        case Variant::PACKED_COLOR_ARRAY: *static_cast<PackedColorArray*>(out) = value; break;
+        case Variant::PACKED_VECTOR4_ARRAY: *static_cast<PackedVector4Array*>(out) = value; break;
         case Variant::VARIANT_MAX: ERR(/**/, "Can't set Variant::VARIANT_MAX");
 	}
 }
@@ -165,24 +165,24 @@ void Utils::set_primitive_from_variant(
 	void* out
 ) {
 	switch (primi_kind) {
-	case EcsBool: *(bool*)(out) = value; break;
+	case EcsBool: *static_cast<bool*>(out) = value; break;
+	case EcsU8: *static_cast<uint8_t*>(out) = value; break;
+	case EcsU16: *static_cast<uint16_t*>(out) = value; break;
+	case EcsU32: *static_cast<uint32_t*>(out) = value; break;
+	case EcsU64: *static_cast<uint64_t*>(out) = value; break;
+	case EcsI8: *static_cast<int8_t*>(out) = value; break;
+	case EcsI16: *static_cast<int16_t*>(out) = value; break;
+	case EcsI32: *static_cast<int32_t*>(out) = value; break;
+	case EcsI64: *static_cast<int64_t*>(out) = value; break;
+	case EcsF32: *static_cast<real_t*>(out) = value; break;
+	case EcsF64: *static_cast<double*>(out) = value; break;
+	case EcsId: *static_cast<ecs_entity_t*>(out) = value; break;
 	case EcsChar: ERR(/**/, "Can not convert to char primitive from Variant type ", Variant::get_type_name(value.get_type()));
 	case EcsByte: ERR(/**/, "Can not convert to byte primitive from Variant type ", Variant::get_type_name(value.get_type()));
-	case EcsU8: *(uint8_t*)(out) = value; break;
-	case EcsU16: *(uint16_t*)(out) = value; break;
-	case EcsU32: *(uint32_t*)(out) = value; break;
-	case EcsU64: *(uint64_t*)(out) = value; break;
-	case EcsI8: *(int8_t*)(out) = value; break;
-	case EcsI16: *(int16_t*)(out) = value; break;
-	case EcsI32: *(int32_t*)(out) = value; break;
-	case EcsI64: *(int64_t*)(out) = value; break;
-	case EcsF32: *(real_t*)(out) = value; break;
-	case EcsF64: *(double*)(out) = value; break;
 	case EcsUPtr: ERR(/**/, "Can not convert to UPointer primitive from Variant type ", Variant::get_type_name(value.get_type()));
 	case EcsIPtr: ERR(/**/, "Can not convert to IPointer primitive from Variant type ", Variant::get_type_name(value.get_type()));
 	case EcsString: ERR(/**/, "Can not convert to string primitive from Variant type ", Variant::get_type_name(value.get_type()));
 	case EcsEntity: ERR(/**/, "Can not convert to entity primitive from Variant type ", Variant::get_type_name(value.get_type()));
-	case EcsId: *(ecs_entity_t*)(out) = value; break;
 	}
 }
 

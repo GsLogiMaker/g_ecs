@@ -31,10 +31,7 @@ Ref<GFPair> GFPair::from(Variant first, Variant second, GFWorld* world) {
 }
 
 Ref<GFPair> GFPair::from_id(ecs_entity_t pair_id, GFWorld* world_) {
-	GFWorld* world = world_;
-	if (world == nullptr) {
-		// world = GlWorld::singleton();
-	}
+	GFWorld* world = GFWorld::world_or_singleton(world_);
 	if (!ECS_IS_PAIR(pair_id)) {
 		ERR(nullptr,
 			"Could not instantiate pair from ID\n",

@@ -514,7 +514,7 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 				);
 			}
 			if (obj->is_class(GFEntity::get_class_static())) {
-				return ((GFEntity*) obj)->get_id();
+				return (static_cast<GFEntity*>(obj)->get_id());
 			}
 			if (obj->is_class(Script::get_class_static())) {
 				Ref<Script> script = value;
@@ -825,8 +825,8 @@ void GFWorld::copy_component_ptr(
 	}
 	for (int i=0; i != ecs_vec_count(&c_struct->members); i++) {
 		const ecs_member_t* member = ecs_vec_get_t(&c_struct->members, ecs_member_t, i);
-		auto src_member_value = (void*) ((int8_t*)src_ptr + member->offset);
-		auto dst_member_value = (void*) ((int8_t*)dst_ptr + member->offset);
+		auto src_member_value = static_cast<const void*>(static_cast<const int8_t*>(src_ptr) + member->offset);
+		auto dst_member_value = static_cast<void*>(static_cast<int8_t*>(dst_ptr) + member->offset);
 		copy_gd_type_ptr(src_member_value, dst_member_value, member->type);
 	}
 }
@@ -845,44 +845,44 @@ void GFWorld::copy_gd_type_ptr(
 		};
 		break;
 	}
-	case(Variant::Type::BOOL): *(bool*)dst_ptr = *(bool*)src_ptr; break;
-	case(Variant::Type::INT): *(int64_t*)dst_ptr = *(int64_t*)src_ptr; break;
-	case(Variant::Type::FLOAT): *(double*)dst_ptr = *(double*)src_ptr; break;
-	case(Variant::Type::STRING): *(String*)dst_ptr = *(String*)src_ptr; break;
-	case(Variant::Type::VECTOR2): *(Vector2*)dst_ptr = *(Vector2*)src_ptr; break;
-	case(Variant::Type::VECTOR2I): *(Vector2i*)dst_ptr = *(Vector2i*)src_ptr; break;
-	case(Variant::Type::RECT2): *(Rect2*)dst_ptr = *(Rect2*)src_ptr; break;
-	case(Variant::Type::RECT2I): *(Rect2i*)dst_ptr = *(Rect2i*)src_ptr; break;
-	case(Variant::Type::VECTOR3): *(Vector3*)dst_ptr = *(Vector3*)src_ptr; break;
-	case(Variant::Type::VECTOR3I): *(Vector3i*)dst_ptr = *(Vector3i*)src_ptr; break;
-	case(Variant::Type::TRANSFORM2D): *(Transform2D*)dst_ptr = *(Transform2D*)src_ptr; break;
-	case(Variant::Type::VECTOR4): *(Vector4*)dst_ptr = *(Vector4*)src_ptr; break;
-	case(Variant::Type::VECTOR4I): *(Vector4i*)dst_ptr = *(Vector4i*)src_ptr; break;
-	case(Variant::Type::PLANE): *(Plane*)dst_ptr = *(Plane*)src_ptr; break;
-	case(Variant::Type::QUATERNION): *(Quaternion*)dst_ptr = *(Quaternion*)src_ptr; break;
-	case(Variant::Type::AABB): *(AABB*)dst_ptr = *(AABB*)src_ptr; break;
-	case(Variant::Type::BASIS): *(Basis*)dst_ptr = *(Basis*)src_ptr; break;
-	case(Variant::Type::TRANSFORM3D): *(Transform3D*)dst_ptr = *(Transform3D*)src_ptr; break;
-	case(Variant::Type::PROJECTION): *(Projection*)dst_ptr = *(Projection*)src_ptr; break;
-	case(Variant::Type::COLOR): *(Color*)dst_ptr = *(Color*)src_ptr; break;
-	case(Variant::Type::STRING_NAME): *(StringName*)dst_ptr = *(StringName*)src_ptr; break;
-	case(Variant::Type::NODE_PATH): *(NodePath*)dst_ptr = *(NodePath*)src_ptr; break;
-	case(Variant::Type::RID): *(RID*)dst_ptr = *(RID*)src_ptr; break;
-	case(Variant::Type::OBJECT): *(Variant*)dst_ptr = *(Variant*)src_ptr; break;
-	case(Variant::Type::CALLABLE): *(Callable*)dst_ptr = *(Callable*)src_ptr; break;
-	case(Variant::Type::SIGNAL): *(Signal*)dst_ptr = *(Signal*)src_ptr; break;
-	case(Variant::Type::DICTIONARY): *(Dictionary*)dst_ptr = *(Dictionary*)src_ptr; break;
-	case(Variant::Type::ARRAY): *(Array*)dst_ptr = *(Array*)src_ptr; break;
-	case(Variant::Type::PACKED_BYTE_ARRAY): *(PackedByteArray*)dst_ptr = *(PackedByteArray*)src_ptr; break;
-	case(Variant::Type::PACKED_INT32_ARRAY): *(PackedInt32Array*)dst_ptr = *(PackedInt32Array*)src_ptr; break;
-	case(Variant::Type::PACKED_INT64_ARRAY): *(PackedInt64Array*)dst_ptr = *(PackedInt64Array*)src_ptr; break;
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): *(PackedFloat32Array*)dst_ptr = *(PackedFloat32Array*)src_ptr; break;
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): *(PackedFloat64Array*)dst_ptr = *(PackedFloat64Array*)src_ptr; break;
-	case(Variant::Type::PACKED_STRING_ARRAY): *(PackedStringArray*)dst_ptr = *(PackedStringArray*)src_ptr; break;
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): *(PackedVector2Array*)dst_ptr = *(PackedVector2Array*)src_ptr; break;
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): *(PackedVector3Array*)dst_ptr = *(PackedVector3Array*)src_ptr; break;
-	case(Variant::Type::PACKED_COLOR_ARRAY): *(PackedColorArray*)dst_ptr = *(PackedColorArray*)src_ptr; break;
-	case(Variant::Type::PACKED_VECTOR4_ARRAY): *(PackedVector4Array*)dst_ptr = *(PackedVector4Array*)src_ptr; break;
+	case(Variant::Type::BOOL): *static_cast<bool*>(dst_ptr) = *static_cast<const bool*>(src_ptr); break;
+	case(Variant::Type::INT): *static_cast<int64_t*>(dst_ptr) = *static_cast<const int64_t*>(src_ptr); break;
+	case(Variant::Type::FLOAT): *static_cast<double*>(dst_ptr) = *static_cast<const double*>(src_ptr); break;
+	case(Variant::Type::STRING): *static_cast<String*>(dst_ptr) = *static_cast<const String*>(src_ptr); break;
+	case(Variant::Type::VECTOR2): *static_cast<Vector2*>(dst_ptr) = *static_cast<const Vector2*>(src_ptr); break;
+	case(Variant::Type::VECTOR2I): *static_cast<Vector2i*>(dst_ptr) = *static_cast<const Vector2i*>(src_ptr); break;
+	case(Variant::Type::RECT2): *static_cast<Rect2*>(dst_ptr) = *static_cast<const Rect2*>(src_ptr); break;
+	case(Variant::Type::RECT2I): *static_cast<Rect2i*>(dst_ptr) = *static_cast<const Rect2i*>(src_ptr); break;
+	case(Variant::Type::VECTOR3): *static_cast<Vector3*>(dst_ptr) = *static_cast<const Vector3*>(src_ptr); break;
+	case(Variant::Type::VECTOR3I): *static_cast<Vector3i*>(dst_ptr) = *static_cast<const Vector3i*>(src_ptr); break;
+	case(Variant::Type::TRANSFORM2D): *static_cast<Transform2D*>(dst_ptr) = *static_cast<const Transform2D*>(src_ptr); break;
+	case(Variant::Type::VECTOR4): *static_cast<Vector4*>(dst_ptr) = *static_cast<const Vector4*>(src_ptr); break;
+	case(Variant::Type::VECTOR4I): *static_cast<Vector4i*>(dst_ptr) = *static_cast<const Vector4i*>(src_ptr); break;
+	case(Variant::Type::PLANE): *static_cast<Plane*>(dst_ptr) = *static_cast<const Plane*>(src_ptr); break;
+	case(Variant::Type::QUATERNION): *static_cast<Quaternion*>(dst_ptr) = *static_cast<const Quaternion*>(src_ptr); break;
+	case(Variant::Type::AABB): *static_cast<AABB*>(dst_ptr) = *static_cast<const AABB*>(src_ptr); break;
+	case(Variant::Type::BASIS): *static_cast<Basis*>(dst_ptr) = *static_cast<const Basis*>(src_ptr); break;
+	case(Variant::Type::TRANSFORM3D): *static_cast<Transform3D*>(dst_ptr) = *static_cast<const Transform3D*>(src_ptr); break;
+	case(Variant::Type::PROJECTION): *static_cast<Projection*>(dst_ptr) = *static_cast<const Projection*>(src_ptr); break;
+	case(Variant::Type::COLOR): *static_cast<Color*>(dst_ptr) = *static_cast<const Color*>(src_ptr); break;
+	case(Variant::Type::STRING_NAME): *static_cast<StringName*>(dst_ptr) = *static_cast<const StringName*>(src_ptr); break;
+	case(Variant::Type::NODE_PATH): *static_cast<NodePath*>(dst_ptr) = *static_cast<const NodePath*>(src_ptr); break;
+	case(Variant::Type::RID): *static_cast<RID*>(dst_ptr) = *static_cast<const RID*>(src_ptr); break;
+	case(Variant::Type::OBJECT): *static_cast<Variant*>(dst_ptr) = *static_cast<const Variant*>(src_ptr); break;
+	case(Variant::Type::CALLABLE): *static_cast<Callable*>(dst_ptr) = *static_cast<const Callable*>(src_ptr); break;
+	case(Variant::Type::SIGNAL): *static_cast<Signal*>(dst_ptr) = *static_cast<const Signal*>(src_ptr); break;
+	case(Variant::Type::DICTIONARY): *static_cast<Dictionary*>(dst_ptr) = *static_cast<const Dictionary*>(src_ptr); break;
+	case(Variant::Type::ARRAY): *static_cast<Array*>(dst_ptr) = *static_cast<const Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_BYTE_ARRAY): *static_cast<PackedByteArray*>(dst_ptr) = *static_cast<const PackedByteArray*>(src_ptr); break;
+	case(Variant::Type::PACKED_INT32_ARRAY): *static_cast<PackedInt32Array*>(dst_ptr) = *static_cast<const PackedInt32Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_INT64_ARRAY): *static_cast<PackedInt64Array*>(dst_ptr) = *static_cast<const PackedInt64Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_FLOAT32_ARRAY): *static_cast<PackedFloat32Array*>(dst_ptr) = *static_cast<const PackedFloat32Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_FLOAT64_ARRAY): *static_cast<PackedFloat64Array*>(dst_ptr) = *static_cast<const PackedFloat64Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_STRING_ARRAY): *static_cast<PackedStringArray*>(dst_ptr) = *static_cast<const PackedStringArray*>(src_ptr); break;
+	case(Variant::Type::PACKED_VECTOR2_ARRAY): *static_cast<PackedVector2Array*>(dst_ptr) = *static_cast<const PackedVector2Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_VECTOR3_ARRAY): *static_cast<PackedVector3Array*>(dst_ptr) = *static_cast<const PackedVector3Array*>(src_ptr); break;
+	case(Variant::Type::PACKED_COLOR_ARRAY): *static_cast<PackedColorArray*>(dst_ptr) = *static_cast<const PackedColorArray*>(src_ptr); break;
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): *static_cast<PackedVector4Array*>(dst_ptr) = *static_cast<const PackedVector4Array*>(src_ptr); break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be deinitialized";
 	}
 }
@@ -897,7 +897,7 @@ void GFWorld::deinit_component_ptr(
 	}
 	for (int i=0; i != ecs_vec_count(&c_struct->members); i++) {
 		const ecs_member_t* member = ecs_vec_get_t(&c_struct->members, ecs_member_t, i);
-		auto member_value = (void*) ((int8_t*)ptr + member->offset);
+		auto member_value = static_cast<void*>(static_cast<int8_t*>(ptr) + member->offset);
 		deinit_gd_type_ptr(member_value, member->type);
 	}
 }
@@ -918,41 +918,41 @@ void GFWorld::deinit_gd_type_ptr(
 	case(Variant::Type::BOOL): break;
 	case(Variant::Type::INT): break;
 	case(Variant::Type::FLOAT): break;
-	case(Variant::Type::STRING): (*(String*)ptr).~String(); break;
-	case(Variant::Type::VECTOR2): (*(Vector2*)ptr).~Vector2(); break;
-	case(Variant::Type::VECTOR2I): (*(Vector2i*)ptr).~Vector2i(); break;
-	case(Variant::Type::RECT2): (*(Rect2*)ptr).~Rect2(); break;
-	case(Variant::Type::RECT2I): (*(Rect2i*)ptr).~Rect2i(); break;
-	case(Variant::Type::VECTOR3): (*(Vector3*)ptr).~Vector3(); break;
-	case(Variant::Type::VECTOR3I): (*(Vector3i*)ptr).~Vector3i(); break;
-	case(Variant::Type::TRANSFORM2D): (*(Transform2D*)ptr).~Transform2D(); break;
-	case(Variant::Type::VECTOR4): (*(Vector4*)ptr).~Vector4(); break;
-	case(Variant::Type::VECTOR4I): (*(Vector4i*)ptr).~Vector4i(); break;
-	case(Variant::Type::PLANE): (*(Plane*)ptr).~Plane(); break;
-	case(Variant::Type::QUATERNION): (*(Quaternion*)ptr).~Quaternion(); break;
-	case(Variant::Type::AABB): (*(AABB*)ptr).~AABB(); break;
-	case(Variant::Type::BASIS): (*(Basis*)ptr).~Basis(); break;
-	case(Variant::Type::TRANSFORM3D): (*(Transform3D*)ptr).~Transform3D(); break;
-	case(Variant::Type::PROJECTION): (*(Projection*)ptr).~Projection(); break;
-	case(Variant::Type::COLOR): (*(Color*)ptr).~Color(); break;
-	case(Variant::Type::STRING_NAME): (*(StringName*)ptr).~StringName(); break;
-	case(Variant::Type::NODE_PATH): (*(NodePath*)ptr).~NodePath(); break;
-	case(Variant::Type::RID): (*(RID*)ptr).~RID(); break;
-	case(Variant::Type::OBJECT): (*(Variant*)ptr).~Variant() ; break;
-	case(Variant::Type::CALLABLE): (*(Callable*)ptr).~Callable(); break;
-	case(Variant::Type::SIGNAL): (*(Signal*)ptr).~Signal(); break;
-	case(Variant::Type::DICTIONARY): (*(Dictionary*)ptr).~Dictionary(); break;
-	case(Variant::Type::ARRAY): (*(Array*)ptr).~Array(); break;
-	case(Variant::Type::PACKED_BYTE_ARRAY): (*(PackedByteArray*)ptr).~PackedByteArray(); break;
-	case(Variant::Type::PACKED_INT32_ARRAY): (*(PackedInt32Array*)ptr).~PackedInt32Array(); break;
-	case(Variant::Type::PACKED_INT64_ARRAY): (*(PackedInt64Array*)ptr).~PackedInt64Array(); break;
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): (*(PackedFloat32Array*)ptr).~PackedFloat32Array(); break;
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): (*(PackedFloat64Array*)ptr).~PackedFloat64Array(); break;
-	case(Variant::Type::PACKED_STRING_ARRAY): (*(PackedStringArray*)ptr).~PackedStringArray(); break;
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): (*(PackedVector2Array*)ptr).~PackedVector2Array(); break;
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): (*(PackedVector3Array*)ptr).~PackedVector3Array(); break;
-	case(Variant::Type::PACKED_COLOR_ARRAY): (*(PackedColorArray*)ptr).~PackedColorArray(); break;
-	case(Variant::Type::PACKED_VECTOR4_ARRAY): (*(PackedVector4Array*)ptr).~PackedVector4Array(); break;
+	case(Variant::Type::STRING): (*static_cast<String*>(ptr)).~String(); break;
+	case(Variant::Type::VECTOR2): (*static_cast<Vector2*>(ptr)).~Vector2(); break;
+	case(Variant::Type::VECTOR2I): (*static_cast<Vector2i*>(ptr)).~Vector2i(); break;
+	case(Variant::Type::RECT2): (*static_cast<Rect2*>(ptr)).~Rect2(); break;
+	case(Variant::Type::RECT2I): (*static_cast<Rect2i*>(ptr)).~Rect2i(); break;
+	case(Variant::Type::VECTOR3): (*static_cast<Vector3*>(ptr)).~Vector3(); break;
+	case(Variant::Type::VECTOR3I): (*static_cast<Vector3i*>(ptr)).~Vector3i(); break;
+	case(Variant::Type::TRANSFORM2D): (*static_cast<Transform2D*>(ptr)).~Transform2D(); break;
+	case(Variant::Type::VECTOR4): (*static_cast<Vector4*>(ptr)).~Vector4(); break;
+	case(Variant::Type::VECTOR4I): (*static_cast<Vector4i*>(ptr)).~Vector4i(); break;
+	case(Variant::Type::PLANE): (*static_cast<Plane*>(ptr)).~Plane(); break;
+	case(Variant::Type::QUATERNION): (*static_cast<Quaternion*>(ptr)).~Quaternion(); break;
+	case(Variant::Type::AABB): (*static_cast<AABB*>(ptr)).~AABB(); break;
+	case(Variant::Type::BASIS): (*static_cast<Basis*>(ptr)).~Basis(); break;
+	case(Variant::Type::TRANSFORM3D): (*static_cast<Transform3D*>(ptr)).~Transform3D(); break;
+	case(Variant::Type::PROJECTION): (*static_cast<Projection*>(ptr)).~Projection(); break;
+	case(Variant::Type::COLOR): (*static_cast<Color*>(ptr)).~Color(); break;
+	case(Variant::Type::STRING_NAME): (*static_cast<StringName*>(ptr)).~StringName(); break;
+	case(Variant::Type::NODE_PATH): (*static_cast<NodePath*>(ptr)).~NodePath(); break;
+	case(Variant::Type::RID): (*static_cast<RID*>(ptr)).~RID(); break;
+	case(Variant::Type::OBJECT): (*static_cast<Variant*>(ptr)).~Variant() ; break;
+	case(Variant::Type::CALLABLE): (*static_cast<Callable*>(ptr)).~Callable(); break;
+	case(Variant::Type::SIGNAL): (*static_cast<Signal*>(ptr)).~Signal(); break;
+	case(Variant::Type::DICTIONARY): (*static_cast<Dictionary*>(ptr)).~Dictionary(); break;
+	case(Variant::Type::ARRAY): (*static_cast<Array*>(ptr)).~Array(); break;
+	case(Variant::Type::PACKED_BYTE_ARRAY): (*static_cast<PackedByteArray*>(ptr)).~PackedByteArray(); break;
+	case(Variant::Type::PACKED_INT32_ARRAY): (*static_cast<PackedInt32Array*>(ptr)).~PackedInt32Array(); break;
+	case(Variant::Type::PACKED_INT64_ARRAY): (*static_cast<PackedInt64Array*>(ptr)).~PackedInt64Array(); break;
+	case(Variant::Type::PACKED_FLOAT32_ARRAY): (*static_cast<PackedFloat32Array*>(ptr)).~PackedFloat32Array(); break;
+	case(Variant::Type::PACKED_FLOAT64_ARRAY): (*static_cast<PackedFloat64Array*>(ptr)).~PackedFloat64Array(); break;
+	case(Variant::Type::PACKED_STRING_ARRAY): (*static_cast<PackedStringArray*>(ptr)).~PackedStringArray(); break;
+	case(Variant::Type::PACKED_VECTOR2_ARRAY): (*static_cast<PackedVector2Array*>(ptr)).~PackedVector2Array(); break;
+	case(Variant::Type::PACKED_VECTOR3_ARRAY): (*static_cast<PackedVector3Array*>(ptr)).~PackedVector3Array(); break;
+	case(Variant::Type::PACKED_COLOR_ARRAY): (*static_cast<PackedColorArray*>(ptr)).~PackedColorArray(); break;
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): (*static_cast<PackedVector4Array*>(ptr)).~PackedVector4Array(); break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be deinitialized";
 	}
 }
@@ -968,7 +968,7 @@ void GFWorld::init_component_ptr(
 	}
 	for (int i=0; i != ecs_vec_count(&c_struct->members); i++) {
 		const ecs_member_t* member = ecs_vec_get_t(&c_struct->members, ecs_member_t, i);
-		auto member_value = (void*) ((int8_t*)ptr + member->offset);
+		auto member_value = static_cast<void*>(static_cast<int8_t*>(ptr) + member->offset);
 		init_gd_type_ptr(member_value, member->type);
 	}
 }
@@ -982,9 +982,9 @@ void GFWorld::init_gd_type_ptr(
 
 	switch (vari_type) {
 	case(Variant::Type::NIL): if (ecs_has(_raw, type, EcsStruct)) {init_component_ptr(ptr, type, Variant());}; break;
-	case(Variant::Type::BOOL): *(bool*) ptr = false; break;
-	case(Variant::Type::INT): *(int*) ptr = 0; break;
-	case(Variant::Type::FLOAT): *(float*) ptr = 0; break;
+	case(Variant::Type::BOOL): *static_cast<bool*>(ptr) = false; break;
+	case(Variant::Type::INT): *static_cast<int*>(ptr) = 0; break;
+	case(Variant::Type::FLOAT): *static_cast<float*>(ptr) = 0.0; break;
 	case(Variant::Type::STRING): new(ptr) String(); break;
 	case(Variant::Type::VECTOR2): new(ptr) Vector2(); break;
 	case(Variant::Type::VECTOR2I): new(ptr) Vector2i(); break;
