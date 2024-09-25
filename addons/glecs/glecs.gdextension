@@ -8,10 +8,10 @@ reloadable = true
 linux.debug.x86_64 = "./bin/libglecs.linux.template_debug.x86_64.so"
 linux.release.x86_64 = "./bin/libglecs.linux.template_release.x86_64.so"
 
-macos.debug.x86_64 = "./bin/libglecs.macos.template_debug.framework"
-macos.release.x86_64 = "./bin/libglecs.macos.template_release.framework"
-macos.debug.arm64 = "./bin/libglecs.macos.template_debug.framework"
-macos.release.arm64 = "./bin/libglecs.macos.template_release.framework"
+macos.debug.x86_64 = "./bin/libglecs.macos.template_debug.x86_64.framework"
+macos.release.x86_64 = "./bin/libglecs.macos.template_release.x86_64.framework"
+macos.debug.arm64 = "./bin/libglecs.macos.template_debug.arm64.framework"
+macos.release.arm64 = "./bin/libglecs.macos.template_release.arm64.framework"
 
 windows.debug.x86_64 = "./bin/libglecs.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "./bin/libglecs.windows.template_release.x86_64.dll"
