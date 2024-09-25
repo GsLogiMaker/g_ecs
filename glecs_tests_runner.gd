@@ -26,8 +26,11 @@ func run_tests():
 	gut_config.options.tests = []
 	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
+	prints("post run tests A")
 	await gut_runner._gut.end_run
+	prints("post run tests B")
 	
+	# Quit fail
 	if exit_on_test_completion:
 		var props:Dictionary = gut_exporter \
 			.get_results_dictionary(gut_runner._gut) \
@@ -51,7 +54,8 @@ func run_tests():
 			#get_tree().quit(1)
 			OS.crash("Glecs unittest(s) failed")
 			return
-			
+		
+		# Quit success
 		var since_try_kill:= 0.0
 		while true:
 			prints("Closing with passing...")
