@@ -113,11 +113,13 @@ jobs:
     # --- Define bin key ---
 
     - name: 🏔️ Define library cache key in env
+      shell: bash
       run: |
         printf "*** Setting key in env***"
         echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
     - name: 🏔️ Define library cache key in output
       id: set_cache_key
+      shell: bash
       run: |
         printf "*** Setting key ***"
         echo "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
