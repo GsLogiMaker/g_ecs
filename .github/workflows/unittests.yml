@@ -62,17 +62,14 @@ jobs:
     # --- Define keys ---
 
     - name: 🏔️ Define library cache key in env Linux
-      # if: ${{ matrix.platform == 'linux'}}
       shell: bash
       run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define cpp cache key Linux
-      # if: ${{ matrix.platform == 'linux'}}
       shell: bash
       run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define includes cache key Linux
-      # if: ${{ matrix.platform == 'linux'}}
       shell: bash
       run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
 
@@ -160,6 +157,11 @@ jobs:
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
     runs-on: ${{ matrix.os }}
     steps:
+        - name: print bin keys
+          run:
+            echo LINUX ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
+            echo WINDOWS ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
+            echo MACOS ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
         - name: 🐙 Setup git environment
           uses: actions/checkout@v4
 
