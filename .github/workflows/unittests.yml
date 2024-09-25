@@ -10,14 +10,27 @@ on:
 
 jobs:
 
+  data:
+    runs-on: ubuntu-latest
+    outputs:
+      lib_debug_linux_x86_64: libglecs.linux.template_debug.x86_64.so
+      lib_release_linux_x86_64: libglecs.linux.template_release.x86_64.so
+
+      lib_debug_macos_x86_64: libglecs.macos.template_debug.framework
+      lib_release_macos_x86_64: libglecs.macos.template_release.framework
+
+      lib_debug_windows_x86_64: libglecs.windows.template_debug.x86_64.dll
+      lib_release_windows_x86_64: libglecs.windows.template_release.x86_64.dll
+
   compile_glecs:
+    needs: [data]
     strategy:
       matrix:
         include:
           # Linux
           - platform: linux
             arch: x86_64
-            glecs_lib: libglecs.linux.template_debug.x86_64.so
+            glecs_lib: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
             os: ubuntu-latest
           # - platform: linux
           #   arc: arm64
@@ -27,15 +40,16 @@ jobs:
           # Mac
           - platform: macos
             arch: x86_64
-            glecs_lib: libglecs.macos.template_debug.x86_64.dylib
+            glecs_lib: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
             os: macos-latest
           # - target: aarch64-apple-darwin
           #   os: macos-latest
           #   glecs_lib: libglecs.dylib
           # Windows
           - platform: windows
+            release plreleasem: windows
             arch: x86_64
-            glecs_lib: libglecs.windows.template_debug.x86_64.dll
+            glecs_lib: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
             os: windows-latest
     runs-on: ${{ matrix.os }}
     outputs:
@@ -108,6 +122,7 @@ jobs:
     - name: Build C++ code
       run: |
         scons --directory=addons/glecs/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
+        printf *** ls addons/glecs/bin/ ***
         ls addons/glecs/bin
       #target=template_release
 
@@ -148,36 +163,37 @@ jobs:
 
 
   run_test_suite:
-    needs: compile_glecs
+    needs: [data, compile_glecs]
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_linux_x86_64 }}
           - os: macos-latest
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_macos_x86_64 }}
           - os: windows-latest
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_windows_x86_64 }}
     runs-on: ${{ matrix.os }}
     steps:
-        - name: print bin keys
-          run:
-            echo LINUX ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
-            echo WINDOWS ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
-            echo MACOS ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
         - name: 🐙 Setup git environment
           uses: actions/checkout@v4
 
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/libglecs.linux.template_debug.x86_64.so
+            path: ./addons/glecs/bin/%{{ matrix.lib_debug }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
         - name: 💾 Load cached library as release
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/libglecs.linux.template_release.x86_64.so
+            path: ./addons/glecs/bin/%{{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
