@@ -16,12 +16,11 @@ jobs:
       lib_debug_linux_x86_64: libglecs.linux.template_debug.x86_64.so
       lib_release_linux_x86_64: libglecs.linux.template_release.x86_64.so
 
-      lib_debug_macos_x86_64: libglecs.macos.template_debug.x86_64.framework
-      lib_release_macos_x86_64: libglecs.macos.template_release.x86_64.framework
+      lib_debug_macos_x86_64: libglecs.macos.template_debug.x86_64.dylib
+      lib_release_macos_x86_64: libglecs.macos.template_release.x86_64.dylib
 
       lib_debug_windows_x86_64: libglecs.windows.template_debug.x86_64.dll
       lib_release_windows_x86_64: libglecs.windows.template_release.x86_64.dll
-
     steps:
       - name: Pass
         run: echo Pass
@@ -208,13 +207,16 @@ jobs:
             mono: false
 
         - name: 🤖 Run Godot import
+          shell: bash
           run: godot --headless --import
 
         - name: 📝 Run Glecs tests
           id: run-godot-tests
+          shell: bash
           run: godot --headless --script unittests.gd
 
         - name: 📄 Debug print when tests error
+          shell: bash
           if: failure() && steps.run-godot-tests.outcome != 'success'
           run: |
             echo ""
