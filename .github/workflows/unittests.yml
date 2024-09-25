@@ -22,6 +22,10 @@ jobs:
       lib_debug_windows_x86_64: libglecs.windows.template_debug.x86_64.dll
       lib_release_windows_x86_64: libglecs.windows.template_release.x86_64.dll
 
+    steps:
+      - name: Pass
+        run: echo Pass
+
   compile_glecs:
     needs: [data]
     strategy:
