@@ -72,7 +72,7 @@ jobs:
     - name: 🗳️ Initialize git submodules
       run: git submodule update --init --recursive
 
-    - name: Python install
+    - name: 🐍 Python install
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
@@ -119,11 +119,11 @@ jobs:
 
     # --- Compile Glecs ---
 
-    - name: Install scons
+    - name: 🔨 Install scons
       run: |
         pip install scons
 
-    - name: Build C++ code
+    - name: 🛠️ Build C++ code
       run: |
         scons --directory=addons/glecs/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
         printf *** ls addons/glecs/bin/ ***
@@ -146,13 +146,13 @@ jobs:
 
     # --- Save caches ---
 
-    - name: Cache cpp source build files
+    - name: 💾 Cache cpp source build files
       uses: actions/cache/save@v4
       with:
         path: addons/glecs/cpp
         key: ${{ env.cpp_key }}
 
-    - name: Cache cpp include build files
+    - name: 💾 Cache cpp include build files
       uses: actions/cache/save@v4
       with:
         path: addons/glecs/cpp/include
@@ -164,7 +164,6 @@ jobs:
         path: ./addons/glecs/bin/${{ matrix.glecs_lib }}
         key: ${{ env.bin_key }}
         enableCrossOsArchive: true
-
 
   run_test_suite:
     needs: [data, compile_glecs]
@@ -191,13 +190,13 @@ jobs:
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/%{{ matrix.lib_debug }}
+            path: ./addons/glecs/bin/${{ matrix.lib_debug }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
         - name: 💾 Load cached library as release
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/%{{ matrix.lib_release }}
+            path: ./addons/glecs/bin/${{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
@@ -208,32 +207,12 @@ jobs:
             bits: 64
             mono: false
 
-        - name: Run Godot import
+        - name: 🤖 Run Godot import
           run: godot --headless --import
 
-        - name: Run Glecs tests
+        - name: 📝 Run Glecs tests
           id: run-godot-tests
           run: godot --headless --script unittests.gd
-
-        # - name: 🤖 Run Godot unit tests
-        #   id: run-godot-tests
-        #   uses: croconut/godot-tester@v5.1
-        #   with:
-        #     # required
-        #     version: "4.3"
-        #     is-mono: "false"
-        #     # the folder with your project.godot file in it
-        #     path: "./"
-        #     # the ratio of tests that must pass for this action to pass
-        #     # e.g. 0.6 means 60% of your tests must pass
-        #     minimum-pass: "1.0"
-        #     # the directory containing Gut tests
-        #     test-dir: "res://unittests"
-        #     # default is GUTs default: 'res://.gutconfig.json'; set this to load a different config file
-        #     config-file: "res://.gut_editor_config.json"
-        #     # relative path to the xml file to read / write GUT's results from, recommended
-        #     # for direct-scene users to check this file if you have issues
-        #     result-output-file: "test_results.xml"
 
         - name: 📄 Debug print when tests error
           if: failure() && steps.run-godot-tests.outcome != 'success'
