@@ -27,8 +27,20 @@ func run_tests():
 	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
 	prints("post run tests A")
-	await gut_runner._gut.end_run
-	prints("post run tests B")
+	
+	# Wait for tests up to 10 seconds
+	var data:= {tests_done = false}
+	gut_runner._gut.end_run.connect(func():
+		data.tests_done = true
+		,
+		CONNECT_ONE_SHOT
+	)
+	var elapsed:= 0.0
+	while elapsed < 10.0:
+		if data.tests_done:
+			break
+		await get_tree().process_frame
+		elapsed += get_process_delta_time()
 	
 	# Quit fail
 	if exit_on_test_completion:
