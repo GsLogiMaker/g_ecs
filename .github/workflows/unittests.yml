@@ -108,6 +108,7 @@ jobs:
     - name: Build C++ code
       run: |
         scons --directory=addons/glecs/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
+        ls addons/glecs/bin
       #target=template_release
 
     # --- Define bin key ---
