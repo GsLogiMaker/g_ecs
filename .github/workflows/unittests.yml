@@ -45,7 +45,7 @@ jobs:
           - platform: macos
             arch: x86_64
             glecs_lib: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
-            os: macos-latest-large
+            os: macos-13
           # - target: aarch64-apple-darwin
           #   os: macos-latest
           #   glecs_lib: libglecs.dylib
@@ -174,7 +174,7 @@ jobs:
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
             lib_debug: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
             lib_release: ${{ needs.data.outputs.lib_release_linux_x86_64 }}
-          - os: macos-latest-large
+          - os: macos-13
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
             lib_debug: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
             lib_release: ${{ needs.data.outputs.lib_release_macos_x86_64 }}
