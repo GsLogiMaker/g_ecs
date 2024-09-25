@@ -43,8 +43,8 @@ jobs:
       bin_key_linux_x86_64: ${{ steps.set_cache_key.outputs.bin_key_linux_x86_64 }}
       # i686-linux_bin_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_bin_key }}
       # Mac
-      bin_key_mac_x86_64: ${{ steps.set_cache_key.outputs.bin_key_mac_x86_64 }}
-      # bin_key_mac_i686: ${{ steps.set_cache_key.outputs.bin_key_mac_i686 }}
+      bin_key_macos_x86_64: ${{ steps.set_cache_key.outputs.bin_key_macos_x86_64 }}
+      # bin_key_macos_i686: ${{ steps.set_cache_key.outputs.bin_key_macos_i686 }}
       # Windows
       bin_key_windows_x86_64: ${{ steps.set_cache_key.outputs.bin_key_windows_x86_64 }}
     steps:
@@ -155,7 +155,7 @@ jobs:
           - os: ubuntu-latest
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
           - os: macos-latest
-            bin_key: ${{ needs.compile_glecs.outputs.bin_key_mac_x86_64 }}
+            bin_key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
           - os: windows-latest
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
     runs-on: ${{ matrix.os }}
