@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode = null
+var world:GFWorld = null
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world, true)
+	world = GFWorld.new()
 
 
 func after_all():
@@ -13,193 +12,165 @@ func after_all():
 
 
 func test_add_entity():
-	var _entity:= GlecsEntity.spawn(world.as_object())
-	
+	var _entity:= GFEntity.spawn(world)
+
 	# Can't assert, but should be fine as long as it doesn't crash
 	assert_null(null)
 
 
 func test_world_deletion():
-	var w:= GlecsWorldNode.new()
-	var e:= GlecsEntity.spawn(w.as_object()) \
+	var w:= GFWorld.new()
+	var e:= GFEntity.spawn(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:= e.get_component(Foo)
-	var e2:= GlecsEntity.spawn(w.as_object()) \
+	var e2:= GFEntity.spawn(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo2:= e2.get_component(Foo)
-	
+
 	foo.set_value(Vector2(24.3, 2.1))
 	foo2.set_value(Vector2(125.1, 3.3))
-	
-	e2.free()
-	assert_eq(e2.is_valid(), false)
-	assert_eq(foo2.is_valid(), false)
-	
-	foo.free()
-	assert_eq(e.is_valid(), true)
-	assert_eq(foo.is_valid(), false)
-	
+
+	e2.delete()
+	assert_eq(e2.is_alive(), false)
+	assert_eq(foo2.is_alive(), false)
+
+	foo.delete()
+	assert_eq(e.is_alive(), true)
+	assert_eq(foo.is_alive(), false)
+
 	w.free()
 	assert_eq(is_instance_valid(w), false)
-	assert_eq(e.is_valid(), false)
-	assert_eq(foo.is_valid(), false)
-	
+	assert_eq(e.is_alive(), false)
+	assert_eq(foo.is_alive(), false)
 
-func test_registeration():
-	var w:= GlecsWorldNode.new()
-	add_child(w)
-	
-	var e:= GlecsEntity.spawn(world.as_object()) \
-		.add_component(RegisterationA) \
-		.add_component(RegisterationB) \
+
+func test_registration():
+	var w:= world
+
+	var e:= GFEntity.spawn(world) \
+		.add_component(RegistrationA) \
+		.add_component(RegistrationB) \
 		.set_name("Test")
-	
-	e.get_component(RegisterationA).set_value(3)
-	e.get_component(RegisterationB).set_value(11)
-	
-	# A system defined in RegistrationA's _registered function should run
-	# on GlecsWorldNode's process pipeline
-	await get_tree().process_frame # Skip this frame (We are already past the trigger for GlecsWorldNode's process pipeline)
-	await get_tree().process_frame # Pipeline process runs first time this frame
-	
-	assert_almost_eq(e.get_component(RegisterationA).get_result(), 14.0, .001)
-	assert_almost_eq(e.get_component(RegisterationB).get_result(), 33.0, .001)
 
-	w.queue_free()
+	e.get_component(RegistrationA).set_value(3)
+	e.get_component(RegistrationB).set_value(11)
+
+	# A system defined in RegistrationA's _registered function should run
+	# on GFWorld's process pipeline
+	w.progress(0.0)
+
+	assert_almost_eq(e.get_component(RegistrationA).get_result(), 14.0, .001)
+	assert_almost_eq(e.get_component(RegistrationB).get_result(), 33.0, .001)
 
 
 func test_simple_system():
-	var a = world.new_system()
-	var b = a.with(Foo)
-	b.for_each(func(_delta:float, foo:Foo):
-		foo.set_value(Vector2(2, 5))
-		)
-			
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	world.system_builder() \
+		.with(Foo) \
+		.for_each(func(foo:Foo):
+			foo.set_value(Vector2(2, 5))
+			)
+
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
-	
-	await get_tree().process_frame # Skip this frame
-	await get_tree().process_frame # Process is called first time here
-	
+
+	world.progress(0.0)
+
 	assert_eq(entity.get_component(Foo).get_value(), Vector2(2, 5))
 
 
-func test_default_values():
-	var w:= GlecsWorldNode.new()
-	var e:= GlecsEntity.spawn(world.as_object()) \
-		.add_component(WithDefaults) \
-		.set_name("Test")
-	assert_eq(e.get_component(WithDefaults).get_int(), WithDefaults._VAR_int)
-	assert_eq(e.get_component(WithDefaults).get_string(), WithDefaults._VAR_string)
-	assert_eq(e.get_component(WithDefaults).get_script_2(), WithDefaults._VAR_script)
-
-	w.queue_free()
-	
-	
+# test components components_in_relationships
 func test_components_in_relationships():
-	var w:= GlecsWorldNode.new()
-	add_child(w)
-	
-	var e:= GlecsEntity.spawn(w.as_object())
-	var foo:= e.add_relation(Targets, Foo) \
-		.get_component(w.pair(Targets, Foo)) as Foo
-	
+	var w:= GFWorld.new()
+
+	var e:= GFEntity.spawn(w)
+	var foo:Foo = e.add_pair(Targets, Foo) \
+		.get_component(w.pair(Targets, Foo))
+
 	foo.set_value(Vector2(54, 6))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
-	
+
 	foo = e.get_component(w.pair(Targets, Foo))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
-	
-	w.queue_free()
+
+	w.free()
 
 
-class Targets extends GlecsEntity: pass
+class Targets extends GFRegisterableEntity: pass
 
 
-class Foo extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		value = Vector2.ZERO
-	}
-	
+class Foo extends GFComponent:
+	func _build(b: GFComponentBuilder) -> void:
+		b.add_member("value", TYPE_VECTOR2)
+
 	func get_value() -> Vector2:
-		return getc(&"value")
-	
+		return getm(&"value")
+
 	func set_value(v:Vector2) -> void:
-		setc(&"value", v)
+		setm(&"value", v)
 
 
-class WithDefaults extends GlecsComponent:
-	const _VAR_int:= 25
-	const _VAR_string:= "Hello world!"
-	const _VAR_script:= WithDefaults
-	
-	static func _get_members() -> Dictionary: return {
-		int = 25,
-		string = "Hello world!",
-		script = WithDefaults,
-	}
-	
+class WithDefaults extends GFComponent:
+	func _build(b: GFComponentBuilder) -> void:
+		b.add_member("int", TYPE_INT)
+		b.add_member("string", TYPE_STRING)
+		b.add_member("script", TYPE_OBJECT)
+
 	func get_int() -> int:
-		return getc(&"int")
+		return getm(&"int")
 	func get_string() -> String:
-		return getc(&"string")
+		return getm(&"string")
 	func get_script_2() -> Script:
-		return getc(&"script")
+		return getm(&"script")
 
 
-class RegisterationA extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		value = 0.0,
-		result = 0.0,
-	}
-	
+class RegistrationA extends GFComponent:
+	func _build(b: GFComponentBuilder) -> void:
+		b.add_member("value", TYPE_FLOAT)
+		b.add_member("result", TYPE_FLOAT)
+
 	func get_value() -> float:
-		return getc(&"value")
+		return getm(&"value")
 	func set_value(v:float) -> void:
-		setc(&"value", v)
+		setm(&"value", v)
 	func get_result() -> float:
-		return getc(&"result")
+		return getm(&"result")
 	func set_result(v:float) -> void:
-		setc(&"result", v)
-	
-	static func _registered(world: GlecsWorldObject):
-		world.new_system() \
-			.with(RegisterationA) \
-			.with(RegisterationB) \
-			.for_each(func(_delta:float, reg_a:RegisterationA, reg_b:RegisterationB):
+		setm(&"result", v)
+
+	func _register(w: GFWorld):
+		w.system_builder() \
+			.with(RegistrationA) \
+			.with(RegistrationB) \
+			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
 				reg_a.set_result(reg_a.get_value() + reg_b.get_value())
 				)
 
 
-class RegisterationB extends GlecsComponent:
-	
-	static func _get_members() -> Dictionary: return {
-		value = 0.0,
-		result = 0.0,
-	}
-	
+class RegistrationB extends GFComponent:
+	func _build(b: GFComponentBuilder) -> void:
+		b.add_member("value", TYPE_FLOAT)
+		b.add_member("result", TYPE_FLOAT)
+
 	func get_value() -> float:
-		return getc(&"value")
+		return getm(&"value")
 	func set_value(v:float) -> void:
-		setc(&"value", v)
+		setm(&"value", v)
 	func get_result() -> float:
-		return getc(&"result")
+		return getm(&"result")
 	func set_result(v:float) -> void:
-		setc(&"result", v)
-	
-	static func _registered(world:GlecsWorldObject):
-		world.new_system() \
-			.with(RegisterationA) \
-			.with(RegisterationB) \
-			.for_each(func(_delta:float, reg_a:RegisterationA, reg_b:RegisterationB):
+		setm(&"result", v)
+
+	func _register(world:GFWorld):
+		world.system_builder() \
+			.with(RegistrationA) \
+			.with(RegistrationB) \
+			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
 				reg_b.set_result(reg_a.get_value() * reg_b.get_value())
 				)
 
 
-class NoDefine extends GlecsComponent:
+class NoDefine extends GFComponent:
 	pass
-
-

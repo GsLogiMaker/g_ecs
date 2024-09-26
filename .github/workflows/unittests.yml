@@ -7,148 +7,236 @@ on:
   pull_request:
     branches: [ "dev" ]
   workflow_dispatch:
-  
+
 jobs:
 
+  data:
+    runs-on: ubuntu-latest
+    outputs:
+      lib_debug_linux_x86_64: libglecs.linux.template_debug.x86_64.so
+      lib_release_linux_x86_64: libglecs.linux.template_release.x86_64.so
+
+      lib_debug_macos_x86_64: libglecs.macos.template_debug.x86_64.dylib
+      lib_release_macos_x86_64: libglecs.macos.template_release.x86_64.dylib
+
+      lib_debug_windows_x86_64: libglecs.windows.template_debug.x86_64.dll
+      lib_release_windows_x86_64: libglecs.windows.template_release.x86_64.dll
+    steps:
+      - name: Pass
+        run: echo Pass
+
   compile_glecs:
+    needs: [data]
     strategy:
       matrix:
         include:
           # Linux
-          - target: x86_64-unknown-linux-gnu
+          - platform: linux
+            arch: x86_64
+            glecs_lib: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
             os: ubuntu-latest
-            glecs_lib: libglecs.so
-          - target: i686-unknown-linux-gnu
-            os: ubuntu-latest
-            glecs_lib: libglecs.so
+          # - platform: linux
+          #   arc: arm64
+          #   target: i686-unknown-linux-gnu
+          #   glecs_lib: libglecs.linux.template_debug.arm64.so
+          #   os: ubuntu-latest
           # Mac
-          - target: aarch64-apple-darwin
-            os: macos-latest
-            glecs_lib: libglecs.dylib
-          - target: x86_64-apple-darwin
-            os: macos-latest
-            glecs_lib: libglecs.dylib
+          - platform: macos
+            arch: x86_64
+            glecs_lib: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
+            os: macos-13
+          # - target: aarch64-apple-darwin
+          #   os: macos-latest
+          #   glecs_lib: libglecs.dylib
           # Windows
-          - target: x86_64-pc-windows-gnu
-            os: ubuntu-latest
-            glecs_lib: glecs.dll
+          - platform: windows
+            release plreleasem: windows
+            arch: x86_64
+            glecs_lib: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     outputs:
       # Linux
-      x86_64-linux_lib_cache_key: ${{ steps.set_cache_key.outputs.x86_64-unknown-linux-gnu_lib_cache_key }}
-      i686-linux_lib_cache_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_lib_cache_key }}
+      bin_key_linux_x86_64: ${{ steps.set_cache_key.outputs.bin_key_linux_x86_64 }}
+      # i686-linux_bin_key: ${{ steps.set_cache_key.outputs.i686-unknown-linux-gnu_bin_key }}
       # Mac
-      aarch64-mac_lib_cache_key: ${{ steps.set_cache_key.outputs.x86_64-apple-darwin_lib_cache_key }}
-      x86_64-mac_lib_cache_key: ${{ steps.set_cache_key.outputs.aarch64-apple-darwin_lib_cache_key }}
+      bin_key_macos_x86_64: ${{ steps.set_cache_key.outputs.bin_key_macos_x86_64 }}
+      # bin_key_macos_i686: ${{ steps.set_cache_key.outputs.bin_key_macos_i686 }}
       # Windows
-      x86_64-windows_lib_cache_key: ${{ steps.set_cache_key.outputs.x86_64-pc-windows-gnu_lib_cache_key }}
+      bin_key_windows_x86_64: ${{ steps.set_cache_key.outputs.bin_key_windows_x86_64 }}
     steps:
-    - name: 🐙 Settup git environment
+    - name: 🐙 Setup git environment
       uses: actions/checkout@v4
 
     - name: 🗳️ Initialize git submodules
       run: git submodule update --init --recursive
 
-    - name: 💾 Rust cache
-      uses: Swatinem/rust-cache@v2
+    - name: 🐍 Python install
+      uses: actions/setup-python@v5
       with:
-        workspaces: "./addons/glecs/rust/glecs"
-        cache-on-failure: true
+        python-version: '3.10'
 
-    - name: 🏗️ Update Rust
+    # --- Define keys ---
+
+    - name: 🏔️ Define library cache key in env Linux
+      shell: bash
+      run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+
+    - name: 🏔️ Define cpp cache key Linux
+      shell: bash
+      run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
+
+    - name: 🏔️ Define includes cache key Linux
+      shell: bash
+      run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
+
+    # --- Restore caches ---
+
+    - name: 💾 Restore cached cpp files
+      uses: actions/cache/restore@v4.0.2
+      with:
+        path: addons/glecs/cpp
+        key: ${{ env.cpp_key }}
+
+    - name: 💾 Restore cached include files
+      uses: actions/cache/restore@v4.0.2
+      with:
+        path: addons/glecs/cpp/include
+        key: ${{ env.include_key }}
+
+    # --- Platform specific setup ---
+
+    # - name: 🐧 Install GCC multilib for Linux i686 build
+    #   if: ${{ matrix.platform == 'linux' && matrix.arch == 'i686' && runner.os == 'Linux'}}
+    #   run: sudo apt-get install gcc-multilib
+
+    - name: 🪟 Install mingw for cross compiling from Linux to Windows
+      if: ${{ matrix.platform == 'windows' && runner.os == 'Linux' }}
       run: |
-        rustup update
-        rustup target add ${{ matrix.target }}
+        sudo apt install g++-mingw-w64-x86-64
+        sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
-    - name: 🐧 Install GCC multilib for Linux i686 build
-      if: ${{ matrix.target == 'i686-unknown-linux-gnu' && runner.os == 'Linux'}} 
-      run: sudo apt-get install gcc-multilib
-    
-    - name: 🪟 Install mingw for Windows build
-      if: ${{ matrix.target == 'x86_64-pc-windows-gnu' && runner.os == 'Linux' }}
-      run: sudo apt install gcc-mingw-w64
+    # --- Compile Glecs ---
 
-    - name: 🦀 Build Rust code
+    - name: 🔨 Install scons
       run: |
-        cargo build \
-          --release \
-          --manifest-path ./addons/glecs/rust/glecs/Cargo.toml \
-          --features compile_bindings \
-          --target-dir ./addons/glecs/bin \
-          --target ${{ matrix.target }}
+        pip install scons
 
-    - name: 🏔️ Set Glecs library cache key ENV variable
+    - name: 🛠️ Build C++ code
       run: |
-        echo "lib_cache_key=glecslib.${{ matrix.target }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
-    
-    - name: 🔑 Set Glecs library cache key
+        scons --directory=addons/glecs/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
+        printf *** ls addons/glecs/bin/ ***
+        ls addons/glecs/bin
+      #target=template_release
+
+    # --- Define bin key ---
+
+    - name: 🏔️ Define library cache key in env
+      shell: bash
+      run: |
+        printf "*** Setting key in env***"
+        echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+    - name: 🏔️ Define library cache key in output
       id: set_cache_key
+      shell: bash
       run: |
-        echo "${{ matrix.TARGET }}_lib_cache_key=$lib_cache_key" >> $GITHUB_OUTPUT
+        printf "*** Setting key ***"
+        echo "bin_key_${{ matrix.platform }}_${{ matrix.arch }}=${{env.bin_key}}" >> $GITHUB_OUTPUT
 
-    - name: 💾 Cache compiled library
+    # --- Save caches ---
+
+    - name: 💾 Cache cpp source build files
+      uses: actions/cache/save@v4
+      with:
+        path: addons/glecs/cpp
+        key: ${{ env.cpp_key }}
+
+    - name: 💾 Cache cpp include build files
+      uses: actions/cache/save@v4
+      with:
+        path: addons/glecs/cpp/include
+        key: ${{ env.include_key }}
+
+    - name: 💾 Cache bin
       uses: actions/cache/save@v4.0.2
       with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: ./addons/glecs/bin/${{ matrix.target }}/release/${{ matrix.glecs_lib }}
-        # An explicit key for restoring and saving the cache
-        key: ${{ env.lib_cache_key }}
+        path: ./addons/glecs/bin/${{ matrix.glecs_lib }}
+        key: ${{ env.bin_key }}
         enableCrossOsArchive: true
 
-      
   run_test_suite:
-    needs: compile_glecs
-    runs-on: ubuntu-latest
+    needs: [data, compile_glecs]
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            bin_key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_linux_x86_64 }}
+          - os: macos-13
+            bin_key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_macos_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_macos_x86_64 }}
+          - os: windows-latest
+            bin_key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
+            lib_debug: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
+            lib_release: ${{ needs.data.outputs.lib_release_windows_x86_64 }}
+    runs-on: ${{ matrix.os }}
     steps:
-        - name: 🐙 Settup git environment
+        - name: 🐙 Setup git environment
           uses: actions/checkout@v4
 
-        - name: 💾 Load cached library
+        - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/x86_64-unknown-linux-gnu/release/libglecs.so
-            key: ${{ needs.compile_glecs.outputs.x86_64-linux_lib_cache_key }}
+            path: ./addons/glecs/bin/${{ matrix.lib_debug }}
+            key: ${{ matrix.bin_key }}
+            enableCrossOsArchive: true
+        - name: 💾 Load cached library as release
+          uses: actions/cache/restore@v4.0.2
+          with:
+            path: ./addons/glecs/bin/${{ matrix.lib_release }}
+            key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
-        - name: ↪️ Move lib
-          if: ${{ matrix.os }} == "ubuntu-latest"
-          run: |
-            mkdir ./addons/glecs/bin/release/
-            mkdir ./addons/glecs/bin/debug/
-            cp ./addons/glecs/bin/x86_64-unknown-linux-gnu/release/libglecs.so ./addons/glecs/bin/release/libglecs.so
-            cp ./addons/glecs/bin/x86_64-unknown-linux-gnu/release/libglecs.so ./addons/glecs/bin/debug/libglecs.so
-
-        - name: 🤖 Run Godot unit tests
-          id: run-godot-tests
-          uses: croconut/godot-tester@v5
+        - name: 🤖 Setup Godot binary
+          uses: lihop/setup-godot@v2
           with:
-            # required
-            version: "4.2.1"
-            is-mono: "false"
-            # the folder with your project.godot file in it
-            path: "./"
-            # the ratio of tests that must pass for this action to pass
-            # e.g. 0.6 means 60% of your tests must pass
-            minimum-pass: "1.0"
-            # the directory containing Gut tests
-            test-dir: "res://unittests"
-            # default is GUTs default: 'res://.gutconfig.json'; set this to load a different config file
-            config-file: "res://.gut_editor_config.json" 
-            # relative path to the xml file to read / write GUT's results from, recommended
-            # for direct-scene users to check this file if you have issues
-            result-output-file: "test_results.xml"
+            version: 4.3-stable
+            bits: 64
+            mono: false
 
-        - name: 📄 Print Godot logs
+        - name: 🤖 Run Godot import
+          shell: bash
+          run: godot --headless --import
+
+        - name: 📝 Run Glecs tests
+          id: run-godot-tests
+          shell: bash
+          run: godot --script unittests.gd --headless --verbose
+
+        - name: 📄 Debug print when tests error
+          shell: bash
           if: failure() && steps.run-godot-tests.outcome != 'success'
-          run: echo "$(cat logs/godot.log)"
+          run: |
+            echo ""
+            echo "***"
+            echo "LS"
+            echo "***"
+            ls -g -A
 
+            echo ""
+            echo "***"
+            echo "LS glecs/bin/"
+            echo "***"
+            ls addons/glecs/bin
 
   update_nightly:
     if: ${{ github.event_name == 'push' || github.event_name == 'closed' }}
     needs:  ["compile_glecs", "run_test_suite"]
     runs-on: windows-latest
     steps:
-      - name: 🐙 Settup git environment
+      - name: 🐙 Setup git environment
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -160,27 +248,7 @@ jobs:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: ./addons/glecs/bin/x86_64-unknown-linux-gnu/release/libglecs.so
           # An explicit key for restoring and saving the cache
-          key: ${{ needs.compile_glecs.outputs.x86_64-linux_lib_cache_key }}
-          # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
-          enableCrossOsArchive: true
-
-      - name: 🐧 Load compiled library, Linux i686
-        uses: actions/cache/restore@v4.0.2
-        with:
-          # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./addons/glecs/bin/i686-unknown-linux-gnu/release/libglecs.so
-          # An explicit key for restoring and saving the cache
-          key: ${{ needs.compile_glecs.outputs.i686-linux_lib_cache_key }}
-          # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
-          enableCrossOsArchive: true
-
-      - name: 🍎 Load compiled library, Mac aarch64
-        uses: actions/cache/restore@v4.0.2
-        with:
-          # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./addons/glecs/bin/aarch64-apple-darwin/release/libglecs.dylib
-          # An explicit key for restoring and saving the cache
-          key: ${{ needs.compile_glecs.outputs.aarch64-mac_lib_cache_key }}
+          key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
           enableCrossOsArchive: true
 
@@ -190,7 +258,7 @@ jobs:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: ./addons/glecs/bin/x86_64-apple-darwin/release/libglecs.dylib
           # An explicit key for restoring and saving the cache
-          key: ${{ needs.compile_glecs.outputs.x86_64-mac_lib_cache_key }}
+          key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
           enableCrossOsArchive: true
 
@@ -200,7 +268,7 @@ jobs:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: ./addons/glecs/bin/x86_64-pc-windows-gnu/release/glecs.dll
           # An explicit key for restoring and saving the cache
-          key: ${{ needs.compile_glecs.outputs.x86_64-windows_lib_cache_key }}
+          key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
           enableCrossOsArchive: true
 
@@ -210,11 +278,11 @@ jobs:
             python-version: 3.11.2
             cache: pip
 
-      - name: 🚣‍♂️ Convert dev plugin to nightly format
-        run: |
-          cd addons/glecs
-          pip install regex
-          python _build_for_nightly.py
+      # - name: 🚣‍♂️ Convert dev plugin to nightly format
+      #   run: |
+      #     cd addons/glecs
+      #     pip install regex
+      #     python _build_for_nightly.py
 
       - name: 🌙 Clone nightly branch
         run: |
@@ -222,11 +290,11 @@ jobs:
           mkdir ../nightly
           mkdir ../nightly/.git
           cp -r ../nightly_tmp/.git/* ../nightly/.git/
-      
+
       - name: 🖨️ Copy dev branch plugin to nightly
         run: |
           cp -r -force ./addons/glecs/* ../nightly/
-      
+
       - name: ➕ Add and commit to nightly
         id: add-and-commit
         continue-on-error: true
@@ -244,6 +312,6 @@ jobs:
           repository: ${{ github.repository }}
           branch: nightly
           directory: ../nightly
-        
+
       - name: 🏁 Finish
         run: exit 0

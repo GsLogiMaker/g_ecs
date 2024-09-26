@@ -24,7 +24,7 @@ var result_bbcode_path = null
 var result_json_path = null
 
 var _gut_config = null
-var _gut = null;
+var _gut = null
 var _wrote_results = false
 
 # The editor runs this scene using play_custom_scene, which means we cannot

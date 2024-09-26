@@ -1,26 +1,26 @@
 
 ## A component that represents scale in 2D space.
 
-extends GlecsComponent
+extends GFComponent
 
-const Self:= preload("./scale2d.gd")
-const CanvasItemC:= preload("./canvas_item.gd")
-const Position2DC:= preload("./position2d.gd")
-const Rotation2DC:= preload("./rotation2d.gd")
+const std:= preload("../std.gd")
+const CanvasItemC:= std.CanvasItemC
+const Position2DC:= std.Position2DC
+const Rotation2DC:= std.Rotation2DC
+const Scale2DC:= std.Scale2DC
 
-static func _get_members() -> Dictionary: return {
-	scale = Vector2.ONE,
-}
-func get_scale() -> Vector2: return getc(&"scale")
-func set_scale(v:Vector2) -> void: return setc(&"scale", v)
+func _build(b: GFComponentBuilder) -> void:
+	b.add_member("scale", TYPE_VECTOR2)
+func get_scale() -> Vector2: return getm(&"scale")
+func set_scale(v:Vector2) -> void: return setm(&"scale", v)
 
-static func _registered(w:GlecsWorldObject):
+func _register(w:GFWorld):
 	# On Scale2DC set, update visual transform of CanvasItemC
-	w.new_event_listener(Glecs.ON_SET) \
-		.with(CanvasItemC, Glecs.INOUT_MODE_FILTER) \
-		.with(Self) \
+	w.observer_builder("flecs/core/OnSet") \
+		.with(CanvasItemC).access_filter() \
+		.with(Scale2DC) \
 		.maybe_with(Position2DC) \
 		.maybe_with(Rotation2DC) \
-		.for_each(func(item:CanvasItemC, scal:Self, pos:Position2DC, rot:Rotation2DC):
+		.for_each(func(item:CanvasItemC, scal:Scale2DC, pos:Position2DC, rot:Rotation2DC):
 			item.update_transform_c(pos, rot, scal)
 			)

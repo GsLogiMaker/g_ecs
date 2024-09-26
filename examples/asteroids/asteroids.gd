@@ -1,28 +1,28 @@
 
 extends Node2D
 
-@onready var world:GlecsWorldNode = $GlecsWorldNode
+var world:= GFWorld()
 
 var texture:= load("res://icon.png")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var e:= GlecsEntity.spawn().set_name("Test")
+	var e:= GFEntity.spawn().set_name("Test")
 	e.add_component(RenderableSprite2D, [texture])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
- 
-class RenderableSprite2D extends GlecsComponent:
+
+class RenderableSprite2D extends GFComponent:
 	static func _get_members() -> Dictionary: return {
 		texture = null,
 		rid = RID(),
 	}
-	
-	static func _registered(world:GlecsWorldObject):
+
+	func _register(world:GFWorld):
 		# On add
-		world.new_event_listener(Glecs.ON_ADD) \
+		world.observer_builder("flecs/core/OnAdd") \
 			.with(RenderableSprite2D) \
 			.for_each(func(sprite:RenderableSprite2D):
 				await Engine.get_main_loop().process_frame
@@ -38,9 +38,9 @@ class RenderableSprite2D extends GlecsComponent:
 					texture,
 				)
 				)
-				
+
 		# On set
-		world.new_event_listener(Glecs.ON_SET) \
+		world.observer_builder("flecs/core/OnSet") \
 			.with(RenderableSprite2D) \
 			.for_each(func(sprite:RenderableSprite2D):
 				var texture:= sprite.get_texture()
@@ -52,14 +52,13 @@ class RenderableSprite2D extends GlecsComponent:
 					sprite.get_texture(),
 				)
 				)
-	
-	func get_rid() -> RID:
-		return getc(&"rid")
-	func set_rid(v:RID) -> void:
-		setc(&"rid", v)
-		
-	func get_texture() -> Texture2D:
-		return getc(&"texture")
-	func set_texture(v:Texture2D) -> void:
-		setc(&"texture", v)
 
+	func get_rid() -> RID:
+		return getm(&"rid")
+	func set_rid(v:RID) -> void:
+		setm(&"rid", v)
+
+	func get_texture() -> Texture2D:
+		return getm(&"texture")
+	func set_texture(v:Texture2D) -> void:
+		setm(&"texture", v)

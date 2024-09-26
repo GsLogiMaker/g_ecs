@@ -2,52 +2,33 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "godot-rust: Launch Debug Editor",
-			"detail": "Builds debug rust game library, then opens the project with Godot Editor",
-			"dependsOn": "godot-rust: Build Debug",
+			"label": "godot-extension: Build Debug",
+			"detail": "Builds debug godot extension library",
 			"type": "shell",
-			"options": {
-				"cwd": "${config:godot-rust.environment.godotProjectPath}"
-			},
-			"command": "${config:godot-rust.environment.godotEditorPath} --editor",
-			"group": "build",
-			"problemMatcher": []
-		},
-		{
-			"label": "godot-rust: Launch Release Editor",
-			"detail": "Builds release rust game library, then opens the project with Godot Editor",
-			"dependsOn": "godot-rust: Build Release",
-			"type": "shell",
-			"options": {
-				"cwd": "${config:godot-rust.environment.godotProjectPath}"
-			},
-			"command": "${config:godot-rust.environment.godotEditorPath} --editor",
-			"group": "build"
-		},
-		{
-			"label": "godot-rust: Build Debug",
-			"detail": "Builds debug rust game library",
-			"type": "shell",
-			"command": "cargo build --manifest-path ./addons/glecs/rust/glecs/Cargo.toml --target-dir ./addons/glecs/bin",
+			"command": "scons --directory addons/glecs/cpp target=template_debug debug_symbols=yes optimize=debug",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
 			"problemMatcher": []
-		},
-		{
-			"label": "godot-rust: Build Release",
-			"detail": "Builds release rust game library",
+		}, {
+			"label": "godot-extension: Clean Build Files",
+			"detail": "Removes artifacts from the build process",
 			"type": "shell",
-			"command": "cargo build --release --manifest-path ./addons/glecs/rust/glecs/Cargo.toml --target-dir ./addons/glecs/bin",
-			"group": "build"
-		},
-		{
-			"label": "godot-rust: Clean",
-			"detail": "Removes all artifacts of rust game library and its dependencies",
+			"command": "scons --clean --directory addons/glecs/cpp",
+			"problemMatcher": []
+		}, {
+			"label": "godot-extension: Build Compilation Commands",
+			"detail": "Removes artifacts from the build process",
 			"type": "shell",
-			"command": "cargo clean --manifest-path ./addons/glecs/rust/glecs/Cargo.toml --target-dir ./addons/glecs/bin",
-			"group": "build"
+			"command": "scons cdb --directory addons/glecs/cpp target=template_debug debug_symbols=yes optimize=debug",
+			"problemMatcher": []
+			}, {
+			"label": "godot-extension: Doctool Dump Documentation Files",
+			"detail": "Dumps GDExtension documentation xml files",
+			"type": "shell",
+			"command": "${config:godotTools.editorPath.godot4} --doctool ./addons/glecs/cpp/src/ --gdextension-docs --editor --headless --quit",
+			"problemMatcher": []
 		}
 	]
 }

@@ -1,11 +1,10 @@
 
 extends GutTest
 
-var world:GlecsWorldNode = null
+var world:GFWorld = null
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world, true)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
@@ -13,19 +12,19 @@ func after_all():
 #region Tests
 
 func test_get_nonexistant_property():
-	var entity:= GlecsEntity.spawn(world.as_object()) \
+	var entity:= GFEntity.spawn(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:Foo = entity.get_component(Foo)
-	
-	assert_eq(foo.getc(&"not a real property"), null)
+
+	assert_eq(foo.getm(&"not a real property"), null)
 
 
 func test_new_entity_with_unregistered_component():
-	var _entity:= GlecsEntity.spawn(world.as_object()) \
+	var _entity:= GFEntity.spawn(world) \
 		.add_component(Unregistered) \
 		.set_name("Test")
-	
+
 	# We can't assert the right error is thrown, but it should be fine as
 	# long as it doesn't crash
 	assert_null(null)
@@ -34,14 +33,12 @@ func test_new_entity_with_unregistered_component():
 
 #region Classes
 
-class Foo extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		vec = 0.0,
-	}
+class Foo extends GFComponent:
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("vec", TYPE_FLOAT)
 
-class Unregistered extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		vec = 0.0,
-	}
+class Unregistered extends GFComponent:
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("vec", TYPE_FLOAT)
 
 #endregion

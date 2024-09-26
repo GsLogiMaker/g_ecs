@@ -1,3 +1,8 @@
-[submodule "addons/glecs/rust/flecs-rs"]
-	path = addons/glecs/rust/flecs-rs
-	url = https://github.com/GsLogiMaker/flecs-rs
+[submodule "addons/glecs/cpp/include/--force"]
+	path = addons/glecs/cpp/include/--force
+	url = https://github.com/godotengine/godot-cpp
+	branch = 4.2
+[submodule "addons/glecs/cpp/include/godot-cpp"]
+	path = addons/glecs/cpp/include/godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 4.2

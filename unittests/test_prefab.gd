@@ -2,33 +2,36 @@
 @tool
 extends GutTest
 
-var world:GlecsWorldNode
+var world:GFWorld
 
 func before_all():
-	world = GlecsWorldNode.new()
-	add_child(world)
+	world = GFWorld.new()
 
 func after_all():
 	world.free()
 
 #region Tests
 
+# test prefab prefab
 func test_prefab():
-	world.new_system() \
+	world.system_builder() \
 		.with(Foo) \
 		.with(Bar) \
-		.for_each(func(_delta:float, f:Foo, b:Bar):
+		.for_each(func(f:Foo, b:Bar):
 			f.b += 1
 			f.c += 1.3
 			b.a.x += f.c
 			b.a.y += f.c * 2
 			b.b = PI
 			)
-			
-	var entity:= GlecsEntity.spawn(world.as_object())
-	entity.add_entity(world.pair(Glecs.IS_A, MyPrefab))
-	
-	# Test inhereted componets exist entity
+
+	var entity:= GFEntity.spawn(world)
+	var isa:= world.coerce_id("flecs/core/IsA")
+	var myprefab:= world.coerce_id(MyPrefab)
+	var pair:= world.pair(isa, myprefab)
+	entity.add_entity(pair)
+
+	# Test inhereted components exist entity
 	var foo:Foo = entity.get_component(Foo)
 	var bar:Bar = entity.get_component(Bar)
 	assert_ne(foo, null)
@@ -42,7 +45,7 @@ func test_prefab():
 	assert_almost_eq(bar.b, 5.6, 0.001)
 
 	# Test process with inhereted components
-	world.run_pipeline(Glecs.PROCESS, 0.0)
+	world.progress(0.0)
 	assert_eq(foo.b, 24)
 	assert_almost_eq(foo.c, 3.63, 0.001)
 	assert_almost_eq(bar.a, Vector2(2+foo.c, 1.1+(foo.c*2)), Vector2(0.001, 0.001))
@@ -52,25 +55,36 @@ func test_prefab():
 
 #region Components
 
-class Foo extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		a = false,
-		b = 0,
-		c = 0.0,
-	}
+class Foo extends GFComponent:
+	var a:bool:
+		get: return getm("a")
+		set(v): setm("a", v)
+	var b:int:
+		get: return getm("b")
+		set(v): setm("b", v)
+	var c:float:
+		get: return getm("c")
+		set(v): setm("c", v)
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_BOOL)
+		b_.add_member("b", TYPE_INT)
+		b_.add_member("c", TYPE_FLOAT)
 
-class Bar extends GlecsComponent:
-	static func _get_members() -> Dictionary: return {
-		a = Vector2.ZERO,
-		b = 0.0,
-	}
-	
-class MyPrefab extends GlecsEntity:
-	
-	static func _registered(world:GlecsWorldObject) -> void:
-		var p:= GlecsEntity.from(MyPrefab, world)
-		p.add_entity(Glecs.PREFAB)
-		p.add_component(Foo, [true, 23, 2.33])
-		p.add_component(Bar, [Vector2(2, 1.1), 5.6])
-		
+class Bar extends GFComponent:
+	var a:Vector2:
+		get: return getm("a")
+		set(v): setm("a", v)
+	var b:float:
+		get: return getm("b")
+		set(v): setm("b", v)
+	func _build(b_: GFComponentBuilder) -> void:
+		b_.add_member("a", TYPE_VECTOR2)
+		b_.add_member("b", TYPE_FLOAT)
+
+class MyPrefab extends GFRegisterableEntity:
+	func _register(_world:GFWorld) -> void:
+		add_entity("flecs/core/Prefab")
+		add_component(Foo, [true, 23, 2.33])
+		add_component(Bar, [Vector2(2, 1.1), 5.6])
+
 #endregion
