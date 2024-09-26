@@ -1,38 +1,45 @@
 
 extends Control
 
-const GutConfig:= preload('res://addons/gut/gut_config.gd')
-const GutEditorGlobals:= preload('res://addons/gut/gui/editor_globals.gd')
+const GlecsTestRunner:= preload("res://glecs_tests_runner.gd")
 
+var thread:= Thread.new()
 var mutex:= Mutex.new()
 
 var world:= GFWorld.new()
 
-var gut_runner:= preload("res://addons/gut/gui/GutRunner.tscn").instantiate()
-var gut_config:GutConfig= GutConfig.new()
+var test_runner:GlecsTestRunner = null
 
 func _enter_tree() -> void:
-	gut_config.load_options(GutEditorGlobals.editor_run_gut_config_path)
-	gut_runner.ran_from_editor = false
-	gut_runner.set_gut_config(gut_config)
-	add_child(gut_runner)
+	test_runner = preload("res://glecs_tests_runner.tscn").instantiate()
+	test_runner.exit_on_test_completion = false
+	add_child(test_runner)
+
+func _exit_tree() -> void:
+	if thread.is_started():
+		thread.wait_to_finish()
+	world.free()
 
 func _ready() -> void:
 	world.start_rest_api()
 
+	if "--unittests" in  OS.get_cmdline_args() or "--unittest" in  OS.get_cmdline_args():
+		prints("--- Running Glecs unittests ---")
+		test_runner.run_tests()
+		return
+
 	prints("Input ready")
-	var thread:= Thread.new()
 	thread.start(func():
-	##(func():
 		while true:
+			prints(is_queued_for_deletion())
+			if is_queued_for_deletion():
+				return
 			var stdin:= OS.read_string_from_stdin().strip_edges()
 			var args:= stdin.split(" ")
 			if args[0] in ["exit", "quit", "close", "continue"]:
 				break
 			if args[0] in ["test"]:
-				gut_config.options.tests = [args[1]] if args.size() > 1 else []
-				gut_config.options.unit_test_name = args[2] if args.size() > 2 else ""
-				gut_runner.run_tests.call_deferred()
+				test_runner.run_tests.call_deferred()
 				continue
 			if args[0] in ["reset"]:
 				get_tree().change_scene_to_file.call_deferred("res://main.tscn")

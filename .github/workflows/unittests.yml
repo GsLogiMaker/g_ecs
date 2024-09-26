@@ -3,9 +3,9 @@ name: Build Process
 
 on:
   push:
-    branches: [ "dev", "cpp" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "dev", "cpp" ]
+    branches: [ "dev" ]
   workflow_dispatch:
 
 jobs:
