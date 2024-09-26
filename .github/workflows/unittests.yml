@@ -168,7 +168,6 @@ jobs:
     needs: [data, compile_glecs]
     strategy:
       fail-fast: false
-      continue-on-error: true
       matrix:
         include:
           - os: ubuntu-latest
@@ -234,7 +233,7 @@ jobs:
             ls addons/glecs/bin
 
   update_nightly:
-    if: ${{ github.event_name == 'push' || github.event_name == 'closed' }}
+    if: ${{ '!cancelled()' && github.event_name == 'push' || github.event_name == 'closed' }}
     needs:  ["compile_glecs", "run_test_suite"]
     runs-on: windows-latest
     steps:
