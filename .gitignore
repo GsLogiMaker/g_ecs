@@ -1,22 +1,10 @@
 
 # Compiled binaries
-addons/glecs/bin/
+bin/
 
-# Ignore some .godot files
-.godot/*/
-.godot/uid_cache.bin
-
-# Project files
-addons/gut/gui/GutSceneTheme.tres
-unittest_log.xml
-test_results.xml
-
-logs/*.log
-
-# Ignore C++ build files
-addons/glecs/cpp/.sconsign.dblite
+# C++ build files
+cpp/.cache
+cpp/.sconsign.dblite
+cpp/compile_commands.json
+cpp/src/doc_data.gen.h
 *.os
-addons/glecs/cpp/.cache
-addons/glecs/cpp/compile_commands.json
-.godot/scene_groups_cache.cfg
-addons/glecs/cpp/src/doc_data.gen.h

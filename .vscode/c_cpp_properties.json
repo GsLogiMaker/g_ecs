@@ -3,7 +3,7 @@
     {
       "name": "linux-gcc-x64",
       "includePath": [
-        "${workspaceFolder}/**"
+        "${workspaceFolder}/cpp/**"
       ],
       "defines": [],
       "cStandard": "${default}",

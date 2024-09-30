@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+import os
+import sys
+
+from SCons.Script import *
+from SCons.Script.SConscript import SConsEnvironment
+
+LIB_NAME = "libglecs"
+
+def main():
+    env:SConsEnvironment = SConscript("include/godot-cpp/SConstruct")
+
+    # Settings for speeding up compilation
+    env.Decider('MD5-timestamp')
+    env.SetOption('max_drift', 1)
+    env.SetOption('implicit_cache', 1)
+
+    # Compilation commands
+    env.Tool('compilation_db')
+    cdb = env.CompilationDatabase()
+    x = env.Alias('cdb', cdb)
+    if "cdb" in COMMAND_LINE_TARGETS:
+        env._dict["CXXFLAGS"].remove("-fno-gnu-unique")
+
+    platform:str = env["platform"]
+    target:str = env["target"]
+    suffix:str = env["suffix"]
+    shlib_suffix:str = env["SHLIBSUFFIX"]
+
+    # Set cpp version
+    for item in env['CXXFLAGS']:
+        if "std" in item:
+            env['CXXFLAGS'].remove(item)
+    if "windows" in platform :
+        env.Append(CXXFLAGS=['/std:c++20'])
+    else:
+        env.Append(CXXFLAGS=['-std=c++20'])
+
+    # For reference:
+    # - CCFLAGS are compilation flags shared between C and C++
+    # - CFLAGS are for C-specific compilation flags
+    # - CXXFLAGS are for C++-specific compilation flags
+    # - CPPFLAGS are for pre-processor flags
+    # - CPPDEFINES are for pre-processor defines
+    # - LINKFLAGS are for linking flags
+
+    # tweak this if you want to use different folders, or more folders, to store your source code in.
+    env.Append(CPPPATH=["src/"])
+    env.Append(CPPPATH=["include/flecs/"])
+    sources = env.Glob("src/*.cpp") + env.Glob("include/flecs/*.c")
+
+    # Allow throwing exceptions
+    env.Append(CXXFLAGS=["-fexceptions"])
+
+    # Compile documentation
+    docs_xml = []
+    docs_xml += env.Glob("src/doc_classes/*.xml")
+    docs_xml = sorted(docs_xml)
+    docs_header = [f"src/doc_data.gen.h"]
+    env.Command(docs_header, docs_xml, env.Action(make_doc_header, "Generating documentation header"))
+
+    library = env.SharedLibrary(
+        f"../bin/{LIB_NAME}{suffix}{shlib_suffix}",
+        source=sources,
+    )
+
+    env.VariantDir(f"/build/{platform}.{target}", 'src')
+    env.Default(library)
+
+def make_doc_header(target, source, env):
+    #import zlib
+
+    dst = str(target[0])
+    g = open(dst, "w", encoding="utf-8")
+    buf = ""
+    docbegin = ""
+    docend = ""
+    for src in source:
+        src = str(src)
+        if not src.endswith(".xml"):
+            continue
+        with open(src, "r", encoding="utf-8") as f:
+            content = f.read()
+        buf += content
+
+    buf = (docbegin + buf + docend).encode("utf-8")
+    #decomp_size = len(buf)
+
+    # Use maximum zlib compression level to further reduce file size
+    # (at the cost of initial build times).
+    #buf = zlib.compress(buf, zlib.Z_BEST_COMPRESSION)
+
+    g.write("/* THIS FILE IS GENERATED DO NOT EDIT */\n")
+    g.write("#ifndef _DOC_DATA_RAW_H\n")
+    g.write("#define _DOC_DATA_RAW_H\n")
+    #g.write("static const int _doc_data_compressed_size = " + str(len(buf)) + ";\n")
+    #g.write("static const int _doc_data_uncompressed_size = " + str(decomp_size) + ";\n")
+    #g.write("static const unsigned char _doc_data_compressed[] = {\n")
+    g.write("static const int _doc_data_size = " + str(len(buf)) + ";\n")
+    g.write("static const char _doc_data[] = {\n")
+    for i in range(len(buf)):
+        g.write("\t" + str(buf[i]) + ",\n")
+    g.write("};\n")
+
+    g.write("#endif")
+
+    g.close()
+
+main()

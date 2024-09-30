@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A builder for queries.
+	</brief_description>
+	<description>
+		Queries are the main way entities are accessed from a [GFWorld]. Under the hood, systems and observers both use queries.
+		The example below shows the creation of a query over entities with the [i]Jump[/i] component:
+		[codeblock]
+		var world:= GFWorld.new()
+		var query:GFQuery = world.query_builder() \
+			.with("Jump") \
+			.build()
+		[/codeblock]
+	</description>
+	<tutorials>
+		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries.html</link>
+	</tutorials>
+	<methods>
+		<method name="build">
+			<return type="GFQuery" />
+			<description>
+				Builds and returns the new query.
+			</description>
+		</method>
+	</methods>
+</class>
