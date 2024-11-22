@@ -184,16 +184,16 @@ jobs:
             lib_release: ${{ needs.data.outputs.lib_release_windows_x86_64 }}
     runs-on: ${{ matrix.os }}
     steps:
+        - name: 🐙 Setup git environment of plugin
+          uses: actions/checkout@v4
+          with:
+            path: "addons/glecs"
+            submodules: "recursive"
+
         - name: 🐙 Setup git environment of testing project
           uses: actions/checkout@v4
           with:
             ref: "unittests-project"
-            submodules: "recursive"
-
-        - name: 🐙 Setup git environment of plugin
-          uses: actions/checkout@v4
-          with:
-            path: "addons"
             submodules: "recursive"
 
         - run: ls addons
