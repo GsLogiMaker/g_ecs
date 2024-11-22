@@ -194,8 +194,6 @@ jobs:
           with:
             path: "addons/glecs"
 
-        - run: tree
-
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
@@ -208,6 +206,8 @@ jobs:
             path: ./bin/${{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
+
+        - run: tree
 
         - name: 🤖 Setup Godot binary
           uses: lihop/setup-godot@v2
