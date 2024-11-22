@@ -196,7 +196,10 @@ jobs:
             ref: "unittests-project"
             submodules: "recursive"
 
-        - run: ls addons
+        - run:
+            ls
+            ls addons
+            tree
 
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
