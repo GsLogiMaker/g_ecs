@@ -8,3 +8,6 @@ func _initialize():
 	await process_frame
 	await process_frame
 	current_scene.run_tests()
+	
+	await create_timer(1)
+	OS.crash("Timeout")
