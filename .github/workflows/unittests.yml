@@ -184,8 +184,19 @@ jobs:
             lib_release: ${{ needs.data.outputs.lib_release_windows_x86_64 }}
     runs-on: ${{ matrix.os }}
     steps:
-        - name: 🐙 Setup git environment
+        - name: 🐙 Setup git environment of testing project
           uses: actions/checkout@v4
+          with:
+            ref: "unittests-project"
+            submodules: "recursive"
+
+        - name: 🐙 Setup git environment of plugin
+          uses: actions/checkout@v4
+          with:
+            path: "/addons/"
+            submodules: "recursive"
+
+        - run: ls addons      
 
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
