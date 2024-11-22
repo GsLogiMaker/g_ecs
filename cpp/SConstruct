@@ -19,7 +19,7 @@ def main():
     env.Tool('compilation_db')
     cdb = env.CompilationDatabase()
     x = env.Alias('cdb', cdb)
-    if "cdb" in COMMAND_LINE_TARGETS:
+    if "cdb" in COMMAND_LINE_TARGETS and "-fno-gnu-unique" in env._dict["CXXFLAGS"]:
         env._dict["CXXFLAGS"].remove("-fno-gnu-unique")
 
     platform:str = env["platform"]

@@ -983,7 +983,7 @@ void GFWorld::init_gd_type_ptr(
 	switch (vari_type) {
 	case(Variant::Type::NIL): if (ecs_has(_raw, type, EcsStruct)) {init_component_ptr(ptr, type, Variant());}; break;
 	case(Variant::Type::BOOL): *static_cast<bool*>(ptr) = false; break;
-	case(Variant::Type::INT): *static_cast<int*>(ptr) = 0; break;
+	case(Variant::Type::INT): *static_cast<int64_t*>(ptr) = 0; break;
 	case(Variant::Type::FLOAT): *static_cast<float*>(ptr) = 0.0; break;
 	case(Variant::Type::STRING): new(ptr) String(); break;
 	case(Variant::Type::VECTOR2): new(ptr) Vector2(); break;

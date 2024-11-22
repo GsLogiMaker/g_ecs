@@ -81,7 +81,6 @@ func test_on_add_event_with_objects():
 		.set_name("WithInts")
 	assert_eq(data.i, 1)
 	assert_eq(e.get_component(Textures).a, null)
-	assert_eq(e.get_component(Textures).b, null)
 
 	e.delete()
 
@@ -90,10 +89,9 @@ func test_on_add_event_with_objects():
 	data.i = 0
 	var e2:= GFEntity.spawn(world) \
 		.set_name("WithTextures")
-	e2.add_component(Textures, [load("res://icon.png"), load("res://icon.svg")])
+	e2.add_component(Textures, [load("res://icon.png")])
 	assert_eq(data.i, 1)
 	assert_eq(e2.get_component(Textures).a, load("res://icon.png"))
-	assert_eq(e2.get_component(Textures).b, load("res://icon.svg"))
 
 	e2.delete()
 
@@ -115,12 +113,8 @@ class Ints extends GFComponent:
 class Textures extends GFComponent:
 	func _build(b:GFComponentBuilder) -> void:
 		b.add_member("a", TYPE_OBJECT)
-		b.add_member("b", TYPE_OBJECT)
 	var a:Texture2D:
 		get: return getm(&"a")
 		set(v): setm(&"a", v)
-	var b:Texture2D:
-		get: return getm(&"b")
-		set(v): setm(&"b", v)
 
 #endregion

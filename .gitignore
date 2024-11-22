@@ -1,4 +1,7 @@
 
+# Visual Studio
+*/.vs
+
 # Compiled binaries
 bin/
 
@@ -8,3 +11,6 @@ cpp/.sconsign.dblite
 cpp/compile_commands.json
 cpp/src/doc_data.gen.h
 *.os
+# Windows
+*.obj
+*.obj.import
