@@ -80,28 +80,28 @@ jobs:
 
     - name: 🏔️ Define library cache key in env Linux
       shell: bash
-      run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+      run: echo "bin_key=lib.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('bin') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define cpp cache key Linux
       shell: bash
-      run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/') }}" >> $GITHUB_ENV
+      run: echo "cpp_key=cpp.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('cpp/') }}" >> $GITHUB_ENV
 
     - name: 🏔️ Define includes cache key Linux
       shell: bash
-      run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/cpp/include') }}.${{ hashFiles('addons/glecs/cpp/SConstruct') }}" >> $GITHUB_ENV
+      run: echo "include_key=include.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('cpp/include') }}.${{ hashFiles('cpp/SConstruct') }}" >> $GITHUB_ENV
 
     # --- Restore caches ---
 
     - name: 💾 Restore cached cpp files
       uses: actions/cache/restore@v4.0.2
       with:
-        path: addons/glecs/cpp
+        path: cpp
         key: ${{ env.cpp_key }}
 
     - name: 💾 Restore cached include files
       uses: actions/cache/restore@v4.0.2
       with:
-        path: addons/glecs/cpp/include
+        path: cpp/include
         key: ${{ env.include_key }}
 
     # --- Platform specific setup ---
@@ -125,8 +125,8 @@ jobs:
     - name: 🛠️ Build C++ code
       run: |
         scons --directory=./cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
-        printf *** ls addons/glecs/bin/ ***
-        ls addons/glecs/bin
+        printf *** ls bin/ ***
+        ls bin
       #target=template_release
 
     # --- Define bin key ---
@@ -135,7 +135,7 @@ jobs:
       shell: bash
       run: |
         printf "*** Setting key in env***"
-        echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('addons/glecs/bin') }}" >> $GITHUB_ENV
+        echo "bin_key=bin.${{ matrix.platform }}_${{ matrix.arch }}.${{ hashFiles('bin') }}" >> $GITHUB_ENV
     - name: 🏔️ Define library cache key in output
       id: set_cache_key
       shell: bash
@@ -148,19 +148,19 @@ jobs:
     - name: 💾 Cache cpp source build files
       uses: actions/cache/save@v4
       with:
-        path: addons/glecs/cpp
+        path: cpp
         key: ${{ env.cpp_key }}
 
     - name: 💾 Cache cpp include build files
       uses: actions/cache/save@v4
       with:
-        path: addons/glecs/cpp/include
+        path: cpp/include
         key: ${{ env.include_key }}
 
     - name: 💾 Cache bin
       uses: actions/cache/save@v4.0.2
       with:
-        path: ./addons/glecs/bin/${{ matrix.glecs_lib }}
+        path: ./bin/${{ matrix.glecs_lib }}
         key: ${{ env.bin_key }}
         enableCrossOsArchive: true
 
@@ -190,13 +190,13 @@ jobs:
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/${{ matrix.lib_debug }}
+            path: ./bin/${{ matrix.lib_debug }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
         - name: 💾 Load cached library as release
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/${{ matrix.lib_release }}
+            path: ./bin/${{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
@@ -228,9 +228,9 @@ jobs:
 
             echo ""
             echo "***"
-            echo "LS glecs/bin/"
+            echo "LS bin/"
             echo "***"
-            ls addons/glecs/bin
+            ls bin
 
   update_nightly:
     if: ${{ github.event_name == 'push' || github.event_name == 'closed' }}
@@ -247,7 +247,7 @@ jobs:
         uses: actions/cache/restore@v4.0.2
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./addons/glecs/bin/x86_64-unknown-linux-gnu/release/libglecs.so
+          path: ./bin/x86_64-unknown-linux-gnu/release/libglecs.so
           # An explicit key for restoring and saving the cache
           key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
@@ -257,7 +257,7 @@ jobs:
         uses: actions/cache/restore@v4.0.2
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./addons/glecs/bin/x86_64-apple-darwin/release/libglecs.dylib
+          path: ./bin/x86_64-apple-darwin/release/libglecs.dylib
           # An explicit key for restoring and saving the cache
           key: ${{ needs.compile_glecs.outputs.bin_key_macos_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
@@ -267,7 +267,7 @@ jobs:
         uses: actions/cache/restore@v4.0.2
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./addons/glecs/bin/x86_64-pc-windows-gnu/release/glecs.dll
+          path: ./bin/x86_64-pc-windows-gnu/release/glecs.dll
           # An explicit key for restoring and saving the cache
           key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
           # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
@@ -294,7 +294,7 @@ jobs:
 
       - name: 🖨️ Copy dev branch plugin to nightly
         run: |
-          cp -r -force ./addons/glecs/* ../nightly/
+          cp -r -force ./* ../nightly/
 
       - name: ➕ Add and commit to nightly
         id: add-and-commit
