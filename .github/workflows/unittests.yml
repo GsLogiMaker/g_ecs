@@ -196,7 +196,7 @@ jobs:
             ref: "unittests-project"
             submodules: "recursive"
 
-        - run:
+        - run: |
             ls
             ls addons
             tree
