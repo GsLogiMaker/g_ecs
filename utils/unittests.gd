@@ -4,7 +4,7 @@ extends SceneTree
 const TestRunner:= preload("./glecs_tests_runner.gd")
 
 func _initialize():
-	create_timer(30).timoeut.connect(func():
+	create_timer(30).timeout.connect(func():
 		OS.crash("Timeout: Ran for over 30 seconds")
 	)
 	

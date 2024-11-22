@@ -6,6 +6,7 @@ const GutConfig:= preload('res://addons/gut/gut_config.gd')
 const GutEditorGlobals:= preload('res://addons/gut/gui/editor_globals.gd')
 const ResultExporter:= preload('res://addons/gut/result_exporter.gd')
 
+@export var run_on_ready:= false
 ## When true, exits the program with OK if all tests succeded, otherwise exits
 ## the program with 1.
 @export var exit_on_test_completion:= false
@@ -13,6 +14,10 @@ const ResultExporter:= preload('res://addons/gut/result_exporter.gd')
 var gut_runner:GutRunnerGD = null
 var gut_config:GutConfig= GutConfig.new()
 var gut_exporter:ResultExporter = ResultExporter.new()
+
+func _ready() -> void:
+	if run_on_ready:
+		run_tests()
 
 func _enter_tree() -> void:
 	gut_runner = preload("res://addons/gut/gui/GutRunner.tscn").instantiate()
@@ -29,7 +34,7 @@ func run_tests():
 	
 	# Wait for tests up to 10 seconds
 	var data:= {tests_done = false}
-	gut_runner._gut.end_run.connect(func():
+	gut_runner.gut.end_run.connect(func():
 		data.tests_done = true
 		,
 		CONNECT_ONE_SHOT
@@ -44,7 +49,7 @@ func run_tests():
 	# Quit fail
 	if exit_on_test_completion:
 		var props:Dictionary = gut_exporter \
-			.get_results_dictionary(gut_runner._gut) \
+			.get_results_dictionary(gut_runner.gut) \
 			.test_scripts \
 			.props
 		if (
