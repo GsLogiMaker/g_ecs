@@ -193,10 +193,10 @@ jobs:
         - name: 🐙 Setup git environment of plugin
           uses: actions/checkout@v4
           with:
-            path: "/addons/"
+            path: "addons"
             submodules: "recursive"
 
-        - run: ls addons      
+        - run: ls addons
 
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
