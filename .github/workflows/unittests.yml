@@ -223,7 +223,10 @@ jobs:
         - name: 📝 Run Glecs tests
           id: run-godot-tests
           shell: bash
-          run: godot --script unittests.gd --headless --verbose
+          run: godot
+            --script res://addons/glecs/utils/unittests.gd
+            --headless
+            --verbose
 
         - name: 📄 Debug print when tests error
           shell: bash
