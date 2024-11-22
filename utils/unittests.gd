@@ -1,13 +1,14 @@
 
 extends SceneTree
 
-const TestRunner:= preload("./glecs_tests_runner.tscn")
+const TestRunner:= preload("./glecs_tests_runner.gd")
 
 func _initialize():
-	change_scene_to_packed(TestRunner)
+	create_timer(30).timoeut.connect(func():
+		OS.crash("Timeout: Ran for over 30 seconds")
+	)
+	
+	current_scene.set_script(TestRunner)
 	await process_frame
 	await process_frame
 	current_scene.run_tests()
-	
-	await create_timer(1)
-	OS.crash("Timeout")
