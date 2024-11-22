@@ -124,7 +124,7 @@ jobs:
 
     - name: 🛠️ Build C++ code
       run: |
-        scons --directory=/cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
+        scons --directory=./cpp platform=${{ matrix.platform }} arch=${{ matrix.arch }}
         printf *** ls addons/glecs/bin/ ***
         ls addons/glecs/bin
       #target=template_release
