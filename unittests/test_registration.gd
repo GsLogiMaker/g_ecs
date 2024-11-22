@@ -2,6 +2,10 @@
 @tool
 extends GutTest
 
+const AModule = preload("./scripts/a_module.gd")
+const AComponent = preload("./scripts/a_component.gd")
+const AEntity = preload("./scripts/a_entity.gd")
+
 var world:GFWorld
 
 func before_all():
@@ -14,7 +18,7 @@ func after_all():
 
 func test_auto_register_script():
 	GFEntity.spawn(world) \
-		.add_component(load("res://components/a_component.gd"))
+		.add_component(AComponent)
 
 	assert_ne(
 		world.lookup(
@@ -24,7 +28,7 @@ func test_auto_register_script():
 	)
 
 func test_register_script_module():
-	world.register_script(load("res://components/a_module.gd"))
+	world.register_script(AModule)
 
 	assert_ne(
 		world.lookup(
@@ -46,7 +50,7 @@ func test_register_script_module():
 	)
 
 func test_register_script_component_script():
-	world.register_script(load("res://components/a_component.gd"))
+	world.register_script(AComponent)
 
 	assert_ne(
 		world.lookup(
@@ -56,7 +60,7 @@ func test_register_script_component_script():
 	)
 
 func test_register_script_entity_script():
-	world.register_script(load("res://components/a_entity.gd"))
+	world.register_script(AEntity)
 
 	assert_ne(
 		world.lookup(

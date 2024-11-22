@@ -1,4 +1,4 @@
 
 extends GFComponent
 
-const CONST:= preload("res://components/b_module.gd")
+const CONST:= preload("./b_module.gd")

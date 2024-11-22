@@ -1,4 +1,5 @@
 
+@tool
 extends GutTest
 
 var world:GFWorld
