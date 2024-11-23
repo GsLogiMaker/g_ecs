@@ -188,22 +188,24 @@ jobs:
           uses: actions/checkout@v4
           with:
             ref: "unittests-project"
+            submodules: "recursive"
 
         - name: 🐙 Setup git environment of plugin
           uses: actions/checkout@v4
           with:
             path: "addons/glecs"
+            submodules: "recursive"
 
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/${{ matrix.lib_debug }}
+            path: addons/glecs/bin/${{ matrix.lib_debug }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
         - name: 💾 Load cached library as release
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./addons/glecs/bin/${{ matrix.lib_release }}
+            path: addons/glecs/bin/${{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
