@@ -197,13 +197,13 @@ jobs:
         - name: 💾 Load cached library as debug
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./bin/${{ matrix.lib_debug }}
+            path: ./addons/glecs/bin/${{ matrix.lib_debug }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
         - name: 💾 Load cached library as release
           uses: actions/cache/restore@v4.0.2
           with:
-            path: ./bin/${{ matrix.lib_release }}
+            path: ./addons/glecs/bin/${{ matrix.lib_release }}
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
