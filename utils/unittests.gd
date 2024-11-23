@@ -9,6 +9,4 @@ func _initialize():
 	)
 	
 	current_scene.set_script(TestRunner)
-	await process_frame
-	await process_frame
 	current_scene.run_tests()
