@@ -1,3 +1,17 @@
-[gd_scene format=3 uid="uid://b0qy2i68muxfr"]
+[gd_scene load_steps=2 format=3 uid="uid://b0qy2i68muxfr"]
+
+[sub_resource type="GDScript" id="GDScript_2bfn3"]
+script/source = "extends Node
+
+const Unittests = preload(\"res://addons/glecs/utils/glecs_tests_runner.gd\")
+
+func _ready() -> void:
+	prints(\"IN MAIN\")
+	var unittests:= Unittests.new()
+	unittests.run_on_ready = true
+	unittests.exit_on_test_completion = true
+	add_child(unittests)
+"
 
 [node name="Main" type="Node"]
+script = SubResource("GDScript_2bfn3")
