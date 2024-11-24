@@ -209,7 +209,7 @@ jobs:
             key: ${{ matrix.bin_key }}
             enableCrossOsArchive: true
 
-        - run: tree
+        - run: tree ../../
 
         - name: 🤖 Setup Godot binary
           uses: lihop/setup-godot@v2

@@ -2,7 +2,3 @@
 	path = cpp/include/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
 	branch = 4.3
-[submodule "cpp/include/--force"]
-	path = cpp/include/--force
-	url = https://github.com/godotengine/godot-cpp
-	branch = 4.3

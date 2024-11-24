@@ -7,11 +7,12 @@ func _initialize():
 	prints("A")
 	create_timer(30).timeout.connect(func():
 		prints("B")
-		OS.crash("Timeout: Ran for over 30 seconds")
+		OS.crash("Ran for 30 seconds, timeout")
 	)
 	prints("C")
-	
-	current_scene.set_script(TestRunner)
+
+	var node = TestRunner.new()
+	prints(node)
 	prints("D")
-	current_scene.run_tests()
+	node.run_tests()
 	prints("E")

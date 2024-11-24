@@ -1,5 +1,7 @@
 
-extends Node
+## A Node that runs Glecs's unittests.
+
+class_name GlecsTestsRunner extends Node
 
 const GutRunnerGD:= preload("res://addons/gut/gui/GutRunner.gd")
 const GutConfig:= preload('res://addons/gut/gut_config.gd')
@@ -31,7 +33,7 @@ func run_tests():
 	gut_config.options.tests = []
 	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
-	
+
 	# Wait for tests up to 10 seconds
 	var data:= {tests_done = false}
 	gut_runner.gut.end_run.connect(func():
@@ -45,7 +47,7 @@ func run_tests():
 			break
 		await get_tree().process_frame
 		elapsed += get_process_delta_time()
-	
+
 	# Quit fail
 	if exit_on_test_completion:
 		var props:Dictionary = gut_exporter \
@@ -70,7 +72,7 @@ func run_tests():
 			#get_tree().quit(1)
 			OS.crash("Glecs unittest(s) failed")
 			return
-		
+
 		# Quit success
 		var since_try_kill:= 0.0
 		while true:
