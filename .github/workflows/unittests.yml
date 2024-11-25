@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Pass
         run: echo Pass
+      - run: echo ${{github.action}}
+      - run: echo ${{github.ref_name}}
 
   compile_glecs:
     needs: [data]
