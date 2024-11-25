@@ -25,11 +25,15 @@ func _enter_tree() -> void:
 	gut_runner = preload("res://addons/gut/gui/GutRunner.tscn").instantiate()
 	add_child(gut_runner)
 
-	gut_config.load_options(GutEditorGlobals.editor_run_gut_config_path)
+	gut_config.load_options("res://gut_editor_config.json")
 	gut_runner.ran_from_editor = false
 	gut_runner.set_gut_config(gut_config)
 
 func run_tests():
+	if not ClassDB.class_exists("GFWorld"):
+		# Glecs plugin is not installed, exit with failure
+		OS.crash("Glecs plugin is absent or not properly installed")
+
 	gut_config.options.tests = []
 	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
