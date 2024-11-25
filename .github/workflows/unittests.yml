@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Pass
         run: echo Pass
+      - name: Action
+        run: echo ${{github.event_name}}
 
   compile_glecs:
     needs: [data]
@@ -263,7 +265,7 @@ jobs:
             ls bin
 
   update_nightly:
-    if: ${{ (github.event_name == 'push' || github.event_name == 'closed') && github.base_ref == 'dev'}}
+    if: ${{ github.event_name == 'push' }}
     needs:  ["data", "compile_glecs", "run_test_suite"]
     runs-on: ubuntu-latest
     steps:
