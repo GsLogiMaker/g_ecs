@@ -27,12 +27,19 @@ def main() -> None:
 		required=True,
 		help="The owner and name of the repository. (Ex. GsLogiMaker/glecs_godot_plugin)",
 	)
+	p.add_argument(
+		"--message",
+		type=str,
+		required=True,
+		help="The commit message for the nightly update",
+	)
 
 	args = p.parse_args()
 
 	os.mkdir("../nightly")
 	clone_nightly(args.repository)
 	copy_dev_plugin_to_nightly()
+	commit_to_nightly(args.message)
 
 def clone_nightly(repo:str) -> None:
 	subprocess.run(["git", "clone", f"https://github.com/{repo}", f"../nightly_tmp", "-b", "nightly"])
@@ -67,14 +74,17 @@ def copy_dev_plugin_to_nightly() -> None:
 			continue
 		shutil.copy(path, os.path.join("../nightly/", path))
 
-def commit_to_nightly() -> None:
+def commit_to_nightly(commit_message:str) -> None:
 	cwd = os.getcwd()
-	subprocess.run(["cd", "../nightly"])
+	os.chdir("../nightly")
 	subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"])
 	subprocess.run(["git", "config", "--global", "user.email", "gslogimaker@gmail.com"])
-	subprocess.run(["git", "commit", "--all", "-m", "(AUTO) ${{ github.event.head_commit.message }}"])
-	subprocess.run(["cd", cwd])
+	subprocess.run(["git", "commit", "--all", "-m", f"(AUTO) {commit_message}"])
+	os.chdir(cwd)
 
 
 if __name__ == "__main__":
 	main()
+
+
+	

@@ -304,7 +304,7 @@ jobs:
         #     enableCrossOsArchive: true
 
       - name: 🌙 Update nightly
-        run: python utils/update_nightly.py --repository ${{ github.repository }}
+        run: python utils/update_nightly.py --repository "${{ github.repository }}" --message "${{ github.event.head_commit.message }}"
 
       - name: 📤 Push to nightly
         uses: ad-m/github-push-action@master
