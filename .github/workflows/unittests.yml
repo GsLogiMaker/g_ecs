@@ -303,26 +303,8 @@ jobs:
         #     # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
         #     enableCrossOsArchive: true
 
-      - name: 🌙 Clone nightly branch
-        run: |
-          git clone https://github.com/${{ github.repository }} ../nightly_tmp -b nightly
-          mkdir ../nightly
-          mkdir ../nightly/.git
-          cp -r ../nightly_tmp/.git/* ../nightly/.git/
-
-      - name: 🖨️ Copy dev branch plugin to nightly
-        run: |
-          cp --recursive --force ./* ../nightly/
-
-      - name: ➕ Add and commit to nightly
-        id: add-and-commit
-        continue-on-error: true
-        run: |
-          cd ../nightly
-          git config --global user.name github-actions[bot]
-          git config --global user.email gslogimaker@gmail.com
-          git add .
-          git commit --all -m "(AUTO) ${{ github.event.head_commit.message }}"
+      - name: 🌙 Update nightly
+        run: python utils/update_nightly.py --repository ${{ github.repository }}
 
       - name: 📤 Push to nightly
         uses: ad-m/github-push-action@master
