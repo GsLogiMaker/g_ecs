@@ -2,7 +2,6 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include <flecs.h>

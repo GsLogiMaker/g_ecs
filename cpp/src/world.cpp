@@ -2,6 +2,7 @@
 #include "world.h"
 #include "entity.h"
 #include "component_builder.h"
+#include "godot_cpp/classes/resource.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
@@ -488,6 +489,18 @@ GFWorld::GFWorld() {
 
 	#undef DEFINE_GD_COMPONENT
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
+
+	// Register modules from scripts
+	Engine* engine = Engine::get_singleton();
+	if (engine->has_singleton("_glecs_modules")) {
+		ecs_entity_t prev_scope = ecs_get_scope(raw());
+		ecs_set_scope(raw(), glecs);
+
+		Object* glecs_modules = engine->get_singleton("_glecs_modules");
+		glecs_modules->call("register_modules", this);
+
+		ecs_set_scope(raw(), prev_scope);
+	}
 }
 
 GFWorld::~GFWorld() {
@@ -582,6 +595,10 @@ Ref<GFEntity> GFWorld::lookup(String path) {
 		"/root/",
 		false
 	);
+
+	if (!ecs_is_alive(raw(), id)) {
+		return nullptr;
+	}
 
 	return GFEntity::from_id(id, this);
 }
