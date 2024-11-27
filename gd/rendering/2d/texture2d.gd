@@ -10,6 +10,10 @@ func _build(b: GFComponentBuilder) -> void:
 
 static func update_texture_rect(sprite:GFTexture2D, item:GFCanvasItem) -> void:
 	var texture:= sprite.get_texture()
+	
+	if texture == null:
+		return
+	
 	RenderingServer.canvas_item_add_texture_rect(
 		item.get_rid(),
 		Rect2(-texture.get_size() / 2, texture.get_size()),
