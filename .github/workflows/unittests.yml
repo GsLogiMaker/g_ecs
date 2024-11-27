@@ -214,7 +214,7 @@ jobs:
           shell: bash
           run: |
             mkdir ../addons
-            cp -R ../godot_glecs/ ../addons/glecs/
+            cp -R ../godot-glecs/ ../addons/glecs/
 
         - name: 🐙 Setup git environment of plugin
           uses: actions/checkout@v4
