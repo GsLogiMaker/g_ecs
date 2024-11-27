@@ -3,6 +3,25 @@ Glecs is a set of [Godot](https://github.com/godotengine/godot) bindings for
 the [Flecs](https://github.com/SanderMertens/flecs) entity component system via
 GDExtension.
 
+## Roadmap
+- [ ] Expose more of the Flecs API.
+	- [ ] TODO: Come up with list of API features that need adding.
+- [ ] Support more systems
+	- [ ] MacOS
+	- [ ] Web
+	- [ ] Android
+	- [ ] IOS
+- [ ] Add core entities that interface with Godot servers.
+	- [ ] Rending 2D
+	- [ ] Physics 2D
+	- [ ] Rendering 3D
+	- [ ] Physics 3D
+	- [ ] Node-like entities
+	- [ ] Resource-like entities
+- [ ] Editor interface (Make Glecs feel like it's officially supported by Godot.)
+	- [ ] Entity/tag/component inspector
+  - [ ] Viewport integration
+
 ## Branches
 
 ### [master](https://github.com/GsLogiMaker/godot-glecs)
