@@ -31,7 +31,7 @@ Then activate Glecs in the plugins menu.
 ### [dev](https://github.com/GsLogiMaker/godot-glecs/tree/dev)
 The main development branch of glecs. This branch contains the raw c++ code
 and unittests. To use this branch of Glecs in your Godot project, see the
-[build instructions](https://github.com/GsLogiMaker/godot-glecs/tree/master?tab=readme-ov-file#build-glecs).
+build instructions below.
 
 ### [unittests-project](https://github.com/GsLogiMaker/godot-glecs/tree/unittests-project)
 A Godot project setup to run Glecs unittests. Clone the branch with the
