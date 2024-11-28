@@ -35,13 +35,17 @@ namespace godot {
 		static Ref<GFEntity> from(Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
-		Ref<GFEntity> add_component(Variant, Variant data);
-		Ref<GFEntity> add_entity(Variant, Variant data);
-		Ref<GFEntity> add_pair(Variant, Variant, Variant data);
+		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
+		Ref<GFEntity> _add_component(Variant, Array);
+
+		Ref<GFEntity> add_pair(Variant, Variant, Array data);
 		Ref<GFEntity> add_tag(Variant);
 
 		Ref<GFComponent> get_component(Variant);
-		Ref<GFEntity> set_component(Variant, Variant data);
+
+		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
+		Ref<GFEntity> _set_component(Variant, Array);
+
 
 		void delete_();
 

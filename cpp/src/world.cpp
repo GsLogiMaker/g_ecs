@@ -690,6 +690,12 @@ ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
 }
 
 Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(Ref<Script> script) {
+	if (*script == nullptr) {
+		ERR(nullptr,
+			"Could not register script\n",
+			"Script is null."
+		);
+	}
 	if (!godot::ClassDB::is_parent_class(
 		script->get_instance_base_type(),
 		GFRegisterableEntity::get_class_static()

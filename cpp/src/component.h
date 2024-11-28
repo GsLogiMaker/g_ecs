@@ -50,6 +50,7 @@ namespace godot {
 		void _register_internal();
 
 		void build_data_from_variant(Variant, void* output);
+		static void build_data_from_members(Array, void*, ecs_entity_t, GFWorld*);
 		void set_source_id(ecs_entity_t id);
 
 		static Ref<GFRegisterableEntity> new_internal();

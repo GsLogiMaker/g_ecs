@@ -5,7 +5,7 @@
 class_name _GlecsModules extends Node
 
 const MODULES:= [
-	preload("./rendering/rendering.gd"),
+	"./rendering/rendering.gd",
 ]
 
 static var _register_self_singleton = (func():
@@ -13,5 +13,6 @@ static var _register_self_singleton = (func():
 	).call()
 
 static func register_modules(w:GFWorld) -> void:
+	var path:= (_GlecsModules as Script).resource_path.path_join("../")
 	for module in MODULES:
-		w.register_script(module)
+		w.register_script(load(path.path_join(module)))

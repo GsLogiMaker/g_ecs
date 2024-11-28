@@ -306,6 +306,39 @@ void GFComponent::build_data_from_variant(
 	}
 }
 
+void GFComponent::build_data_from_members(
+	Array members,
+	void* output,
+	ecs_entity_t component_id,
+	GFWorld* world
+) {
+	ecs_world_t* w_raw = world->raw();
+
+	const EcsStruct* struct_data = ecs_get(w_raw, component_id, EcsStruct);
+	if (struct_data == nullptr) {
+		ERR(/**/,
+			"Could not build data from Variant\n",
+			"Component is not a struct."
+		);
+	}
+
+	for (int i=0; i != members.size() && i != ecs_vec_size(&struct_data->members); i++) {
+		// Iterate the combined sizes of the passed array and the members vector
+		Variant value = members[i];
+
+		ecs_member_t* member_data = /* Get member metadata */ ecs_vec_get_t(
+			&struct_data->members,
+			ecs_member_t,
+			i
+		);
+		void* member_ptr = /* Get member pointer */ static_cast<void*>(
+			static_cast<uint8_t*>(output) + member_data->offset
+		);
+		// Set member value
+		Utils::set_type_from_variant(value, member_data->type, w_raw, member_ptr);
+	}
+}
+
 void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
