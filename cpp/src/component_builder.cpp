@@ -74,11 +74,22 @@ Ref<GFComponentBuilder> GFComponentBuilder::set_name(
 }
 
 void GFComponentBuilder::build() {
-	const char* FAILED_TO_BUILD = "Failed to build component\n";
+	if (name.length() == 0) {
+		ERR(/**/,
+			"Failed to build component.\n",
+			"	No name provided. Specify the name of the component."
+		);
+	}
 	if (built) {
 		ERR(/**/,
-			FAILED_TO_BUILD,
-			"Component builder was already built"
+			"Failed to build component \"" + name + "\".\n",
+			"	Component is already built."
+		);
+	}
+	if (get_member_count() == 0) {
+		ERR(/**/,
+			"Failed to build component \"" + name + "\".\n",
+			"	No members were defined. Specify at least one member."
 		);
 	}
 	built = true;
