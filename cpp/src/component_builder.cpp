@@ -74,12 +74,6 @@ Ref<GFComponentBuilder> GFComponentBuilder::set_name(
 }
 
 void GFComponentBuilder::build() {
-	if (name.length() == 0) {
-		ERR(/**/,
-			"Failed to build component.\n",
-			"	No name provided. Specify the name of the component."
-		);
-	}
 	if (built) {
 		ERR(/**/,
 			"Failed to build component \"" + name + "\".\n",
