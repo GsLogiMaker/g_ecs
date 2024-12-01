@@ -8,9 +8,9 @@ const MODULES:= [
 	"./rendering/rendering.gd",
 ]
 
-static var _register_self_singleton = (func():
+static var x:= (func():
 	Engine.register_singleton("_glecs_modules", _GlecsModules)
-	).call()
+).call()
 
 static func register_modules(w:GFWorld) -> void:
 	var path:= (_GlecsModules as Script).resource_path.path_join("../")

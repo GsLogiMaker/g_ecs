@@ -35,10 +35,11 @@ Ref<GFComponent> GFComponent::from(Variant comp, Variant entity, GFWorld* world)
 	return from_id(world->coerce_id(comp), world->coerce_id(entity), world);
 }
 Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GFWorld* world) {
-	if (!ecs_has_id(world->raw(), comp, ecs_id(EcsComponent))) {
+	const EcsComponent* comp_ptr = GFComponent::get_component_ptr(world, comp);
+	if (comp_ptr == nullptr) {
 		ERR(nullptr,
 			"Could not instantiate ", get_class_static(), "\n",
-			"ID is not a component"
+			"	Entity ", world->id_to_text(comp), " is not a component"
 		);
 	}
 	Ref<GFComponent> component = from_id_template<GFComponent>(comp, world);
@@ -117,15 +118,17 @@ const EcsMember* GFComponent::get_member_data(String member) {
 	ecs_world_t* raw = get_world()->raw();
 	const char* c_str = member.utf8().get_data();
 
+	ecs_entity_t main_id = get_world()->get_main_id(get_id());
+
 	// Get member ID
-	ecs_entity_t member_id = ecs_lookup_child(raw, get_id(), c_str);
+	ecs_entity_t member_id = ecs_lookup_child(raw, main_id, c_str);
 
 	if (member_id == 0) {
 		ERR(nullptr,
 			"No member named \"",
 			member,
 			"\" found in component \"",
-			ecs_get_name(raw, get_id()),
+			get_world()->id_to_text(get_id()),
 			"\""
 		);
 	}
@@ -181,7 +184,7 @@ Variant GFComponent::member_value_as_type(
 		}
 
 		ERR(nullptr,
-			"Can't convert type ", ecs_get_name(raw, type), " to Variant"
+			"Can't convert type ", get_world()->id_to_text(type), " to Variant"
 		);
 	}
 	case(Variant::Type::BOOL): return Variant( *static_cast<bool*>(ptr) );
@@ -306,6 +309,14 @@ void GFComponent::build_data_from_variant(
 	}
 }
 
+const EcsComponent* GFComponent::get_component_ptr(GFWorld* world, ecs_entity_t id) {
+	return ecs_get(world->raw(), world->get_main_id(id), EcsComponent);
+}
+
+const EcsStruct* GFComponent::get_struct_ptr(GFWorld* world, ecs_entity_t id) {
+	return ecs_get(world->raw(), world->get_main_id(id), EcsStruct);
+}
+
 void GFComponent::build_data_from_members(
 	Array members,
 	void* output,
@@ -314,11 +325,11 @@ void GFComponent::build_data_from_members(
 ) {
 	ecs_world_t* w_raw = world->raw();
 
-	const EcsStruct* struct_data = ecs_get(w_raw, component_id, EcsStruct);
+	const EcsStruct* struct_data = GFComponent::get_struct_ptr(world, component_id);
 	if (struct_data == nullptr) {
 		ERR(/**/,
-			"Could not build data from Variant\n",
-			"Component is not a struct."
+			"Could not build data from Array\n",
+			"	Entity ", world->id_to_text(component_id), " is not a struct."
 		);
 	}
 
