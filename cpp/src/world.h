@@ -30,11 +30,6 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
-		Ref<GFComponentBuilder> component_builder();
-		Ref<GFObserverBuilder> observer_builder_varargs(const Variant**, int64_t, GDExtensionCallError&);
-		Ref<GFQueryBuilder> query_builder();
-		Ref<GFSystemBuilder> system_builder();
-
 		ecs_entity_t coerce_id(Variant);
 		Ref<GFEntity> lookup(String);
 		Ref<GFPair> pair(Variant, Variant);

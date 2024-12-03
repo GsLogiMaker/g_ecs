@@ -18,14 +18,15 @@ namespace godot {
 		GDCLASS(GFSystemBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFSystemBuilder();
 		GFSystemBuilder(GFWorld* world): GFQuerylikeBuilder(world) {}
+		GFSystemBuilder(): GFSystemBuilder(GFWorld::singleton()) {}
 		~GFSystemBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
+		static Ref<GFSystemBuilder> new_in_world(GFWorld*);
 		void for_each(Callable callable);
 
 		// **************************************

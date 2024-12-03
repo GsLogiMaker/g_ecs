@@ -11,10 +11,11 @@
 
 using namespace godot;
 
-GFQueryBuilder::GFQueryBuilder() {
+GFQueryBuilder::~GFQueryBuilder() {
 }
 
-GFQueryBuilder::~GFQueryBuilder() {
+Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(GFWorld* world) {
+	return memnew(GFQueryBuilder(world));
 }
 
 Ref<GFQuery> GFQueryBuilder::build() {
@@ -43,6 +44,7 @@ Ref<GFQuery> GFQueryBuilder::build() {
 // **********************************************
 
 void GFQueryBuilder::_bind_methods() {
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFQueryBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFQueryBuilder::build);
 }
 

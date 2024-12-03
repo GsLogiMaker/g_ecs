@@ -3,20 +3,18 @@
 #include "component_builder.h"
 #include "world.h"
 #include "utils.h"
+#include "entity.h"
 
 #include <stdlib.h>
 #include <flecs.h>
 
 using namespace godot;
 
-GFComponentBuilder::GFComponentBuilder() {
-	component_desc = {0};
-	struct_desc = {0};
-	member_names = Array();
-	world = {0};
-	built = {0};
-}
 GFComponentBuilder::~GFComponentBuilder() {
+}
+
+Ref<GFComponentBuilder> GFComponentBuilder::new_in_world(GFWorld* world) {
+	return memnew(GFComponentBuilder(world));
 }
 
 Ref<GFComponentBuilder> GFComponentBuilder::add_member(
@@ -73,15 +71,15 @@ Ref<GFComponentBuilder> GFComponentBuilder::set_name(
 	return Ref(this);
 }
 
-void GFComponentBuilder::build() {
+Ref<GFEntity> GFComponentBuilder::build() {
 	if (built) {
-		ERR(/**/,
+		ERR(nullptr,
 			"Failed to build component \"" + name + "\".\n",
 			"	Component is already built."
 		);
 	}
 	if (get_member_count() == 0) {
-		ERR(/**/,
+		ERR(nullptr,
 			"Failed to build component \"" + name + "\".\n",
 			"	No members were defined. Specify at least one member."
 		);
@@ -126,6 +124,8 @@ void GFComponentBuilder::build() {
 	}; ecs_set_hooks_id(raw, component_id, &hooks);
 
 	ecs_add_path(raw, component_id, 0, component_desc.type.name);
+
+	return memnew(GFEntity(component_id, world));
 }
 
 void GFComponentBuilder::set_world(GFWorld* world_) {
@@ -137,11 +137,11 @@ void GFComponentBuilder::set_world(GFWorld* world_) {
 // **********************************************
 
 void GFComponentBuilder::_bind_methods() {
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFComponentBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);
 	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFComponentBuilder::is_built);
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFComponentBuilder::set_name);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFComponentBuilder::build);
-
 }
 
 // **********************************************

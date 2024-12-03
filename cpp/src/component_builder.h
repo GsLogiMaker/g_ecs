@@ -2,6 +2,7 @@
 #ifndef COMPONENT_Builder_H
 #define COMPONENT_Builder_H
 
+#include "world.h"
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/string.hpp>
@@ -15,12 +16,17 @@ namespace godot {
 		GDCLASS(GFComponentBuilder, RefCounted)
 
 	public:
-		GFComponentBuilder();
+		GFComponentBuilder(GFWorld* world): world(world) {}
+		GFComponentBuilder():
+			GFComponentBuilder(GFWorld::singleton())
+		{}
 		~GFComponentBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
+
+		static Ref<GFComponentBuilder> new_in_world(GFWorld*);
 
 		Ref<GFComponentBuilder> add_member(String, Variant::Type);
 		int get_member_count();
@@ -28,7 +34,7 @@ namespace godot {
 		bool is_built();
 		Ref<GFComponentBuilder> set_entity(Variant);
 		Ref<GFComponentBuilder> set_name(String);
-		void build();
+		Ref<GFEntity> build();
 
 		// **************************************
 		// *** Unexposed ***
