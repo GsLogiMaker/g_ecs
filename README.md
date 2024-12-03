@@ -6,6 +6,7 @@ GDExtension.
 ## Roadmap
 - [ ] Expose more of the Flecs API.
 	- [ ] TODO: Come up with list of API features that need adding.
+	- [ ] Add support for `.flecs` scripts.
 - [ ] Support more systems
 	- [ ] MacOS
 	- [ ] Web
