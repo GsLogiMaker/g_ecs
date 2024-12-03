@@ -7,17 +7,20 @@
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/array.hpp"
+#include "world.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
-GFModule::GFModule() {
-}
 GFModule::~GFModule() {
 }
 
-Ref<GFModule> GFModule::spawn(String name, GFWorld* world_) {
+Ref<GFModule> GFModule::new_in_world(GFWorld* world) {
+	return memnew(GFModule(world));
+}
+
+Ref<GFModule> GFModule::new_named_in_world(String name, GFWorld* world_) {
 	CharString name_utf8 = name.utf8();
 	GFWorld* world = GFWorld::world_or_singleton(world_);
 	ecs_component_desc_t comp_desc = {0};
@@ -131,7 +134,8 @@ Ref<GFRegisterableEntity> GFModule::new_internal() {
 }
 
 void GFModule::_bind_methods() {
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("spawn", "name", "world"), &GFModule::spawn, nullptr);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFModule::new_named_in_world);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_named_in_world", "name", "world"), &GFModule::new_named_in_world);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "module", "world"), &GFModule::from, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "module_id", "world"), &GFModule::from_id, nullptr);
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFModule::_register_internal);

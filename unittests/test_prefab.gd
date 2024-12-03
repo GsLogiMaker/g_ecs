@@ -25,7 +25,7 @@ func test_prefab():
 			b.b = PI
 			)
 
-	var entity:= GFEntity.spawn(world)
+	var entity:= GFEntity.new_in_world(world)
 	var isa:= world.coerce_id("flecs/core/IsA")
 	var myprefab:= world.coerce_id(MyPrefab)
 	var pair:= world.pair(isa, myprefab)

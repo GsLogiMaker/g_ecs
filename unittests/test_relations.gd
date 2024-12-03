@@ -12,10 +12,10 @@ func after_each():
 #region Tests
 
 func test_add_and_set_pairs() -> void:
-	var eats:= GFEntity.spawn(world).set_name("Eats")
-	var grass:= GFEntity.spawn(world).set_name("Grass")
+	var eats:= GFEntity.new_in_world(world).set_name("Eats")
+	var grass:= GFEntity.new_in_world(world).set_name("Grass")
 	
-	var e:= GFEntity.spawn(world)
+	var e:= GFEntity.new_in_world(world)
 	
 	e.add_pair("Eats", GFRotation2D, 3.0)
 	assert_almost_eq(
@@ -39,16 +39,16 @@ func test_add_and_set_pairs() -> void:
 	)
 
 func test_basic_query():
-	var eats:= GFEntity.spawn(world) \
+	var eats:= GFEntity.new_in_world(world) \
 		.set_name("Eats")
-	var apple:= GFEntity.spawn(world) \
+	var apple:= GFEntity.new_in_world(world) \
 		.set_name("Apple")
-	var grass:= GFEntity.spawn(world) \
+	var grass:= GFEntity.new_in_world(world) \
 		.set_name("Grass")
-	var man:= GFEntity.spawn(world) \
+	var man:= GFEntity.new_in_world(world) \
 		.set_name("Man") \
 		.add_pair("Eats", apple)
-	var cow:= GFEntity.spawn(world) \
+	var cow:= GFEntity.new_in_world(world) \
 		.set_name("Cow") \
 		.add_pair("Eats", grass)
 
@@ -69,8 +69,8 @@ func test_basic_query():
 	assert_eq(eater_count, 2)
 
 func test_is_pair():
-	var likes = GFEntity.spawn(world).set_name("Likes")
-	var jill = GFEntity.spawn(world).set_name("Jill")
+	var likes = GFEntity.new_in_world(world).set_name("Likes")
+	var jill = GFEntity.new_in_world(world).set_name("Jill")
 	var likes_jill = likes.pair(jill)
 	
 	assert_true(likes_jill.is_pair())

@@ -21,5 +21,13 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFRegisterableEntity" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				[GFRegisterableEntity] can't be instantiated.
+				Overrides [method GFEntity.new_in_world] to throw an error
+			</description>
+		</method>
 	</methods>
 </class>

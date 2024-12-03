@@ -3,6 +3,7 @@
 #include "component_builder.h"
 #include "entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
+#include "godot_cpp/core/error_macros.hpp"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/packed_int64_array.hpp"
@@ -24,27 +25,38 @@ GFComponent::GFComponent() {
 GFComponent::~GFComponent() {
 }
 
-Ref<GFComponent> GFComponent::spawn(GFWorld* world_) {
-	ERR(NULL,
-		"Could not instantiate ", get_class_static(), "\n",
-		"Use ", get_class_static(), ".from or ",
-		get_class_static(), ".from_id instead."
-	);
-}
 Ref<GFComponent> GFComponent::from(Variant comp, Variant entity, GFWorld* world) {
 	return from_id(world->coerce_id(comp), world->coerce_id(entity), world);
 }
 Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GFWorld* world) {
-	const EcsComponent* comp_ptr = GFComponent::get_component_ptr(world, comp);
-	if (comp_ptr == nullptr) {
+	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
+	if (comp_data == nullptr) {
 		ERR(nullptr,
 			"Could not instantiate ", get_class_static(), "\n",
 			"	Entity ", world->id_to_text(comp), " is not a component"
 		);
 	}
-	Ref<GFComponent> component = from_id_template<GFComponent>(comp, world);
-	component->set_source_id(entity);
-	return component;
+	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent));
+	comp_ref->source_entity_id = entity;
+	comp_ref->set_id(comp);
+	comp_ref->set_world(world);
+	return setup_template<GFComponent>(comp_ref);
+}
+
+Ref<GFComponent> GFComponent::from_id_no_source(ecs_entity_t comp, GFWorld* world) {
+	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
+	if (comp_data == nullptr) {
+		ERR(nullptr,
+			"Could not instantiate ", get_class_static(), "\n",
+			"	Entity ", world->id_to_text(comp), " is not a component"
+		);
+	}
+	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent));
+	comp_ref->source_entity_id = 0;
+	comp_ref->set_id(comp);
+	comp_ref->set_world(world);
+	comp_ref->update_script();
+	return comp_ref;
 }
 
 void GFComponent::_register_internal() {
@@ -231,6 +243,13 @@ Variant GFComponent::member_value_as_type(
 	throw "Unreachable";
 }
 
+String GFComponent::to_string() {
+	return String("[#")
+		+ String::num_int64(get_source_id())
+		+ "--" + String::num_int64(get_id())
+		+ "]";
+}
+
 Ref<GFEntity> GFComponent::get_source_entity() {
 	return GFEntity::from(get_source_id(), get_world());
 }
@@ -362,7 +381,6 @@ void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 
-	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("spawn", "world"), &GFComponent::spawn, nullptr);
 	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from", "component", "world"), &GFComponent::from, nullptr);
 	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from_id", "id", "world"), &GFComponent::from_id, nullptr);
 
@@ -374,6 +392,7 @@ void GFComponent::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_data_size"), &GFComponent::get_data_size);
 	godot::ClassDB::bind_method(D_METHOD("get_data_alignment"), &GFComponent::get_data_alignment);
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFComponent::is_alive);
+	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFComponent::to_string);
 
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);
 }

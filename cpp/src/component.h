@@ -19,9 +19,15 @@ namespace godot {
 
 	public:
 		GFComponent();
+		GFComponent(ecs_entity_t component, GFWorld* world):
+			GFRegisterableEntity(component, world) {
+				update_script();
+			}
 		GFComponent(ecs_entity_t entity, ecs_entity_t component, GFWorld* world):
 			source_entity_id(entity),
-			GFRegisterableEntity(component, world) {}
+			GFRegisterableEntity(component, world) {
+				update_script();
+			}
 		~GFComponent();
 
 		// --------------------------------------
@@ -30,9 +36,9 @@ namespace godot {
 
 		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
 
-		static Ref<GFComponent> spawn(GFWorld*);
 		static Ref<GFComponent> from(Variant c, Variant e, GFWorld*);
 		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
+		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
 		Variant getm(String);
 		void setm(String, Variant);
@@ -43,6 +49,7 @@ namespace godot {
 		int get_data_alignment();
 
 		bool is_alive();
+		String to_string();
 
 		// --------------------------------------
 		// --- Unexposed

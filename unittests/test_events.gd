@@ -20,14 +20,14 @@ func test_on_add_event():
 			data.i += 1
 			)
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(Ints) \
 		.set_name("WithInts")
-	var e2:= GFEntity.spawn(world) \
+	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
-	var e3:= GFEntity.spawn(world) \
+	var e3:= GFEntity.new_in_world(world) \
 		.set_name("WithInts")
-	var e4:= GFEntity.spawn(world) \
+	var e4:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
 
 	e3.add_component(Ints)
@@ -48,14 +48,14 @@ func test_on_set_event():
 			data.i += ints.a + ints.b
 			)
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(Ints, 2, 31) \
 		.set_name("WithInts")
-	var e2:= GFEntity.spawn(world) \
+	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
-	var e3:= GFEntity.spawn(world) \
+	var e3:= GFEntity.new_in_world(world) \
 		.set_name("WithInts")
-	var e4:= GFEntity.spawn(world) \
+	var e4:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
 
 	e3.add_component(Ints, 99, 2)
@@ -76,7 +76,7 @@ func test_on_add_event_with_objects():
 			data.i += 1
 			)
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(Textures) \
 		.set_name("WithInts")
 	assert_eq(data.i, 1)
@@ -87,7 +87,7 @@ func test_on_add_event_with_objects():
 	# In this test, the loaded textures will be auto freed by Godot if Glecs
 	# does not properly take ownership of them.
 	data.i = 0
-	var e2:= GFEntity.spawn(world) \
+	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithTextures")
 	e2.add_component(Textures, load("res://icon.png"))
 	assert_eq(data.i, 1)

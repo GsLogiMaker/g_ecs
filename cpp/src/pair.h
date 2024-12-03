@@ -29,7 +29,6 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
-		static Ref<GFPair> spawn();
 		static Ref<GFPair> from(Variant first, Variant second, GFWorld*);
 		static Ref<GFPair> from_id(ecs_entity_t, GFWorld*);
 		static Ref<GFPair> from_ids(ecs_entity_t, ecs_entity_t, GFWorld*);

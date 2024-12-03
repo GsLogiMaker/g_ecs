@@ -14,7 +14,7 @@ func after_each():
 #region Tests
 
 func test_rendering_texture():
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(GFTexture2D, TEXTURE) \
 		.add_component(GFCanvasItem)
 

@@ -30,7 +30,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
         case MODULE_INITIALIZATION_LEVEL_SCENE:
 			godot::ClassDB::register_class<GFWorld>();
 
-			godot::ClassDB::register_abstract_class<GFEntity>();
+			godot::ClassDB::register_class<GFEntity>();
 			godot::ClassDB::register_abstract_class<GFPair>();
 			godot::ClassDB::register_class<GFRegisterableEntity>();
 			godot::ClassDB::register_class<GFComponent>();

@@ -7,8 +7,6 @@
 
 using namespace godot;
 
-GFRegisterableEntity::GFRegisterableEntity() {
-}
 GFRegisterableEntity::~GFRegisterableEntity() {
 }
 
@@ -16,13 +14,15 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 // --- Exposed ---
 // --------------------------------------------------------
 
-
-// --------------------------------------------------------
-// --- Unexposed ---
-// --------------------------------------------------------
+Ref<GFRegisterableEntity> GFRegisterableEntity::new_in_world(GFWorld* world) {
+	ERR(nullptr,
+		"Couldn't instantiate entity\n",
+		get_class_static(), " cannot be instantiated. Use \"from\" instead"
+	);
+}
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(ecs_entity_t id, GFWorld* world_) {
-	return from_id_template<GFRegisterableEntity>(id, world_);
+	return setup_template<GFRegisterableEntity>(memnew(GFRegisterableEntity(id, world_)));
 }
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, GFWorld* world) {
@@ -42,6 +42,10 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, 
 
 	return e;
 }
+
+// --------------------------------------------------------
+// --- Unexposed ---
+// --------------------------------------------------------
 
 void GFRegisterableEntity::register_in_world(
 	GFWorld* world
@@ -73,6 +77,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::new_internal() {
 
 void GFRegisterableEntity::_bind_methods() {
 	GDVIRTUAL_BIND(_register, "world");
+	godot::ClassDB::bind_static_method(GFRegisterableEntity::get_class_static(), D_METHOD("new_in_world", "world"), &GFRegisterableEntity::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFRegisterableEntity::_register_internal);
 	godot::ClassDB::bind_method(D_METHOD("_register_user"), &GFRegisterableEntity::_register_user);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFRegisterableEntity::new_internal);

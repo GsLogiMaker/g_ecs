@@ -34,8 +34,6 @@ func run_tests():
 		# Glecs plugin is not installed, exit with failure
 		OS.crash("Glecs plugin is absent or not properly installed")
 
-	gut_config.options.tests = []
-	gut_config.options.unit_test_name = ""
 	gut_runner.run_tests()
 
 	# Wait for tests up to 10 seconds

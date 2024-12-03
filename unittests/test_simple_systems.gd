@@ -16,7 +16,7 @@ func after_all():
 	#world.new_pipeline(&"first")
 	#world.new_pipeline(&"second")
 #
-	#var entity:= GFEntity.spawn(world) \
+	#var entity:= GFEntity.new_in_world(world) \
 		#.add_component(Bools) \
 		#.add_component(Ints) \
 		#.set_name("Test")
@@ -59,7 +59,7 @@ func test_bools():
 			x.a = not x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 
@@ -78,7 +78,7 @@ func test_ints():
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Ints) \
 		.set_name("Test")
 	entity.get_component(Ints).b = 1
@@ -99,7 +99,7 @@ func test_floats():
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Floats) \
 		.set_name("Test")
 	entity.get_component(Floats).b = 1.2
@@ -121,7 +121,7 @@ func test_strings():
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.set_name("Test") \
 		.add_component(Strings, "", "po")
 	var strings:Strings = entity.get_component(Strings)
@@ -145,7 +145,7 @@ func test_byte_arrays():
 				x.a[i] += x.b[i]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(ByteArrays) \
 		.set_name("Test")
 	entity.get_component(ByteArrays).a = PackedByteArray([1, 2, 3])
@@ -167,7 +167,7 @@ func test_textures():
 			x.a = x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Textures) \
 		.set_name("Test")
 	entity.get_component(Textures).a = null
@@ -192,7 +192,7 @@ func test_ref_counts():
 	var rc:= RefCounted.new()
 	assert_eq(rc.get_reference_count(), 1)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(RefCounts) \
 		.set_name("Test")
 
@@ -212,7 +212,7 @@ func test_arrays():
 				x.b[i] += x.a[i]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Arrays) \
 		.set_name("Test")
 	entity.get_component(Arrays).a = [23, 4, 6]
@@ -234,7 +234,7 @@ func test_dicts():
 			x.b["value"] += x.a["add_by"]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Dicts) \
 		.set_name("Test")
 	entity.get_component(Dicts).a = {"add_by": 5}

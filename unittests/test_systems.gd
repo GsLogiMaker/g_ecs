@@ -3,11 +3,11 @@ extends GutTest
 
 var world:GFWorld
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
 	# world.new_pipeline(&"test_pipeline")
 
-func after_all():
+func after_each():
 	world.free()
 
 #region Tests
@@ -21,7 +21,7 @@ func test_stuff():
 			boo.b = boo.a
 			)
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 	world.register_script(Bools)
