@@ -16,20 +16,21 @@ namespace godot {
 		GDCLASS(GFPair, GFEntity)
 
 	public:
-		GFPair();
 		GFPair(ecs_entity_t first, ecs_entity_t second, GFWorld* world):
 			GFEntity(ecs_make_pair(first, second), world)
-			{}
+		{}
 		GFPair(ecs_entity_t pair_id, GFWorld* world):
 			GFEntity(pair_id, world)
-			{}
+		{}
+		GFPair():
+			GFPair(0, nullptr)
+		{}
 		~GFPair();
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
-		static Ref<GFPair> spawn();
 		static Ref<GFPair> from(Variant first, Variant second, GFWorld*);
 		static Ref<GFPair> from_id(ecs_entity_t, GFWorld*);
 		static Ref<GFPair> from_ids(ecs_entity_t, ecs_entity_t, GFWorld*);

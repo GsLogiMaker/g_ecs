@@ -3,6 +3,7 @@
 #define GL_ENTITY_H
 
 #include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -22,8 +23,16 @@ namespace godot {
 		GDCLASS(GFEntity, RefCounted)
 
 	public:
+		// New entity in global world
 		GFEntity();
-		GFEntity(ecs_entity_t id_, GFWorld* world_): id(id_), world_instance_id(world_->get_instance_id()) {}
+		// New entity in specific world
+		GFEntity(GFWorld* world) ;
+		// Reference an entity
+		GFEntity(ecs_entity_t id_, GFWorld* world_):
+			id(id_),
+			world_instance_id(world_->get_instance_id())
+		{}
+		// Copy an entity reference
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
 		~GFEntity();
 
@@ -31,7 +40,7 @@ namespace godot {
 		// --- Exposed ---
 		// --------------------------------------
 
-		static Ref<GFEntity> spawn(GFWorld*);
+		static Ref<GFEntity> new_in_world(GFWorld*);
 		static Ref<GFEntity> from(Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
@@ -65,36 +74,35 @@ namespace godot {
 		Ref<GFPair> pair(Variant second);
 		ecs_entity_t pair_id(ecs_entity_t second_id);
 
+		String to_string();
+
 		// --------------------------------------
 		// --- Unexposed ---
 		// --------------------------------------
 
-		template<typename T>
-		static Ref<T> from_id_template(ecs_entity_t id, GFWorld* world_) {
-			GFWorld* world = GFWorld::world_or_singleton(world_);
-
-			Ref<GFEntity> e;
-			e = Ref(memnew(T));
-			e->set_id(id);
-			e->set_world(world);
-
-			Ref<Script> script = world->get_registered_script(id);
-			if (
-				script != nullptr
-				&& ClassDB::is_parent_class(
-					T::get_class_static(),
-					script->get_instance_base_type()
-				)
-			) {
-				// Set script if entity is registered and the script
-				// inherits from this level of entity
-				e->set_script(script);
+		/// Assigns the correct script to this entity according to its ID.
+		void update_script() {
+			Ref<Script> script = get_world()->get_registered_script(get_id());
+			if (script == nullptr) {
+				return;
 			}
+			if (!ClassDB::is_parent_class(
+				get_class(),
+				script->get_instance_base_type()
+			)) {
+				return;
+			}
+			set_script(script);
+		}
+
+		template<typename T>
+		static Ref<T> setup_template(Ref<T> e) {
+			e->update_script();
 
 			if (!e->is_alive()) {
 				ERR(nullptr,
-					"Could not instantiate", T::get_class_static(), " from ID\n",
-					"World/ID is not valid/alive"
+					"Could not instantiate ", T::get_class_static(), " from ID\n",
+					"ID ", e->to_string(), " is not valid in world ", e->get_world()
 				);
 			}
 

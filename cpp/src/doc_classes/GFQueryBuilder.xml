@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for queries.
 	</brief_description>
@@ -7,10 +8,9 @@
 		Queries are the main way entities are accessed from a [GFWorld]. Under the hood, systems and observers both use queries.
 		The example below shows the creation of a query over entities with the [i]Jump[/i] component:
 		[codeblock]
-		var world:= GFWorld.new()
-		var query:GFQuery = world.query_builder() \
-			.with("Jump") \
-			.build()
+		var query:GFQuery = QueryBuilder.new() \
+		    .with("Jump") \
+		    .build()
 		[/codeblock]
 	</description>
 	<tutorials>
@@ -21,6 +21,13 @@
 			<return type="GFQuery" />
 			<description>
 				Builds and returns the new query.
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a new builder in [param world].
 			</description>
 		</method>
 	</methods>

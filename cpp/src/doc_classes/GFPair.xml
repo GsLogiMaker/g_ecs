@@ -92,11 +92,5 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="spawn" qualifiers="static">
-			<return type="GFPair" />
-			<description>
-				Do not call, pairs can not be instantiated. Use [method GFPair.from] instead. Overrides [method GFEntity.spawn].
-			</description>
-		</method>
 	</methods>
 </class>

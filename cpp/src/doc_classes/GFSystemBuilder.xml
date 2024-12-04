@@ -6,13 +6,12 @@
 	<description>
 		This example shows the creation of a system that runs over entities with the [i]Run[/i] and [i]Jump[/i] components:
 		[codeblock]
-		var world:= GFWorld.new()
-		world.observer_builder() \
-			.with("Run") \
-			.with("Jump") \
-			.for_each(func(run:GFComponent, jump:GFComponent):
-				pass
-				)
+		GFSystemBuilder.new() \
+		    .with("Run") \
+		    .with("Jump") \
+		    .for_each(func(run:GFComponent, jump:GFComponent):
+		        pass
+		        )
 		[/codeblock]
 	</description>
 	<tutorials>
@@ -24,6 +23,13 @@
 			<param index="0" name="callback" type="Callable" />
 			<description>
 				Builds the system with a callback for iterating over each result.
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFSystemBuilder" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a new builder in [param world].
 			</description>
 		</method>
 	</methods>

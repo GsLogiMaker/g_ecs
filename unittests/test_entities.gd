@@ -12,7 +12,7 @@ func after_all():
 #region Tests
 
 func test_component_get_and_set():
-	var e:GFEntity = GFEntity.spawn(world) \
+	var e:GFEntity = GFEntity.new_in_world(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 
@@ -25,7 +25,7 @@ func test_component_get_and_set():
 	e.delete()
 
 func test_component_string_get_and_set():
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(Stringy) \
 		.set_name("Test")
 
@@ -40,21 +40,21 @@ func test_component_string_get_and_set():
 	assert_eq(foo.b, "em")
 
 func test_new_entity_with_unregistered_component():
-	var e:GFEntity = GFEntity.spawn(world) \
+	var e:GFEntity = GFEntity.new_in_world(world) \
 		.add_component(Unregistered) \
 		.set_name("Test")
 	assert_eq(e.get_component(Unregistered).value, 0)
 
 func test_creating_entity_by_new():
 	# Test that an entity is invalidated by being deleted
-	var e:= GFEntity.spawn(world)
+	var e:= GFEntity.new_in_world(world)
 	assert_eq(e.is_alive(), true)
 	e.delete()
 	assert_eq(e.is_alive(), false)
 
 	# Test that an entity is invalidated by its world being deleted
 	var w:= GFWorld.new()
-	var e2:= GFEntity.spawn(w)
+	var e2:= GFEntity.new_in_world(w)
 	assert_eq(e2.is_alive(), true)
 	w.free()
 	assert_eq(e2.is_alive(), false)
@@ -62,7 +62,7 @@ func test_creating_entity_by_new():
 func test_entity_from():
 	var id:= 0
 	if true:
-		var tmp_entity = GFEntity.spawn(world)
+		var tmp_entity = GFEntity.new_in_world(world)
 		tmp_entity.set_name(&"Cool Name")
 		id = tmp_entity.get_id()
 	assert_ne(id, 0)
@@ -72,10 +72,10 @@ func test_entity_from():
 	assert_eq(e.get_name(), &"Cool Name")
 
 func test_entity_created_in_singleton():
-	var e:= GFEntity.spawn()
+	var e:= GFEntity.new()
 	assert_eq(e.is_alive(), true)
 
-	var e2:= GFEntity.spawn(GFGlobalWorld)
+	var e2:= GFEntity.new_in_world(GFGlobalWorld)
 	assert_eq(e2.is_alive(), true)
 
 	assert_eq(e.get_world(), e2.get_world())

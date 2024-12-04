@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -17,7 +16,7 @@
 				Adds component data of type [param component] to this entity.
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.add_component(GFPosition2D, Vector2(10, 10))
 				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
@@ -33,7 +32,7 @@
 				this entity.
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.add_pair(GFPosition2D, Vector2(10, 10))
 				entity.get_pair(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
@@ -72,7 +71,7 @@
 				Returns a reference to this entity's component's data of type [param component].
 				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.add_component("glecs/meta/Array")
 				entity.get_component("glecs/meta/Array") != null # true
 				[/codeblock]
@@ -93,7 +92,7 @@
 			<description>
 				Returns the name of this entity.
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.set_name("Entity")
 				entity.get_name() == "Entity" # true
 				[/codeblock]
@@ -108,7 +107,7 @@
 				of [param first] and [param second].
 				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.add_component("glecs/meta/Array")
 				entity.get_component("glecs/meta/Array") != null # true
 				[/codeblock]
@@ -120,7 +119,7 @@
 				Returns the world this entity is from.
 				[codeblock]
 				var world:= GFWorld.new()
-				var entity:= GFEntity.spawn(world)
+				var entity:= GFEntity.new_in_world(world)
 				entity.get_world() == world # true
 				[/codeblock]
 			</description>
@@ -130,7 +129,7 @@
 			<description>
 				Returns [code]true[/code] if this entity is still alive.
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.is_alive() # true
 				entity.delete()
 				entity.is_alive() # false
@@ -148,14 +147,25 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFEntity" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a reference to a new entity created within [param world].
+				[codeblock]
+				var world:= GFWorld.new()
+				var entity:= GFEntity.new_in_world(world)
+				[/codeblock]
+			</description>
+		</method>
 		<method name="pair">
 			<return type="GFPair" />
 			<param index="0" name="second" type="Variant" />
 			<description>
 				Creates a [GFPair] from this entity and [param second].
 				[codeblock]
-				var Eats:= GFEntity.spawn()
-				var Grass:= GFEntity.spawn()
+				var Eats:= GFEntity.new()
+				var Grass:= GFEntity.new()
 				var EatsGrass:GFPair = Eats.pair(Grass)
 				[/codeblock]
 			</description>
@@ -166,8 +176,8 @@
 			<description>
 				Creates a pair ID from this entity and [param second_id].
 				[codeblock]
-				var Eats:= GFEntity.spawn()
-				var Grass:= GFEntity.spawn()
+				var Eats:= GFEntity.new()
+				var Grass:= GFEntity.new()
 				var EatsGrass_id:int = Eats.pair_id(Grass.get_id())
 				[/codeblock]
 			</description>
@@ -179,7 +189,7 @@
 				Sets component data of type [param component] in this entity.
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.add_component(GFPosition2D)
 				entity.set_component(GFPosition2D, Vector2(10, 10))
 				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
@@ -187,7 +197,7 @@
 				If the component is not added yet, then this method will add
 				it automaticly.
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.set_component(GFPosition2D, Vector2(10, 10))
 				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
@@ -200,7 +210,7 @@
 			<description>
 				Sets the name of this entity.
 				[codeblock]
-				var entity:= GFEntity.spawn()
+				var entity:= GFEntity.new()
 				entity.set_name("Entity")
 				entity.get_name() == "Entity" # true
 				[/codeblock]
@@ -216,24 +226,13 @@
 				[param second].
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
-				var start:= GFEntity.spawn().set_name("Start")
-				var entity:= GFEntity.spawn()
+				var start:= GFEntity.new().set_name("Start")
+				var entity:= GFEntity.new()
 				# Pair will be added if it is not already.
 				entity.set_pair(start, GFPosition2D, Vector2(10, 10))
 				entity.get_pair(start, GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
-			</description>
-		</method>
-		<method name="spawn" qualifiers="static">
-			<return type="GFEntity" />
-			<param index="0" name="world" type="GFWorld" default="null" />
-			<description>
-				Creates a new entity ID and returns it.
-				If no world is specified, a default world is used.
-				[codeblock]
-				var entity:= GFEntity.spawn()
-				[/codeblock]
 			</description>
 		</method>
 	</methods>

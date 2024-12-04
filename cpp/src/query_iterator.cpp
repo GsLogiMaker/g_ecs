@@ -11,9 +11,6 @@
 
 using namespace godot;
 
-GFQueryIterator::GFQueryIterator() {
-}
-
 GFQueryIterator::~GFQueryIterator() {
 	if (!is_done()) {
 		ecs_iter_fini(&iterator);

@@ -21,23 +21,23 @@ func test_optional_terms():
 		if bools:
 			data.bools += 1
 
-	var empty:= GFEntity.spawn(w) \
+	var empty:= GFEntity.new_in_world(w) \
 		.set_name("Empty") \
 		.add_component(Bools)
-	var just_ints:= GFEntity.spawn(w) \
+	var just_ints:= GFEntity.new_in_world(w) \
 		.set_name("JustInts") \
 		.add_component(Ints)
-	var just_bools:= GFEntity.spawn(w) \
+	var just_bools:= GFEntity.new_in_world(w) \
 		.set_name("JustBools") \
 		.add_component(Bools)
-	var all:= GFEntity.spawn(w) \
+	var all:= GFEntity.new_in_world(w) \
 		.set_name("All") \
 		.add_component(Ints) \
 		.add_component(Bools)
 
 	data.ints = 0
 	data.bools = 0
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Ints) \
 		.maybe_with(Bools) \
 		.for_each(callable)
@@ -47,7 +47,7 @@ func test_optional_terms():
 
 	data.ints = 0
 	data.bools = 0
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.maybe_with(Ints) \
 		.with(Bools) \
 		.for_each(callable)
@@ -59,7 +59,7 @@ func test_or_operation_terms():
 	var w:= world
 
 	var data:= {ints=0, bools=0}
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Bools).or_with(Ints) \
 		.for_each(func(bools_or_ints:GFComponent):
 			if bools_or_ints is Ints:
@@ -68,11 +68,11 @@ func test_or_operation_terms():
 				data.bools += 1
 			)
 
-	GFEntity.spawn(w).add_component(Ints)
-	GFEntity.spawn(w).add_component(Ints)
-	GFEntity.spawn(w).add_component(Ints)
-	GFEntity.spawn(w).add_component(Bools)
-	GFEntity.spawn(w).add_component(Ints).add_component(Bools)
+	GFEntity.new_in_world(w).add_component(Ints)
+	GFEntity.new_in_world(w).add_component(Ints)
+	GFEntity.new_in_world(w).add_component(Ints)
+	GFEntity.new_in_world(w).add_component(Bools)
+	GFEntity.new_in_world(w).add_component(Ints).add_component(Bools)
 
 	w.progress(0.0)
 

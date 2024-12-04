@@ -617,49 +617,6 @@ void GFWorld::progress(double delta) {
 	ecs_progress(raw(), delta);
 }
 
-Ref<GFComponentBuilder> GFWorld::component_builder() {
-	Ref<GFComponentBuilder> builder = memnew(GFComponentBuilder);
-	builder->set_world(this);
-	return builder;
-}
-
-Ref<GFObserverBuilder> GFWorld::observer_builder_varargs(
-	const Variant** args,
-	int64_t arg_count,
-	GDExtensionCallError& error
-) {
-	if (arg_count > FLECS_EVENT_DESC_MAX) {
-		// TODO: utilize call error
-		ERR(Ref<GFObserverBuilder>(),
-			"Failed to set terms in observer builder",
-			"Max term count is ", FLECS_EVENT_DESC_MAX, ", but ",
-			arg_count, " terms were passed"
-		);
-	}
-
-	Ref<GFObserverBuilder> builder = memnew(GFObserverBuilder(this));
-	builder->set_events_varargs(args, arg_count, error);
-	return builder;
-}
-
-Variant observer_builder_varargs(
-	const Variant **args,
-	GDExtensionInt arg_count,
-	GDExtensionCallError &error
-) {
-	return arg_count;
-}
-
-Ref<GFQueryBuilder> GFWorld::query_builder() {
-	Ref<GFQueryBuilder> builder = memnew(GFQueryBuilder(this));
-	return builder;
-}
-
-Ref<GFSystemBuilder> GFWorld::system_builder() {
-	Ref<GFSystemBuilder> builder = memnew(GFSystemBuilder(this));
-	return builder;
-}
-
 Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
 	if (ett == nullptr) {
@@ -1099,11 +1056,7 @@ ecs_world_t * GFWorld::raw() {
 // ----------------------------------------------
 
 void GFWorld::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("component_builder"), &GFWorld::component_builder);
-	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "observer_builder", &GFWorld::observer_builder_varargs);
-	godot::ClassDB::bind_method(D_METHOD("query_builder"), &GFWorld::query_builder);
 	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
-	godot::ClassDB::bind_method(D_METHOD("system_builder"), &GFWorld::system_builder);
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
 	godot::ClassDB::bind_method(D_METHOD("lookup", "path"), &GFWorld::lookup);

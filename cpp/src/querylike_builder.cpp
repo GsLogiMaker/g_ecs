@@ -1,6 +1,7 @@
 
 
 #include "querylike_builder.h"
+#include "component.h"
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
@@ -11,8 +12,6 @@
 
 using namespace godot;
 
-GFQuerylikeBuilder::GFQuerylikeBuilder() {
-}
 GFQuerylikeBuilder::~GFQuerylikeBuilder() {
 }
 
@@ -195,13 +194,13 @@ QueryIterationContext::QueryIterationContext(
 			case ecs_oper_kind_t::EcsAnd:
 			case ecs_oper_kind_t::EcsOptional:
 				comp_ref_per_term.append(
-					GFComponent::from_id(terms[i].id, 0, get_world())
+					GFComponent::from_id_no_source(terms[i].id, get_world())
 				);
 				comp_ref_args.append(Variant());
 				break;
 			case ecs_oper_kind_t::EcsOr:
 				comp_ref_per_term.append(
-					GFComponent::from_id(terms[i].id, 0, get_world())
+					GFComponent::from_id_no_source(terms[i].id, get_world())
 				);
 				// OR terms must always be followed by another term, so
 				// there's guaranteed to be another term after this one

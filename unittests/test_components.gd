@@ -12,7 +12,7 @@ func after_each():
 
 
 func test_add_entity():
-	var _entity:= GFEntity.spawn(world)
+	var _entity:= GFEntity.new_in_world(world)
 
 	# Can't assert, but should be fine as long as it doesn't crash
 	assert_null(null)
@@ -20,11 +20,11 @@ func test_add_entity():
 
 func test_world_deletion():
 	var w:= GFWorld.new()
-	var e:= GFEntity.spawn(w) \
+	var e:= GFEntity.new_in_world(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo:= e.get_component(Foo)
-	var e2:= GFEntity.spawn(w) \
+	var e2:= GFEntity.new_in_world(w) \
 		.add_component(Foo) \
 		.set_name("Test")
 	var foo2:= e2.get_component(Foo)
@@ -49,7 +49,7 @@ func test_world_deletion():
 func test_registration():
 	var w:= world
 
-	var e:= GFEntity.spawn(world) \
+	var e:= GFEntity.new_in_world(world) \
 		.add_component(RegistrationA) \
 		.add_component(RegistrationB) \
 		.set_name("Test")
@@ -66,13 +66,13 @@ func test_registration():
 
 
 func test_simple_system():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Foo) \
-		.for_each(func(foo:Foo):
+		.for_each(func(foo):
 			foo.set_value(Vector2(2, 5))
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Foo) \
 		.set_name("Test")
 
@@ -85,7 +85,7 @@ func test_simple_system():
 func test_components_in_relationships():
 	var w:= GFWorld.new()
 
-	var e:= GFEntity.spawn(w)
+	var e:= GFEntity.new_in_world(w)
 	var foo:Foo = e.add_pair(Targets, Foo) \
 		.get_component(w.pair(Targets, Foo))
 
@@ -141,7 +141,7 @@ class RegistrationA extends GFComponent:
 		setm(&"result", v)
 
 	func _register(w: GFWorld):
-		w.system_builder() \
+		GFSystemBuilder.new_in_world(w) \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
@@ -163,8 +163,8 @@ class RegistrationB extends GFComponent:
 	func set_result(v:float) -> void:
 		setm(&"result", v)
 
-	func _register(world:GFWorld):
-		world.system_builder() \
+	func _register(w:GFWorld):
+		GFSystemBuilder.new_in_world(w) \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):

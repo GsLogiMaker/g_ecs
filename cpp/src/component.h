@@ -18,10 +18,18 @@ namespace godot {
 		GDCLASS(GFComponent, GFRegisterableEntity)
 
 	public:
-		GFComponent();
+		GFComponent(ecs_entity_t component, GFWorld* world):
+			GFRegisterableEntity(component, world),
+			source_entity_id(0)
+		{}
 		GFComponent(ecs_entity_t entity, ecs_entity_t component, GFWorld* world):
 			source_entity_id(entity),
-			GFRegisterableEntity(component, world) {}
+			GFRegisterableEntity(component, world)
+		{}
+		GFComponent():
+			source_entity_id(0),
+			GFRegisterableEntity(0, GFWorld::singleton())
+		{}
 		~GFComponent();
 
 		// --------------------------------------
@@ -30,9 +38,9 @@ namespace godot {
 
 		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
 
-		static Ref<GFComponent> spawn(GFWorld*);
 		static Ref<GFComponent> from(Variant c, Variant e, GFWorld*);
 		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
+		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
 		Variant getm(String);
 		void setm(String, Variant);
@@ -43,6 +51,7 @@ namespace godot {
 		int get_data_alignment();
 
 		bool is_alive();
+		String to_string();
 
 		// --------------------------------------
 		// --- Unexposed
@@ -56,7 +65,6 @@ namespace godot {
 		static const EcsStruct* get_struct_ptr(GFWorld*, ecs_entity_t);
 		void set_source_id(ecs_entity_t id);
 
-		static Ref<GFRegisterableEntity> new_internal();
 
 	protected:
 		static void _bind_methods();

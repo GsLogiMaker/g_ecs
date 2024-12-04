@@ -6,11 +6,10 @@
 	<description>
 		This example shows the creation of a [i]Jump[/i] component:
 		[codeblock]
-		var world:= GFWorld.new()
-		world.component_builder() \
-			.set_name("Jump") \
-			.add_member("jump_velocity", TYPE_FLOAT) \
-			.build()
+		GFComponentBuilder.new() \
+		    .set_name("Jump") \
+		    .add_member("jump_velocity", TYPE_FLOAT) \
+		    .build()
 		[/codeblock]
 	</description>
 	<tutorials>
@@ -26,7 +25,7 @@
 			</description>
 		</method>
 		<method name="build">
-			<return type="void" />
+			<return type="GFEntity" />
 			<description>
 				Creates the new component from the settings of the builder.
 			</description>
@@ -35,6 +34,13 @@
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if this builder has already been built.
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFComponentBuilder" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a new builder in [param world].
 			</description>
 		</method>
 		<method name="set_name">

@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for observers.
 	</brief_description>
 	<description>
 		This example shows the creation of an observer that is run whenever either the [i]Run[/i] or [i]Jump[/i] component is added to an entity and that entity has both the [i]Run[/i] and [i]Jump[/i] components:
 		[codeblock]
-		var world:= GFWorld.new()
-		world.observer_builder("flecs/core/OnAdd") \
-			.with("Run") \
-			.with("Jump") \
-			.for_each(func(run:GFComponent, jump:GFComponent):
-				pass
-				)
+		GFObserverBuilder.new() \
+		    .set_events("flecs/core/OnAdd") \
+		    .with("Run") \
+		    .with("Jump") \
+		    .for_each(func(run:GFComponent, jump:GFComponent):
+		        pass
+		        )
 		[/codeblock]
 		This example shows the creation of an observer that is run when the [i]Run[/i] component is added to an entity and that has the [i]Jump[/i] component:
 		[codeblock]
-		var world:= GFWorld.new()
-		world.observer_builder("flecs/core/OnAdd") \
-			.with("Run") \
-			.with("Jump").access_filter() \
-			.for_each(func(run:GFComponent, jump:GFComponent):
-				pass
-				)
+		GFObserverBuilder.new() \
+		    .set_events("flecs/core/OnAdd") \
+		    .with("Run") \
+		    .with("Jump").access_filter() \
+		    .for_each(func(run:GFComponent, jump:GFComponent):
+		        pass
+		        )
 		[/codeblock]
 	</description>
 	<tutorials>
@@ -34,6 +35,13 @@
 			<param index="0" name="callback" type="Callable" />
 			<description>
 				Builds the observer with a callback for iterating over each result.
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a new builder in [param world].
 			</description>
 		</method>
 		<method name="set_event">

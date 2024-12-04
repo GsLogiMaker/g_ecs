@@ -16,13 +16,20 @@ namespace godot {
 		GDCLASS(GFObserverBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFObserverBuilder();
-		GFObserverBuilder(GFWorld* world): GFQuerylikeBuilder(world) {}
+		GFObserverBuilder(GFWorld* world):
+			GFQuerylikeBuilder(world),
+			events(0)
+		{}
+		GFObserverBuilder():
+			GFObserverBuilder(GFWorld::singleton())
+		{}
 		~GFObserverBuilder();
 
 		// **************************************
 		// *** Exposed ***
 		// **************************************
+
+		static Ref<GFObserverBuilder> new_in_world(GFWorld*);
 
 		void for_each(Callable callable);
 		Ref<GFObserverBuilder> set_events_varargs(

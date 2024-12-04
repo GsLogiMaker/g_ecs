@@ -15,9 +15,15 @@ namespace godot {
 		GDCLASS(GFRegisterableEntity, GFEntity)
 
 	public:
-		GFRegisterableEntity();
+		GFRegisterableEntity():
+			GFRegisterableEntity(GFWorld::singleton())
+		{}
+		GFRegisterableEntity(GFWorld* world):
+			GFEntity(world)
+		{}
 		GFRegisterableEntity(ecs_entity_t id, GFWorld* world):
-			GFEntity(id, world) {}
+			GFEntity(id, world)
+		{}
 		~GFRegisterableEntity();
 
 		// --------------------------------------------------------
@@ -25,14 +31,14 @@ namespace godot {
 		// --------------------------------------------------------
 
 		GDVIRTUAL1(_register, GFWorld*)
-		static Ref<GFRegisterableEntity> new_internal();
+
+		static Ref<GFRegisterableEntity> new_in_world(GFWorld*);
+		static Ref<GFRegisterableEntity> from_id(ecs_entity_t id, GFWorld* world);
+		static Ref<GFRegisterableEntity> from_script(Ref<Script>, GFWorld*);
 
 		// --------------------------------------------------------
 		// --- Unexposed ---
 		// --------------------------------------------------------
-
-		static Ref<GFRegisterableEntity> from_id(ecs_entity_t id, GFWorld* world);
-		static Ref<GFRegisterableEntity> from_script(Ref<Script>, GFWorld*);
 
 		void register_in_world(GFWorld* world);
 		// Runs internal register setup code

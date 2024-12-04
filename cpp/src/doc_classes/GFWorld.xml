@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFWorld" inherits="Object"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		An entity component system world.
 	</brief_description>
@@ -33,8 +34,8 @@
 				This example shows a coercion from a [Vector2i]:
 				[codeblock]
 				var world:= GFWorld.new()
-				var Eats:= GFEntity.spawn(world)
-				var Carrots:= GFEntity.spawn(world)
+				var Eats:= GFEntity.new_in_world(world)
+				var Carrots:= GFEntity.new_in_world(world)
 				var pair:= Vector2i(Eats.get_id(), Carrots.get_id())
 				world.coerce_id(pair) == world.pair(Eats, Carrots) # true
 				[/codeblock]
@@ -51,47 +52,6 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="component_builder">
-			<return type="GFComponentBuilder" />
-			<description>
-				Returns a new component builder.
-				This example shows the creation of a [i]Jump[/i] component:
-				[codeblock]
-				var world:= GFWorld.new()
-				world.component_builder() \
-				    .set_name("Jump") \
-				    .add_member("jump_velocity", TYPE_FLOAT) \
-				    .build()
-				[/codeblock]
-			</description>
-		</method>
-		<method name="observer_builder" qualifiers="const vararg">
-			<return type="GFObserverBuilder" />
-			<description>
-				Returns a new observer builder.
-				Arguments to this method specify the events (coerced from IDs) that this observer listens for. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				This example shows the creation of an observer that is run whenever either the [i]Run[/i] or [i]Jump[/i] component is added to an entity and that entity has both the [i]Run[/i] and [i]Jump[/i] components:
-				[codeblock]
-				var world:= GFWorld.new()
-				world.observer_builder("flecs/core/OnAdd") \
-				    .with("Run") \
-				    .with("Jump") \
-				    .for_each(func(run:GFComponent, jump:GFComponent):
-				        pass
-				        )
-				[/codeblock]
-				This example shows the creation of an observer that is run when the [i]Run[/i] component is added to an entity and that has the [i]Jump[/i] component:
-				[codeblock]
-				var world:= GFWorld.new()
-				world.observer_builder("flecs/core/OnAdd") \
-				    .with("Run") \
-				    .with("Jump").access_filter() \
-				    .for_each(func(run:GFComponent, jump:GFComponent):
-				        pass
-				        )
-				[/codeblock]
-			</description>
-		</method>
 		<method name="pair">
 			<return type="GFPair" />
 			<param index="0" name="first" type="Variant" />
@@ -101,8 +61,8 @@
 				To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
 				var world:= GFWorld.new()
-				var Attacks_tag:= GFEntity.spawn()
-				var Players_tag:= GFEntity.spawn()
+				var Attacks_tag:= GFEntity.new_in_world(world)
+				var Players_tag:= GFEntity.new_in_world(world)
 				world.pair(Attacks_tag, Players_tag)
 				[/codeblock]
 			</description>
@@ -115,8 +75,8 @@
 				Creates and returns a pair ID from two IDs.
 				[codeblock]
 				var world:= GFWorld.new()
-				var Attacks_tag:= GFEntity.spawn()
-				var Player_tag:= GFEntity.spawn()
+				var Attacks_tag:= GFEntity.new_in_world(world)
+				var Player_tag:= GFEntity.new_in_world(world)
 				world.pair_ids(Attacks_tag.get_id(), Player_tag.get_id())
 				[/codeblock]
 			</description>
@@ -136,21 +96,8 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="query_builder">
-			<return type="GFQueryBuilder" />
-			<description>
-				Returns a new query builder.
-				This example shows the creation of a query over entities with the [i]Jump[/i] component:
-				[codeblock]
-				var world:= GFWorld.new()
-				var query:GFQuery = world.query_builder() \
-				    .with("Jump") \
-				    .build()
-				[/codeblock]
-			</description>
-		</method>
 		<method name="register_script">
-			<return type="void" />
+			<return type="GFRegisterableEntity" />
 			<param index="0" name="script" type="Script" />
 			<description>
 				Registers a [Script] that derives from [GFRegisterableEntity].
@@ -183,22 +130,6 @@
 
 				func _process(delta:float) -&gt; void:
 				    world.progress(delta)
-				[/codeblock]
-			</description>
-		</method>
-		<method name="system_builder">
-			<return type="GFSystemBuilder" />
-			<description>
-				Returns a new system builder.
-				This example shows the creation of a system that runs over entities with the [i]Run[/i] and [i]Jump[/i] components:
-				[codeblock]
-				var world:= GFWorld.new()
-				world.observer_builder() \
-				    .with("Run") \
-				    .with("Jump") \
-				    .for_each(func(run:GFComponent, jump:GFComponent):
-				        pass
-				        )
 				[/codeblock]
 			</description>
 		</method>

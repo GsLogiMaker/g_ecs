@@ -5,8 +5,6 @@
 #include "entity.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
-#include "godot_cpp/classes/resource_loader.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
@@ -30,20 +28,20 @@ void initialize_module(ModuleInitializationLevel p_level) {
         case MODULE_INITIALIZATION_LEVEL_SCENE:
 			godot::ClassDB::register_class<GFWorld>();
 
-			godot::ClassDB::register_abstract_class<GFEntity>();
+			godot::ClassDB::register_class<GFEntity>();
 			godot::ClassDB::register_abstract_class<GFPair>();
 			godot::ClassDB::register_class<GFRegisterableEntity>();
 			godot::ClassDB::register_class<GFComponent>();
 			godot::ClassDB::register_class<GFModule>();
 
-			godot::ClassDB::register_abstract_class<GFComponentBuilder>();
+			godot::ClassDB::register_class<GFComponentBuilder>();
 			godot::ClassDB::register_abstract_class<GFQuery>();
 			godot::ClassDB::register_abstract_class<GFQueryIterator>();
 
 			godot::ClassDB::register_abstract_class<GFQuerylikeBuilder>();
-			godot::ClassDB::register_abstract_class<GFObserverBuilder>();
-			godot::ClassDB::register_abstract_class<GFQueryBuilder>();
-			godot::ClassDB::register_abstract_class<GFSystemBuilder>();
+			godot::ClassDB::register_class<GFObserverBuilder>();
+			godot::ClassDB::register_class<GFQueryBuilder>();
+			godot::ClassDB::register_class<GFSystemBuilder>();
      	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));
 			break;
         case MODULE_INITIALIZATION_LEVEL_EDITOR:

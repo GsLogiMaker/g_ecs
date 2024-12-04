@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -30,7 +29,7 @@
 				Returns a [GFEntity] reference to the entity this component's data is from.
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
-				var entity = GFEntity.spawn()
+				var entity = GFEntity.new()
 				entity.add_component(Vector2C)
 				var vec2 = entity.get_component(Vector2C)
 
@@ -44,7 +43,7 @@
 				Returns the ID of the entity that this component's data is from.
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
-				var entity = GFEntity.spawn()
+				var entity = GFEntity.new()
 				entity.add_component(Vector2C)
 				var vec2 = entity.get_component(Vector2C)
 
@@ -58,7 +57,7 @@
 			<description>
 				Returns the value of a component's member.
 				[codeblock]
-				var entity = GFEntity.spawn()
+				var entity = GFEntity.new()
 				entity.add_component("glecs/meta/Vector2")
 				var vec2 = entity.get_component("glecs/meta/Vector2")
 
@@ -73,7 +72,7 @@
 			<description>
 				Sets the value of a component's member.
 				[codeblock]
-				var entity = GFEntity.spawn()
+				var entity = GFEntity.new()
 				entity.add_component("glecs/meta/Vector2")
 				var vec2 = entity.get_component("glecs/meta/Vector2")
 

@@ -17,7 +17,7 @@ func after_all():
 #region Tests
 
 func test_auto_register_script():
-	GFEntity.spawn(world) \
+	GFEntity.new_in_world(world) \
 		.add_component(AComponent)
 
 	assert_ne(
@@ -87,7 +87,7 @@ func test_register_script_sub_class():
 	)
 
 func test_name_conflic():
-	GFEntity.spawn(world) \
+	GFEntity.new_in_world(world) \
 		.set_name("Foo")
 	world.register_script(Foo)
 

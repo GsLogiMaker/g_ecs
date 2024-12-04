@@ -12,10 +12,11 @@
 
 using namespace godot;
 
-GFSystemBuilder::GFSystemBuilder() {
+GFSystemBuilder::~GFSystemBuilder() {
 }
 
-GFSystemBuilder::~GFSystemBuilder() {
+Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(GFWorld* world) {
+	return memnew(GFSystemBuilder(world));
 }
 
 void GFSystemBuilder::for_each(Callable callable) {
@@ -48,6 +49,7 @@ void GFSystemBuilder::for_each(Callable callable) {
 
 
 void GFSystemBuilder::_bind_methods() {
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFSystemBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFSystemBuilder::for_each);
 }
 

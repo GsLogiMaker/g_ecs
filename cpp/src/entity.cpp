@@ -1,6 +1,7 @@
 
 #include "entity.h"
 #include "godot_cpp/classes/script.hpp"
+#include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/array.hpp"
 #include "utils.h"
 // needed here because entity.h does not include
@@ -13,23 +14,30 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include "godot_cpp/variant/variant.hpp"
+#include "world.h"
 
 using namespace godot;
 
 GFEntity::GFEntity() {
+	GFWorld* world = GFWorld::singleton();
+	id = ecs_new(world->raw());
+	world_instance_id = world->get_instance_id();
+}
+GFEntity::GFEntity(GFWorld* world) {
+	id = ecs_new(world->raw());
+	world_instance_id = world->get_instance_id();
 }
 GFEntity::~GFEntity() {
 }
 
-Ref<GFEntity> GFEntity::spawn(GFWorld* world_) {
-	GFWorld* world = GFWorld::world_or_singleton(world_);
-	return from_id(ecs_new(world->raw()), world);
+Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
+	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
 	return from_id(world->coerce_id(entity), world);
 }
 Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
-	return from_id_template<GFEntity>(id, world);
+	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 
 Ref<GFEntity> GFEntity::add_component(
@@ -367,6 +375,12 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
 	return get_world()->pair_ids(get_id(), second);
 }
 
+String GFEntity::to_string() {
+	return String("[#")
+		+ String::num_int64(get_id())
+		+ "]";
+}
+
 // ----------------------------------------------
 // --- Unexposed ---
 // ----------------------------------------------
@@ -375,7 +389,7 @@ void GFEntity::set_id(ecs_entity_t value) { id = value; }
 void GFEntity::set_world(GFWorld* value) { world_instance_id = value->get_instance_id(); }
 
 void GFEntity::_bind_methods() {
-	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("spawn", "world"), &GFEntity::spawn, nullptr);
+	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("new_in_world", "world"), &GFEntity::new_in_world);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "entity", "world"), &GFEntity::from, nullptr);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from_id", "id", "world"), &GFEntity::from_id, nullptr);
 
@@ -423,6 +437,7 @@ void GFEntity::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
+	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFEntity::to_string);
 
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
 }

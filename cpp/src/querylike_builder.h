@@ -23,8 +23,15 @@ namespace godot {
 		friend QueryIterationContext;
 
 	public:
-		GFQuerylikeBuilder();
-		GFQuerylikeBuilder(GFWorld* world): world(world) {}
+		GFQuerylikeBuilder():
+			GFQuerylikeBuilder(nullptr)
+		{}
+		GFQuerylikeBuilder(GFWorld* world):
+			query_desc(0),
+			built(false),
+			term_count(0),
+			world(world)
+		{}
 		~GFQuerylikeBuilder();
 
 		// **************************************

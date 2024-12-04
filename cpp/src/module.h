@@ -4,6 +4,7 @@
 
 #include "entity.h"
 #include "registerable_entity.h"
+#include "world.h"
 
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -15,21 +16,43 @@ namespace godot {
 		GDCLASS(GFModule, GFRegisterableEntity)
 
 	public:
-		GFModule();
-		GFModule(ecs_entity_t pair_id, GFWorld* world):
-			GFRegisterableEntity(pair_id, world)
-			{}
+		/// Create a new named module
+		GFModule(const char* name, GFWorld* world):
+			GFRegisterableEntity(
+				ecs_module_init(
+					world->raw(),
+					"",
+					0
+				),
+				world
+			)
+		{}
+		/// Create a new named module in default world
+		GFModule(const char* name):
+			GFRegisterableEntity(GFWorld::singleton())
+		{}
+		/// Create new unnamed module
+		GFModule(GFWorld* world): GFModule("", world)
+		{}
+		/// Create new unnamed module in default world
+		GFModule(): GFModule("")
+		{}
+
+		/// Reference an existing module
+		GFModule(ecs_entity_t module_id, GFWorld* world):
+			GFRegisterableEntity(module_id, world)
+		{}
+
 		~GFModule();
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
-		static Ref<GFModule> spawn(String name, GFWorld*);
+		static Ref<GFModule> new_in_world(GFWorld* world);
+		static Ref<GFModule> new_named_in_world(String name, GFWorld*);
 		static Ref<GFModule> from(Variant module, GFWorld*);
 		static Ref<GFModule> from_id(ecs_entity_t, GFWorld*);
-
-		static Ref<GFRegisterableEntity> new_internal();
 
 		// --------------------------------------
 		// --- Unexposed

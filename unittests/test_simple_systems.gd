@@ -16,7 +16,7 @@ func after_all():
 	#world.new_pipeline(&"first")
 	#world.new_pipeline(&"second")
 #
-	#var entity:= GFEntity.spawn(world) \
+	#var entity:= GFEntity.new_in_world(world) \
 		#.add_component(Bools) \
 		#.add_component(Ints) \
 		#.set_name("Test")
@@ -52,14 +52,14 @@ func after_all():
 	#entity.free()
 
 func test_bools():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Bools) \
 		.for_each(func(x:Bools):
 			x.b = x.a
 			x.a = not x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Bools) \
 		.set_name("Test")
 
@@ -71,14 +71,14 @@ func test_bools():
 	entity.delete()
 
 func test_ints():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Ints) \
 		.for_each(func(x:Ints):
 			x.b *= 2
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Ints) \
 		.set_name("Test")
 	entity.get_component(Ints).b = 1
@@ -92,14 +92,14 @@ func test_ints():
 	entity.delete()
 
 func test_floats():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Floats) \
 		.for_each(func(x:Floats):
 			x.b *= 2
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Floats) \
 		.set_name("Test")
 	entity.get_component(Floats).b = 1.2
@@ -114,14 +114,14 @@ func test_floats():
 
 # test simple_systems strings
 func test_strings():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Strings) \
 		.for_each(func(x:Strings):
 			x.b += "em"
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.set_name("Test") \
 		.add_component(Strings, "", "po")
 	var strings:Strings = entity.get_component(Strings)
@@ -138,14 +138,14 @@ func test_strings():
 	entity.delete()
 
 func test_byte_arrays():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(ByteArrays) \
 		.for_each(func(x:ByteArrays):
 			for i in range(x.a.size()):
 				x.a[i] += x.b[i]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(ByteArrays) \
 		.set_name("Test")
 	entity.get_component(ByteArrays).a = PackedByteArray([1, 2, 3])
@@ -161,13 +161,13 @@ func test_byte_arrays():
 
 # test simple_systems textures
 func test_textures():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Textures) \
 		.for_each(func(x:Textures):
 			x.a = x.b
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Textures) \
 		.set_name("Test")
 	entity.get_component(Textures).a = null
@@ -192,7 +192,7 @@ func test_ref_counts():
 	var rc:= RefCounted.new()
 	assert_eq(rc.get_reference_count(), 1)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(RefCounts) \
 		.set_name("Test")
 
@@ -205,14 +205,14 @@ func test_ref_counts():
 	entity.delete()
 
 func test_arrays():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Arrays) \
 		.for_each(func(x:Arrays):
 			for i in mini(x.a.size(), x.b.size()):
 				x.b[i] += x.a[i]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Arrays) \
 		.set_name("Test")
 	entity.get_component(Arrays).a = [23, 4, 6]
@@ -228,13 +228,13 @@ func test_arrays():
 	entity.delete()
 
 func test_dicts():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Dicts) \
 		.for_each(func(x:Dicts):
 			x.b["value"] += x.a["add_by"]
 			)
 
-	var entity:= GFEntity.spawn(world) \
+	var entity:= GFEntity.new_in_world(world) \
 		.add_component(Dicts) \
 		.set_name("Test")
 	entity.get_component(Dicts).a = {"add_by": 5}

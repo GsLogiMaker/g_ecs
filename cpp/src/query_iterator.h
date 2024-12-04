@@ -12,11 +12,13 @@ namespace godot {
 		GDCLASS(GFQueryIterator, RefCounted)
 
 	public:
-		GFQueryIterator();
+		GFQueryIterator():
+			GFQueryIterator(nullptr, {0})
+		{}
 		GFQueryIterator(Ref<GFQuery> query, ecs_iter_t iterator):
 			query(query),
 			iterator(iterator)
-			{}
+		{}
 		~GFQueryIterator();
 
 		// --------------------------------------
