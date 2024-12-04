@@ -37,7 +37,7 @@ func test_optional_terms():
 
 	data.ints = 0
 	data.bools = 0
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Ints) \
 		.maybe_with(Bools) \
 		.for_each(callable)
@@ -47,7 +47,7 @@ func test_optional_terms():
 
 	data.ints = 0
 	data.bools = 0
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.maybe_with(Ints) \
 		.with(Bools) \
 		.for_each(callable)
@@ -59,7 +59,7 @@ func test_or_operation_terms():
 	var w:= world
 
 	var data:= {ints=0, bools=0}
-	w.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Bools).or_with(Ints) \
 		.for_each(func(bools_or_ints:GFComponent):
 			if bools_or_ints is Ints:

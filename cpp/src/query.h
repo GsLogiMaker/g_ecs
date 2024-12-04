@@ -14,8 +14,13 @@ namespace godot {
 		GDCLASS(GFQuery, RefCounted)
 
 	public:
-		GFQuery();
-		GFQuery(GFWorld* world, ecs_query_t* query): world(world), query(query) {}
+		GFQuery(GFWorld* world, ecs_query_t* query):
+			world(world),
+			query(query)
+		{}
+		GFQuery():
+			GFQuery(nullptr, nullptr)
+		{}
 		~GFQuery();
 
 		// --------------------------------------

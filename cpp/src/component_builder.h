@@ -16,7 +16,14 @@ namespace godot {
 		GDCLASS(GFComponentBuilder, RefCounted)
 
 	public:
-		GFComponentBuilder(GFWorld* world): world(world) {}
+		GFComponentBuilder(GFWorld* world):
+			component_desc({0}),
+			struct_desc({0}),
+			name(""),
+			member_names(Array()),
+			world(world),
+			built(false)
+		{}
 		GFComponentBuilder():
 			GFComponentBuilder(GFWorld::singleton())
 		{}

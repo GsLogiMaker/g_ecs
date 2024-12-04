@@ -54,8 +54,6 @@ namespace godot {
 		static Ref<GFModule> from(Variant module, GFWorld*);
 		static Ref<GFModule> from_id(ecs_entity_t, GFWorld*);
 
-		static Ref<GFRegisterableEntity> new_internal();
-
 		// --------------------------------------
 		// --- Unexposed
 		// --------------------------------------

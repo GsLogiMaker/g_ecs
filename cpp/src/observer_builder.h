@@ -16,8 +16,13 @@ namespace godot {
 		GDCLASS(GFObserverBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFObserverBuilder(GFWorld* world): GFQuerylikeBuilder(world) {}
-		GFObserverBuilder(): GFObserverBuilder(GFWorld::singleton()) {}
+		GFObserverBuilder(GFWorld* world):
+			GFQuerylikeBuilder(world),
+			events(0)
+		{}
+		GFObserverBuilder():
+			GFObserverBuilder(GFWorld::singleton())
+		{}
 		~GFObserverBuilder();
 
 		// **************************************

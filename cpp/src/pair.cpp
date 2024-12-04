@@ -12,8 +12,6 @@
 
 using namespace godot;
 
-GFPair::GFPair() {
-}
 GFPair::~GFPair() {
 }
 

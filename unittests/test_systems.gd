@@ -15,7 +15,7 @@ func after_each():
 func test_stuff():
 	pass
 	#world.system_builder(&"test_pipeline") \
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Bools) \
 		.for_each(func(boo:Bools):
 			boo.b = boo.a

@@ -14,7 +14,7 @@ func after_all():
 
 # test prefab prefab
 func test_prefab():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Foo) \
 		.with(Bar) \
 		.for_each(func(f:Foo, b:Bar):

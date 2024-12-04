@@ -129,9 +129,6 @@ void GFModule::_register_user() {
 	GFRegisterableEntity::_register_user();
 }
 
-Ref<GFRegisterableEntity> GFModule::new_internal() {
-	return Ref(memnew(GFModule));
-}
 
 void GFModule::_bind_methods() {
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFModule::new_named_in_world);
@@ -140,5 +137,4 @@ void GFModule::_bind_methods() {
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "module_id", "world"), &GFModule::from_id, nullptr);
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFModule::_register_internal);
 	godot::ClassDB::bind_method(D_METHOD("_register_user"), &GFModule::_register_user);
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), GFModule::new_internal);
 }

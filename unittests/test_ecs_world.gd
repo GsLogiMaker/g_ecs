@@ -68,7 +68,7 @@ func test_world_deletion():
 	assert_eq(foo.is_alive(), false)
 
 func test_simple_system():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Foo) \
 		.for_each(func(foo:Foo):
 			foo.setm(&"vec", 2.67)

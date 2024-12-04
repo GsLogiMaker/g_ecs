@@ -14,7 +14,8 @@ func after_each():
 func test_on_add_event():
 	var data:= {i=0}
 
-	world.observer_builder("flecs/core/OnAdd") \
+	GFObserverBuilder.new_in_world(world) \
+		.set_events("flecs/core/OnAdd") \
 		.with(Ints) \
 		.for_each(func(_ints: Ints):
 			data.i += 1
@@ -42,7 +43,8 @@ func test_on_add_event():
 # test events on_set_event
 func test_on_set_event():
 	var data:= {i=0}
-	world.observer_builder("flecs/core/OnSet") \
+	GFObserverBuilder.new_in_world(world) \
+		.set_events("flecs/core/OnSet") \
 		.with(Ints) \
 		.for_each(func(ints: Ints):
 			data.i += ints.a + ints.b
@@ -70,7 +72,8 @@ func test_on_set_event():
 
 func test_on_add_event_with_objects():
 	var data:= {i=0}
-	world.observer_builder("flecs/core/OnAdd") \
+	GFObserverBuilder.new_in_world(world) \
+		.set_events("flecs/core/OnAdd") \
 		.with(Textures) \
 		.for_each(func(_ints: Textures):
 			data.i += 1

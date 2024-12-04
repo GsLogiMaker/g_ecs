@@ -9,9 +9,6 @@
 
 using namespace godot;
 
-GFQuery::GFQuery() {
-
-}
 GFQuery::~GFQuery() {
 	ecs_query_fini(query);
 }

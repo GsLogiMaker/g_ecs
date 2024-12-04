@@ -3,7 +3,6 @@
 #include "querylike_builder.h"
 #include "component.h"
 #include "godot_cpp/variant/callable.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -13,8 +12,6 @@
 
 using namespace godot;
 
-GFQuerylikeBuilder::GFQuerylikeBuilder() {
-}
 GFQuerylikeBuilder::~GFQuerylikeBuilder() {
 }
 

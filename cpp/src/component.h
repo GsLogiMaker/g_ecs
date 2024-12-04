@@ -18,16 +18,18 @@ namespace godot {
 		GDCLASS(GFComponent, GFRegisterableEntity)
 
 	public:
-		GFComponent();
 		GFComponent(ecs_entity_t component, GFWorld* world):
-			GFRegisterableEntity(component, world) {
-				update_script();
-			}
+			GFRegisterableEntity(component, world),
+			source_entity_id(0)
+		{}
 		GFComponent(ecs_entity_t entity, ecs_entity_t component, GFWorld* world):
 			source_entity_id(entity),
-			GFRegisterableEntity(component, world) {
-				update_script();
-			}
+			GFRegisterableEntity(component, world)
+		{}
+		GFComponent():
+			source_entity_id(0),
+			GFRegisterableEntity(0, GFWorld::singleton())
+		{}
 		~GFComponent();
 
 		// --------------------------------------
@@ -63,7 +65,6 @@ namespace godot {
 		static const EcsStruct* get_struct_ptr(GFWorld*, ecs_entity_t);
 		void set_source_id(ecs_entity_t id);
 
-		static Ref<GFRegisterableEntity> new_internal();
 
 	protected:
 		static void _bind_methods();

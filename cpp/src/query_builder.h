@@ -18,8 +18,12 @@ namespace godot {
 		GDCLASS(GFQueryBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFQueryBuilder(GFWorld* world): GFQuerylikeBuilder(world) {}
-		GFQueryBuilder(): GFQueryBuilder(GFWorld::singleton()) {}
+		GFQueryBuilder(GFWorld* world):
+			GFQuerylikeBuilder(world)
+		{}
+		GFQueryBuilder():
+			GFQueryBuilder(GFWorld::singleton())
+		{}
 		~GFQueryBuilder();
 
 		// **************************************

@@ -66,10 +66,9 @@ func test_registration():
 
 
 func test_simple_system():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Foo) \
 		.for_each(func(foo):
-			prints("REA", foo.get_script())
 			foo.set_value(Vector2(2, 5))
 			)
 
@@ -142,7 +141,7 @@ class RegistrationA extends GFComponent:
 		setm(&"result", v)
 
 	func _register(w: GFWorld):
-		w.system_builder() \
+		GFSystemBuilder.new_in_world(w) \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):
@@ -164,8 +163,8 @@ class RegistrationB extends GFComponent:
 	func set_result(v:float) -> void:
 		setm(&"result", v)
 
-	func _register(world:GFWorld):
-		world.system_builder() \
+	func _register(w:GFWorld):
+		GFSystemBuilder.new_in_world(w) \
 			.with(RegistrationA) \
 			.with(RegistrationB) \
 			.for_each(func(reg_a:RegistrationA, reg_b:RegistrationB):

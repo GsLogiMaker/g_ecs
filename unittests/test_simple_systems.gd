@@ -52,7 +52,7 @@ func after_all():
 	#entity.free()
 
 func test_bools():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Bools) \
 		.for_each(func(x:Bools):
 			x.b = x.a
@@ -71,7 +71,7 @@ func test_bools():
 	entity.delete()
 
 func test_ints():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Ints) \
 		.for_each(func(x:Ints):
 			x.b *= 2
@@ -92,7 +92,7 @@ func test_ints():
 	entity.delete()
 
 func test_floats():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Floats) \
 		.for_each(func(x:Floats):
 			x.b *= 2
@@ -114,7 +114,7 @@ func test_floats():
 
 # test simple_systems strings
 func test_strings():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Strings) \
 		.for_each(func(x:Strings):
 			x.b += "em"
@@ -138,7 +138,7 @@ func test_strings():
 	entity.delete()
 
 func test_byte_arrays():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(ByteArrays) \
 		.for_each(func(x:ByteArrays):
 			for i in range(x.a.size()):
@@ -161,7 +161,7 @@ func test_byte_arrays():
 
 # test simple_systems textures
 func test_textures():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Textures) \
 		.for_each(func(x:Textures):
 			x.a = x.b
@@ -205,7 +205,7 @@ func test_ref_counts():
 	entity.delete()
 
 func test_arrays():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Arrays) \
 		.for_each(func(x:Arrays):
 			for i in mini(x.a.size(), x.b.size()):
@@ -228,7 +228,7 @@ func test_arrays():
 	entity.delete()
 
 func test_dicts():
-	world.system_builder() \
+	GFSystemBuilder.new_in_world(world) \
 		.with(Dicts) \
 		.for_each(func(x:Dicts):
 			x.b["value"] += x.a["add_by"]

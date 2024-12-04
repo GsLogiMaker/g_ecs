@@ -20,8 +20,6 @@
 
 using namespace godot;
 
-GFComponent::GFComponent() {
-}
 GFComponent::~GFComponent() {
 }
 
@@ -36,10 +34,7 @@ Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GF
 			"	Entity ", world->id_to_text(comp), " is not a component"
 		);
 	}
-	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent));
-	comp_ref->source_entity_id = entity;
-	comp_ref->set_id(comp);
-	comp_ref->set_world(world);
+	Ref<GFComponent> comp_ref = memnew(GFComponent(entity, comp, world));
 	return setup_template<GFComponent>(comp_ref);
 }
 
@@ -51,10 +46,7 @@ Ref<GFComponent> GFComponent::from_id_no_source(ecs_entity_t comp, GFWorld* worl
 			"	Entity ", world->id_to_text(comp), " is not a component"
 		);
 	}
-	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent));
-	comp_ref->source_entity_id = 0;
-	comp_ref->set_id(comp);
-	comp_ref->set_world(world);
+	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent(0, comp, world)));
 	comp_ref->update_script();
 	return comp_ref;
 }
@@ -373,10 +365,6 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 	source_entity_id = id;
 }
 
-Ref<GFRegisterableEntity> GFComponent::new_internal() {
-	return Ref(memnew(GFComponent));
-}
-
 void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
@@ -393,6 +381,4 @@ void GFComponent::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_data_alignment"), &GFComponent::get_data_alignment);
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFComponent::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFComponent::to_string);
-
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("_new_internal"), &GFComponent::new_internal);
 }

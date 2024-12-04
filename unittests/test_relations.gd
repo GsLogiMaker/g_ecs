@@ -52,7 +52,8 @@ func test_basic_query():
 		.set_name("Cow") \
 		.add_pair("Eats", grass)
 
-	var grass_eater_iter:= world.query_builder() \
+	var grass_eater_iter:= GFQueryBuilder \
+		.new_in_world(world) \
 		.with(eats.pair(grass)) \
 		.build() as GFQuery
 	var grass_eater_count:= 0
@@ -60,7 +61,8 @@ func test_basic_query():
 		grass_eater_count += 1
 	assert_eq(grass_eater_count, 1)
 	
-	var eater_iter:= world.query_builder() \
+	var eater_iter:= GFQueryBuilder \
+		.new_in_world(world) \
 		.with(eats.pair("flecs/core/*")) \
 		.build() as GFQuery
 	var eater_count:= 0
