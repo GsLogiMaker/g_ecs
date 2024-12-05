@@ -17,8 +17,7 @@ namespace godot {
 
 	public:
 		GFObserverBuilder(GFWorld* world):
-			GFQuerylikeBuilder(world),
-			events(0)
+			GFQuerylikeBuilder(world)
 		{}
 		GFObserverBuilder():
 			GFObserverBuilder(GFWorld::singleton())
@@ -47,7 +46,7 @@ namespace godot {
 		static void _bind_methods();
 
 	private:
-		ecs_entity_t events[FLECS_EVENT_DESC_MAX];
+		ecs_entity_t events[FLECS_EVENT_DESC_MAX] {0};
 	};
 
 }

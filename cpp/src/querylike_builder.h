@@ -27,7 +27,7 @@ namespace godot {
 			GFQuerylikeBuilder(nullptr)
 		{}
 		GFQuerylikeBuilder(GFWorld* world):
-			query_desc(0),
+			query_desc( {0} ),
 			built(false),
 			term_count(0),
 			world(world)
