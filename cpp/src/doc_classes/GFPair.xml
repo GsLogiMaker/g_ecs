@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFPair" inherits="GFEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFPair" inherits="GFEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a pair of entity IDs.
 	</brief_description>
@@ -41,6 +42,7 @@
 				[codeblock]
 				var IsAPrefab = GFPair.from("flecs/core/IsA", "flecs/core/Prefab")
 				[/codeblock]
+				Overrides [method GFEntity.from()].
 			</description>
 		</method>
 		<method name="from_id" qualifiers="static">
@@ -54,6 +56,7 @@
 				var second_id:= GFGlobalWorld.coerce_id("flecs/core/Prefab")
 				var IsAPrefab = GFPair.from_id(GFGlobalWorld.pair_ids(first_id, second_id))
 				[/codeblock]
+				Overrides [method GFEntity.from_id()].
 			</description>
 		</method>
 		<method name="from_ids" qualifiers="static">

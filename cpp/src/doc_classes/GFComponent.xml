@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -21,6 +22,36 @@
 				func _build(b:GFComponentBuilder) -&gt; void:
 				    b.add_member("value", TYPE_VECTOR2)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="from" qualifiers="static">
+			<return type="GFComponent" />
+			<param index="0" name="component" type="Variant" />
+			<param index="1" name="world" type="Variant" />
+			<param index="2" name="_unnamed_arg2" type="GFWorld" default="null" />
+			<description>
+				Overrides [method GFEntity.from()].
+			</description>
+		</method>
+		<method name="from_id" qualifiers="static">
+			<return type="GFComponent" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="world" type="int" />
+			<param index="2" name="_unnamed_arg2" type="GFWorld" default="null" />
+			<description>
+				Overrides [method GFEntity.from_id()].
+			</description>
+		</method>
+		<method name="get_data_alignment">
+			<return type="int" />
+			<description>
+				Returns the memory alignment of this component's data.
+			</description>
+		</method>
+		<method name="get_data_size">
+			<return type="int" />
+			<description>
+				Returns the size in bytes of this component's data.
 			</description>
 		</method>
 		<method name="get_source_entity">
@@ -63,6 +94,12 @@
 
 				vec2.getm("x")
 				[/codeblock]
+			</description>
+		</method>
+		<method name="is_alive">
+			<return type="bool" />
+			<description>
+				Overrides [method GFEntity.is_alive()].
 			</description>
 		</method>
 		<method name="setm">
