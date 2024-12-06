@@ -9,6 +9,7 @@
 #include "component.h"
 #include "pair.h"
 
+#include <alloca.h>
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
@@ -141,6 +142,28 @@ Ref<GFEntity> GFEntity::add_tag(Variant tag) {
 	ecs_add_id(w->raw(), get_id(), tag_id);
 
 	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::emit(Variant event, Array components) {
+	ecs_entity_t componet_id = get_world()->coerce_id(components[0]);
+	ecs_type_t type = {
+		.array = &componet_id,
+		.count = 1
+	};
+	ecs_type_t* type_ptr = &type;
+	if (components.size() == 0) {
+		type_ptr = nullptr;
+	}
+	ecs_event_desc_t desc = {
+		.event = get_id(),
+		.ids = type_ptr,
+		.entity = get_world()->coerce_id(event)
+	};
+	ecs_emit(
+		get_world()->raw(),
+		&desc
+	);
+	return this;
 }
 
 Ref<GFComponent> GFEntity::get_component(Variant component) {
@@ -425,6 +448,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
 	godot::ClassDB::bind_method(D_METHOD("get_pair", "first", "second"), &GFEntity::get_pair);
 
+	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components"), &GFEntity::emit, Array());
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
