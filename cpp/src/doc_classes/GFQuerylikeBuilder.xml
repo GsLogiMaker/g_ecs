@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQuerylikeBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQuerylikeBuilder" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		The abstract base class for different query-like builders.
 	</brief_description>
@@ -9,6 +10,45 @@
 		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>
 	</tutorials>
 	<methods>
+		<method name="access_default">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term as default.
+			</description>
+		</method>
+		<method name="access_filter">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term as a filter.
+				Filters will not trigger observers, but they
+				will still be required for them to match.
+			</description>
+		</method>
+		<method name="access_in">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term read only.
+			</description>
+		</method>
+		<method name="access_inout">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term read and write.
+			</description>
+		</method>
+		<method name="access_none">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term as never accessed. This will also cause the
+				term to not be passed to systems, queryies, or observers.
+			</description>
+		</method>
+		<method name="access_out">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term write only.
+			</description>
+		</method>
 		<method name="is_built">
 			<return type="bool" />
 			<description>

@@ -52,6 +52,16 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="lookup">
+			<return type="GFEntity" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Finds and returns an entity according to its path.
+				[codeblock]
+				GFGlobalWorld.lookup("glecs/meta/Vector2")
+				[/codeblock]
+			</description>
+		</method>
 		<method name="pair">
 			<return type="GFPair" />
 			<param index="0" name="first" type="Variant" />

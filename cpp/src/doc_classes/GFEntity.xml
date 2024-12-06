@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -37,6 +38,31 @@
 				entity.get_pair(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
+		<method name="add_tag">
+			<return type="GFEntity" />
+			<param index="0" name="tag" type="Variant" />
+			<description>
+				Adds a tag to this entity.
+				[codeblock]
+				var carnivore:= GFEntity.new().set_name("Carnivore")
+				var tiger:= GFEntity.new().set_name("Tiger")
+
+				tiger.add_tag(carnivore)
+				[/codeblock]
+			</description>
+		</method>
+		<method name="delete">
+			<return type="void" />
+			<description>
+				Deletes the entity this [GFEntity] is referencing.
+				[codeblock]
+				var entity:= GFEntity.new()
+				entity.is_alive() # true
+				entity.delete()
+				entity.is_alive() # false
+				[/codeblock]
 			</description>
 		</method>
 		<method name="from" qualifiers="static">
@@ -110,6 +136,16 @@
 				var entity:= GFEntity.new()
 				entity.add_component("glecs/meta/Array")
 				entity.get_component("glecs/meta/Array") != null # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="get_path">
+			<return type="String" />
+			<description>
+				Returns this entity's path in the tree.
+				[codeblock]
+				var entity:= GFGlobalWorld.lookup("flecs/core/OnAdd")
+				entity.get_path() == "flecs/core/OnAdd"
 				[/codeblock]
 			</description>
 		</method>
