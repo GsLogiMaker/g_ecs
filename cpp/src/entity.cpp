@@ -35,6 +35,9 @@ Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
+	if (world == nullptr) {
+		world = GFWorld::singleton();
+	}
 	return from_id(world->coerce_id(entity), world);
 }
 Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
