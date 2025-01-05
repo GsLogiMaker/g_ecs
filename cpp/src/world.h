@@ -114,6 +114,7 @@ namespace godot {
 
 		static GFWorld* world_or_singleton(GFWorld* world);
 		static GFWorld* singleton();
+		bool is_id_alive(ecs_entity_t id);
 		ecs_world_t* raw();
 
 	protected:
