@@ -13,6 +13,14 @@
 	UtilityFunctions::push_error(__VA_ARGS__); \
 	return return_value;
 
+#define CHECK_ENTITY_ALIVE(entity, gf_world, return_value, err) \
+	if (!gf_world->is_id_alive(entity)) { \
+		ERR(return_value, \
+			err, \
+			"	Entity ", world->id_to_text(entity), " is not alive" \
+		); \
+	}
+
 template <typename T, typename E>
 class Result {
 

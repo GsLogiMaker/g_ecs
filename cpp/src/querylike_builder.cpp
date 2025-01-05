@@ -12,6 +12,14 @@
 
 using namespace godot;
 
+#define CHECK_HAS_A_TERM(return_value, err) \
+	if (get_term_count() == 0) { \
+		ERR(return_value, \
+			err, \
+			"	Query has no terms" \
+		); \
+	}
+
 GFQuerylikeBuilder::~GFQuerylikeBuilder() {
 }
 
@@ -32,32 +40,55 @@ bool GFQuerylikeBuilder::is_built() {
 }
 
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_default() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `default`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutDefault;
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_filter() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `filter`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutFilter;
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_in() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `in`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsIn;
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_inout() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `inout`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOut;
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_none() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `none`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutNone;
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to set term's access mode to `out`\n"
+	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsOut;
 	return Ref(this);
 }
 
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
+
+	CHECK_ENTITY_ALIVE(comp_id, world,
+		Ref(this),
+		"Failed to add term to query\n"
+	);
 
 	query_desc.terms[get_term_count()] = {
 		.id = comp_id,
@@ -71,6 +102,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant component) {
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
 
+	CHECK_ENTITY_ALIVE(comp_id, world,
+		Ref(this),
+		"Failed to add `optional` term to query\n"
+	);
+
 	query_desc.terms[get_term_count()] = {
 		.id = comp_id,
 		.inout = ecs_inout_kind_t::EcsInOut,
@@ -81,12 +117,9 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant component) {
 	return Ref(this);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
-	if (get_term_count() == 0) {
-		ERR(Ref(this),
-			"Could not add term to query\n",
-			"OR terms can't be the first term in a query"
-		);
-	}
+	CHECK_HAS_A_TERM(Ref(this),
+		"Failed to add `or` term to query\n"
+	);
 	if (query_desc.terms[get_term_count()-1].oper != ecs_oper_kind_t::EcsAnd) {
 		ERR(Ref(this),
 			"Could not add term to query\n",
@@ -95,6 +128,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
 	}
 
 	ecs_entity_t comp_id = world->coerce_id(component);
+
+	CHECK_ENTITY_ALIVE(comp_id, world,
+		Ref(this),
+		"Failed to add `or` term to query\n"
+	);
 
 	query_desc.terms[get_term_count()-1].oper = ecs_oper_kind_t::EcsOr;
 	query_desc.terms[get_term_count()] = {
@@ -108,6 +146,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant component) {
 	ecs_entity_t comp_id = world->coerce_id(component);
+
+	CHECK_ENTITY_ALIVE(comp_id, world,
+		Ref(this),
+		"Failed to add `negative` term to query\n"
+	);
 
 	query_desc.terms[get_term_count()] = {
 		.id = comp_id,
