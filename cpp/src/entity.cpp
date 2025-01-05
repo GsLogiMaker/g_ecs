@@ -362,20 +362,8 @@ bool GFEntity::is_alive() {
 	if (!UtilityFunctions::is_instance_id_valid(world_instance_id)) {
 		return false;
 	}
-	if (is_pair()) {
-		if (!ecs_is_alive(get_world()->raw(), ECS_PAIR_FIRST(get_id()))) {
-			return false;
-		}
-		if (!ecs_is_alive(get_world()->raw(), ECS_PAIR_SECOND(get_id()))) {
-			return false;
-		}
-	} else {
-		if (!ecs_is_alive(get_world()->raw(), get_id())) {
-			return false;
-		}
-	}
 
-	return true;
+	return get_world()->is_id_alive(get_id());
 }
 bool GFEntity::is_pair() {
 	return ecs_id_is_pair(get_id());
@@ -436,9 +424,9 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
 }
 
 String GFEntity::to_string() {
-	return String("[#")
-		+ String::num_int64(get_id())
-		+ "]";
+	return get_name()
+		+ "#"
+		+ String::num_int64(get_id());
 }
 
 // ----------------------------------------------
