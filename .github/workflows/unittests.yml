@@ -61,7 +61,7 @@ jobs:
             release plreleasem: windows
             arch: x86_64
             glecs_lib: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
-            os: windows-latest
+            os: windows-2022
     runs-on: ${{ matrix.os }}
     outputs:
       # Linux
@@ -182,7 +182,7 @@ jobs:
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_linux_x86_64 }}
             lib_debug: ${{ needs.data.outputs.lib_debug_linux_x86_64 }}
             lib_release: ${{ needs.data.outputs.lib_release_linux_x86_64 }}
-          - os: windows-latest
+          - os: windows-2022
             bin_key: ${{ needs.compile_glecs.outputs.bin_key_windows_x86_64 }}
             lib_debug: ${{ needs.data.outputs.lib_debug_windows_x86_64 }}
             lib_release: ${{ needs.data.outputs.lib_release_windows_x86_64 }}
