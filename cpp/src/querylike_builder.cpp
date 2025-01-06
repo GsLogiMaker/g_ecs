@@ -3,6 +3,7 @@
 #include "querylike_builder.h"
 #include "component.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -164,7 +165,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant component) {
 
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::up(Variant entity) {
 	ecs_entity_t entity_id = 0;
-	if (entity == Variant()) {
+	if (!entity) {
 		// Passed variant is null, use the default ChildOf tag
 		entity_id = ecs_lookup(world->raw(), "flecs.core.ChildOf");
 	} else {
@@ -342,14 +343,17 @@ GFWorld* QueryIterationContext::get_world() {
 void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity_index) {
 	for (int comp_i=0; comp_i != comp_ref_args.size(); comp_i++) {
 		int term_i = comp_ref_term_ids[comp_i];
+
 		ecs_entity_t entity = ecs_field_src(it, term_i);
 		if (entity == 0) {
 			entity = it->entities[entity_index];
 		}
+
 		Ref<GFComponent> comp = comp_ref_args[comp_i];
 		if (comp == nullptr) {
 			continue;
 		}
+
 		comp->set_source_id(entity);
 	}
 }
