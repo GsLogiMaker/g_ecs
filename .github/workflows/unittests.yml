@@ -16,6 +16,19 @@ concurrency:
 
 jobs:
 
+  reproduce-error:
+    runs-on: windows-latest
+    steps:
+        - name: 🐙 Setup git environment of plugin
+          uses: actions/checkout@v4
+
+        - name: 🤖 Setup Godot binary
+          uses: lihop/setup-godot@v2
+          with:
+            version: 4.3-stable
+            bits: 64
+            mono: false
+
   data:
     runs-on: ubuntu-latest
     outputs:
