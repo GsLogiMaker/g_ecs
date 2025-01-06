@@ -98,6 +98,28 @@ func test_on_add_event_with_objects():
 
 	e2.delete()
 
+func test_user_signal() -> void:
+	var Update = GFEntity.new_in_world(world) \
+		.set_name("Update")
+	
+	var data:= {i = 0}
+	GFObserverBuilder.new_in_world(world) \
+		.set_events(Update) \
+		.with(Ints) \
+		.for_each(func(ints:Ints):
+			data.i += 1
+			)
+	
+	var e:= GFEntity.new_in_world(world) \
+		.add_component(Ints)
+	# Observer shouldn't match against this entity
+	var e2:= GFEntity.new_in_world(world) \
+		.add_component(Ints)
+	
+	Update.emit(e, [Ints])
+	
+	assert_eq(data.i, 1, "Expected observer to match an `Update` event once")
+
 #endregion
 
 #region Components
