@@ -9,7 +9,6 @@
 #include "component.h"
 #include "pair.h"
 
-#include <alloca.h>
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
