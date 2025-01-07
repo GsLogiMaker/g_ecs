@@ -6,6 +6,7 @@ class_name _GlecsModules extends Node
 
 const MODULES:= [
 	"./rendering/rendering.gd",
+	"./physics_2d/physics_2d.gd",
 ]
 
 static var x:= (func():
