@@ -83,21 +83,45 @@ func test_entity_created_in_singleton():
 	e.delete()
 	e2.delete()
 
+func test_builder():
+	var e:= GFEntityBuilder.new_in_world(world) \
+		.set_name("Built") \
+		.add_entity(Foo) \
+		.add_pair(Foo, Stringy) \
+		.add_pair(Stringy, Foo) \
+		.build()
+	
+	assert_eq(e.get_name(), "Built", "Expected entity to be named 'Built'")
+	
+	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
+		.with(Foo) \
+		.with(world.pair(Foo, Stringy)) \
+		.with(world.pair(Stringy, Foo)) \
+		.build()
+	
+	var i:= 0
+	for _x in query.iterate():
+		i += 1
+	
+	assert_eq(i, 1, "Expected query to find the built entity")
+
 #endregion
 
 #region Classes
 
 class Foo extends GFComponent:
-	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("value", TYPE_FLOAT)
+	func _build(b_: GFComponentBuilder) -> void: b_ \
+		.set_name("Foo") \
+		.add_member("value", TYPE_FLOAT)
 	var value:float:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
 
 class Stringy extends GFComponent:
-	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("a", TYPE_STRING)
-		b_.add_member("b", TYPE_STRING)
+	func _build(b_: GFComponentBuilder) -> void: b_ \
+		.set_name("Stringy") \
+		.add_member("a", TYPE_STRING) \
+		.add_member("b", TYPE_STRING)
 	var a:String:
 		get: return getm(&"a")
 		set(v): setm(&"a", v)
@@ -106,15 +130,17 @@ class Stringy extends GFComponent:
 		set(v): setm(&"b", v)
 
 class Unadded extends GFComponent:
-	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("value", TYPE_INT)
+	func _build(b_: GFComponentBuilder) -> void: b_ \
+		.set_name("Unadded") \
+		.add_member("value", TYPE_INT)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)
 
 class Unregistered extends GFComponent:
-	func _build(b_: GFComponentBuilder) -> void:
-		b_.add_member("value", TYPE_INT)
+	func _build(b_: GFComponentBuilder) -> void: b_ \
+		.set_name("Unregistered") \
+		.add_member("value", TYPE_INT)
 	var value:int:
 		get: return getm(&"value")
 		set(v): setm(&"value", v)

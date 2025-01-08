@@ -2,6 +2,7 @@
 #ifndef COMPONENT_Builder_H
 #define COMPONENT_Builder_H
 
+#include "entity_builder.h"
 #include "world.h"
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -12,20 +13,18 @@ namespace godot {
 	// Predefine instead of include to avoid cyclic dependencies
 	class GFWorld;
 
-	class GFComponentBuilder : public RefCounted {
-		GDCLASS(GFComponentBuilder, RefCounted)
+	class GFComponentBuilder : public GFEntityBuilder {
+		GDCLASS(GFComponentBuilder, GFEntityBuilder)
 
 	public:
 		GFComponentBuilder(GFWorld* world):
+			GFEntityBuilder(world),
 			component_desc({0}),
 			struct_desc({0}),
-			name(""),
-			member_names(Array()),
-			world(world),
-			built(false)
+			member_names(Array())
 		{}
 		GFComponentBuilder():
-			GFComponentBuilder(GFWorld::singleton())
+			GFEntityBuilder(GFWorld::singleton())
 		{}
 		~GFComponentBuilder();
 
@@ -33,36 +32,23 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
-		static Ref<GFComponentBuilder> new_in_world(GFWorld*);
-
 		Ref<GFComponentBuilder> add_member(String, Variant::Type);
 		int get_member_count();
-		GFWorld* get_world();
 		bool is_built();
-		Ref<GFComponentBuilder> set_entity(Variant);
-		Ref<GFComponentBuilder> set_name(String);
+
+		// Overriding
+		static Ref<GFComponentBuilder> new_in_world(GFWorld*);
 		Ref<GFEntity> build();
-
-		// **************************************
-		// *** Unexposed ***
-		// **************************************
-
-		void set_world(GFWorld*);
 
 	protected:
 		static void _bind_methods();
 
 	private:
-		ecs_component_desc_t component_desc;
-		ecs_struct_desc_t struct_desc;
+		ecs_component_desc_t component_desc {0};
+		ecs_struct_desc_t struct_desc {0};
 		/// @brief A list of the allocated names of members
 		/// Also used to find the number of added of members
 		Array member_names;
-		/// The name of this component
-		String name;
-		GFWorld* world;
-		/// Is true if this builder has already been built
-		bool built;
 
 		static void ctor(void*, int32_t, const ecs_type_info_t*);
 		static void dtor(void*, int32_t, const ecs_type_info_t*);
