@@ -27,6 +27,7 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_entity(Variant entity) {
 	CHECK_ENTITY_ALIVE(id, world, this,
 		"Failed to entity in builder\n"
 	);
+	ids.append(id);
 
 	return this;
 }
@@ -47,8 +48,10 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_pair(Variant first, Variant second) {
 }
 
 Ref<GFEntity> GFEntityBuilder::build() {
-	const char* name_ptr = name.utf8().get_data();
-	desc.name = name_ptr;
+	CharString name_utf8 = name.utf8();
+	desc.name = name_utf8.get_data();
+
+	ids.append(0); // Add null terminator (required by ecs_entity_desc_t)
 	desc.add = reinterpret_cast<const ecs_id_t*>(ids.ptr());
 
 	ecs_entity_t id = ecs_entity_init(
@@ -56,11 +59,18 @@ Ref<GFEntity> GFEntityBuilder::build() {
 		&desc
 	);
 
-	// Pointers will not remain valid, reset them
+	// Reset volatile pointers/data
 	desc.name = nullptr;
 	desc.add = nullptr;
+	ids.remove_at(ids.size()-1); // Remove null terminator
+
+	built_count += 1;
 
 	return GFEntity::from_id(id, world);
+}
+
+GFWorld* GFEntityBuilder::get_world() {
+	return world;
 }
 
 Ref<GFEntityBuilder> GFEntityBuilder::set_target_entity(Variant entity) {
@@ -92,6 +102,10 @@ Ref<GFEntityBuilder> GFEntityBuilder::set_parent(Variant parent) {
 // *** Unexposed ***
 // **************************************
 
+void GFEntityBuilder::set_world(GFWorld* world_) {
+	world = world_;
+}
+
 // **********************************************
 // *** PROTECTED ***
 // **********************************************
@@ -101,6 +115,7 @@ void GFEntityBuilder::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("add_entity", "entity"), &GFEntityBuilder::add_entity);
 	godot::ClassDB::bind_method(D_METHOD("add_pair", "first", "second"), &GFEntityBuilder::add_pair);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFEntityBuilder::build);
+	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntityBuilder::get_world);
 	godot::ClassDB::bind_method(D_METHOD("set_target_entity", "entity"), &GFEntityBuilder::set_target_entity);
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntityBuilder::set_name);
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "parent"), &GFEntityBuilder::set_parent);

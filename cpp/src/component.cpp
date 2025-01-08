@@ -54,7 +54,7 @@ void GFComponent::_register_internal() {
 	// Build component
 	Ref<GFComponentBuilder> b = memnew(GFComponentBuilder(get_world()));
 	if (GDVIRTUAL_IS_OVERRIDDEN(_build)) {
-		b->set_entity(get_id());
+		b->set_target_entity(get_id());
 		GDVIRTUAL_CALL(_build, b);
 		if (!b->is_built()) {
 			b->build();

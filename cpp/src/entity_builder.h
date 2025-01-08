@@ -16,10 +16,17 @@ namespace godot {
 		GDCLASS(GFEntityBuilder, RefCounted)
 
 	public:
-		GFEntityBuilder() {
-			world = GFWorld::singleton();
-		}
-		GFEntityBuilder(GFWorld* world): world(world) {}
+		GFEntityBuilder(): GFEntityBuilder(GFWorld::singleton()) {}
+		GFEntityBuilder(GFWorld* world):
+			world(world),
+			ids(PackedInt64Array()),
+			desc({
+				.sep="/",
+				.root_sep="/root/",
+			}),
+			name(String("")),
+			built_count(0)
+		{}
 		~GFEntityBuilder() {}
 
 		// **************************************
@@ -31,6 +38,7 @@ namespace godot {
 		Ref<GFEntityBuilder> add_entity(Variant entity);
 		Ref<GFEntityBuilder> add_pair(Variant first, Variant second);
 		Ref<GFEntity> build();
+		GFWorld* get_world();
 		Ref<GFEntityBuilder> set_target_entity(Variant entity);
 		Ref<GFEntityBuilder> set_name(String);
 		Ref<GFEntityBuilder> set_parent(Variant entity);
@@ -39,21 +47,20 @@ namespace godot {
 		// *** Unexposed ***
 		// **************************************
 
+		void set_world(GFWorld*);
+
 
 	protected:
-		PackedInt64Array ids = PackedInt64Array();
-		ecs_entity_desc_t desc {
-			.sep="/",
-			.root_sep="/root/",
-		};
+		PackedInt64Array ids;
+		ecs_entity_desc_t desc;
 		String name;
+		/// The world to query in.
+		GFWorld* world;
+		int built_count;
 
 		static void _bind_methods();
 
 	private:
-		/// The world to query in.
-		GFWorld* world{nullptr};
-
 	};
 
 }
