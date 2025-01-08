@@ -11,7 +11,6 @@
 #include "registerable_entity.h"
 #include "utils.h"
 
-#include <cstddef>
 #include <cstdint>
 #include <stdint.h>
 #include <flecs.h>
@@ -236,10 +235,12 @@ Variant GFComponent::member_value_as_type(
 }
 
 String GFComponent::to_string() {
-	return String("[#")
-		+ String::num_int64(get_source_id())
-		+ "--" + String::num_int64(get_id())
-		+ "]";
+	return String() + ecs_get_name(get_world()->raw(), get_source_id())
+		+ "#" + String::num_int64(get_source_id())
+		+ "."
+		+ ecs_get_name(get_world()->raw(), get_id())
+		+ "#" + String::num_int64(get_id())
+		;
 }
 
 Ref<GFEntity> GFComponent::get_source_entity() {

@@ -4,6 +4,7 @@
 
 #include "component.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "godot_cpp/variant/packed_int32_array.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
 #include <query.h>
 
@@ -51,6 +52,9 @@ namespace godot {
 		Ref<GFQuerylikeBuilder> maybe_with(Variant component);
 		Ref<GFQuerylikeBuilder> or_with(Variant component);
 		Ref<GFQuerylikeBuilder> without(Variant component);
+		Ref<GFQuerylikeBuilder> up(Variant component);
+		Ref<GFQuerylikeBuilder> descend(Variant component);
+		Ref<GFQuerylikeBuilder> cascade(Variant component);
 
 		// **************************************
 		// *** Unexposed ***
@@ -79,6 +83,7 @@ namespace godot {
 	public:
 		TypedArray<GFComponent> comp_ref_per_term {TypedArray<GFComponent>()};
 		TypedArray<GFComponent> comp_ref_args {TypedArray<GFComponent>()};
+		PackedInt32Array comp_ref_term_ids {PackedInt32Array()};
 
 		QueryIterationContext(
 			Ref<GFQuerylikeBuilder> query_b,

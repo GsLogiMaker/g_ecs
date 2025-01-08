@@ -34,6 +34,9 @@ Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
+	if (world == nullptr) {
+		world = GFWorld::singleton();
+	}
 	return from_id(world->coerce_id(entity), world);
 }
 Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
@@ -141,6 +144,62 @@ Ref<GFEntity> GFEntity::add_tag(Variant tag) {
 	ecs_add_id(w->raw(), get_id(), tag_id);
 
 	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::emit(
+	Variant target_entity,
+	Array components,
+	Array event_members
+) {
+	ecs_entity_t componet_id = 0;
+	const EcsComponent* comp_data = nullptr;
+	ecs_type_t type = {0};
+	int8_t* event_data = nullptr;
+
+	// Setup type
+	ecs_type_t* type_ptr = &type;
+	if (components.size() == 0) {
+		type_ptr = nullptr;
+	} else {
+		comp_data = ecs_get(
+			get_world()->raw(),
+			get_id(),
+			EcsComponent
+		);
+		componet_id = get_world()->coerce_id(components[0]);
+		type.array = &componet_id;
+		type.count = 1;
+	}
+
+	// Setup parameter
+	if (comp_data != nullptr) {
+		event_data = new int8_t[comp_data->size];
+		GFComponent::build_data_from_members(
+			event_members,
+			event_data,
+			get_id(),
+			get_world()
+		);
+	}
+
+	// Emit
+	ecs_event_desc_t desc = {
+		.event = get_id(),
+		.ids = type_ptr,
+		.entity = get_world()->coerce_id(target_entity),
+		.param = static_cast<void*>(event_data)
+	};
+	ecs_emit(
+		get_world()->raw(),
+		&desc
+	);
+
+	// Cleanup
+	if (event_data != nullptr) {
+		delete [] event_data;
+	}
+
+	return this;
 }
 
 Ref<GFComponent> GFEntity::get_component(Variant component) {
@@ -302,20 +361,8 @@ bool GFEntity::is_alive() {
 	if (!UtilityFunctions::is_instance_id_valid(world_instance_id)) {
 		return false;
 	}
-	if (is_pair()) {
-		if (!ecs_is_alive(get_world()->raw(), ECS_PAIR_FIRST(get_id()))) {
-			return false;
-		}
-		if (!ecs_is_alive(get_world()->raw(), ECS_PAIR_SECOND(get_id()))) {
-			return false;
-		}
-	} else {
-		if (!ecs_is_alive(get_world()->raw(), get_id())) {
-			return false;
-		}
-	}
 
-	return true;
+	return get_world()->is_id_alive(get_id());
 }
 bool GFEntity::is_pair() {
 	return ecs_id_is_pair(get_id());
@@ -376,9 +423,9 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
 }
 
 String GFEntity::to_string() {
-	return String("[#")
-		+ String::num_int64(get_id())
-		+ "]";
+	return get_name()
+		+ "#"
+		+ String::num_int64(get_id());
 }
 
 // ----------------------------------------------
@@ -425,6 +472,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
 	godot::ClassDB::bind_method(D_METHOD("get_pair", "first", "second"), &GFEntity::get_pair);
 
+	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);

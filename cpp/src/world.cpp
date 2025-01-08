@@ -626,10 +626,6 @@ Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
 	return ett;
 }
 
-bool is_valid_data(char c) {
-	return (c <= '9' && c >= '0') || c == ',';
-}
-
 ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
 	ett->call_user_register();
@@ -1045,6 +1041,22 @@ void GFWorld::init_gd_type_ptr(
 	case(Variant::Type::PACKED_VECTOR4_ARRAY): new(ptr) PackedVector4Array(); break;
 	case(Variant::Type::VARIANT_MAX): throw "VARIANT_MAX can't be initialized";
 	}
+}
+
+bool GFWorld::is_id_alive(ecs_entity_t id) {
+	if (ECS_IS_PAIR(id)) {
+		if (!ecs_is_alive(raw(), ECS_PAIR_FIRST(id))) {
+			return false;
+		}
+		if (!ecs_is_alive(raw(), ECS_PAIR_SECOND(id))) {
+			return false;
+		}
+	} else {
+		if (!ecs_is_alive(raw(), id)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 ecs_world_t * GFWorld::raw() {

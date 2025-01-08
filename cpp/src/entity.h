@@ -56,6 +56,8 @@ namespace godot {
 
 		Ref<GFEntity> add_tag(Variant);
 
+		Ref<GFEntity> emit(Variant, Array, Array);
+
 		Ref<GFComponent> get_component(Variant);
 		Ref<GFComponent> get_pair(Variant, Variant);
 
