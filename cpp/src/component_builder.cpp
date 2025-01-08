@@ -1,6 +1,7 @@
 
 
 #include "component_builder.h"
+#include "entity_builder.h"
 #include "world.h"
 #include "utils.h"
 #include "entity.h"
@@ -51,28 +52,13 @@ int GFComponentBuilder::get_member_count() {
 	return member_names.size();
 }
 
-GFWorld* GFComponentBuilder::get_world() {
-	return world;
-}
 
 bool GFComponentBuilder::is_built() {
-	return built;
-}
-
-Ref<GFComponentBuilder> GFComponentBuilder::set_entity(Variant entity) {
-	component_desc.entity = get_world()->coerce_id(entity);
-	return Ref(this);
-}
-
-Ref<GFComponentBuilder> GFComponentBuilder::set_name(
-	String name_
-) {
-	name = name_;
-	return Ref(this);
+	return built_count != 0;
 }
 
 Ref<GFEntity> GFComponentBuilder::build() {
-	if (built) {
+	if (is_built()) {
 		ERR(nullptr,
 			"Failed to build component \"" + name + "\".\n",
 			"	Component is already built."
@@ -84,7 +70,8 @@ Ref<GFEntity> GFComponentBuilder::build() {
 			"	No members were defined. Specify at least one member."
 		);
 	}
-	built = true;
+
+	Ref<GFEntity> entity = GFEntityBuilder::build();
 
 	// Set names to temporary pointers
 	CharString name_utf8 = name.utf8();
@@ -98,18 +85,12 @@ Ref<GFEntity> GFComponentBuilder::build() {
 	ecs_world_t* raw = world->raw();
 
 	// Create component entity
-	ecs_entity_t component_id = 0;
-	if (component_desc.entity != 0) {
-		component_id = component_desc.entity;
-	} else {
-		component_id = ecs_new(raw);
-	}
-	component_desc.entity = component_id;
-	struct_desc.entity = component_id;
+	component_desc.entity = entity->get_id();
+	struct_desc.entity = entity->get_id();
 
 	ecs_struct_init(raw, &struct_desc);
 
-	assert(ecs_has_id(raw, component_id, ecs_id(Component)));
+	assert(ecs_has_id(raw, entity->get_id(), ecs_id(Component)));
 
 	ecs_type_hooks_t hooks = {
 		.ctor = GFComponentBuilder::ctor,
@@ -121,15 +102,9 @@ Ref<GFEntity> GFComponentBuilder::build() {
 			HooksBindingContext* ctx = static_cast<HooksBindingContext*>(ptr);
 			delete ctx;
 		}
-	}; ecs_set_hooks_id(raw, component_id, &hooks);
+	}; ecs_set_hooks_id(raw, entity->get_id(), &hooks);
 
-	ecs_add_path(raw, component_id, 0, component_desc.type.name);
-
-	return memnew(GFEntity(component_id, world));
-}
-
-void GFComponentBuilder::set_world(GFWorld* world_) {
-	world = world_;
+	return entity;
 }
 
 // **********************************************
@@ -138,10 +113,9 @@ void GFComponentBuilder::set_world(GFWorld* world_) {
 
 void GFComponentBuilder::_bind_methods() {
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFComponentBuilder::new_in_world);
-	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);
-	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFComponentBuilder::is_built);
-	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFComponentBuilder::set_name);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFComponentBuilder::build);
+	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);
+	godot::ClassDB::bind_method(D_METHOD("get_member_count"), &GFComponentBuilder::get_member_count);
 }
 
 // **********************************************
