@@ -83,6 +83,26 @@ func test_entity_created_in_singleton():
 	e.delete()
 	e2.delete()
 
+func test_builder():
+	var e:= GFEntityBuilder.new_in_world(world) \
+		.set_name("Built") \
+		.add_entity(Foo) \
+		.add_pair(Foo, Stringy) \
+		.build()
+	
+	assert_eq(e.get_name(), "Built", "Expected entity to be named 'Built'")
+	
+	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
+		.with(Foo) \
+		.with(world.pair(Foo, Stringy)) \
+		.build()
+	
+	var i:= 0
+	for _x in query.iterate():
+		i += 1
+	
+	assert_eq(i, 1, "Expected query to find the built entity")
+
 #endregion
 
 #region Classes
