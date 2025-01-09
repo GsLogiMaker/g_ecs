@@ -43,6 +43,12 @@ Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 
+Ref<GFEntity> GFEntity::add_child(Variant entity) {
+	ecs_entity_t id = get_world()->coerce_id(entity);
+	get_world()->id_set_parent(id, get_id());
+	return this;
+}
+
 Ref<GFEntity> GFEntity::add_component(
 	const Variant** args, GDExtensionInt arg_count, GDExtensionCallError &error
 ) {
@@ -468,6 +474,7 @@ void GFEntity::_bind_methods() {
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_pair"), &GFEntity::set_pair, mi);
 	}
 
+	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"), &GFEntity::add_child);
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &GFEntity::add_tag);
 	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
 	godot::ClassDB::bind_method(D_METHOD("get_pair", "first", "second"), &GFEntity::get_pair);
