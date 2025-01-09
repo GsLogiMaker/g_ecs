@@ -44,6 +44,7 @@ namespace godot {
 
 		Variant getm(String);
 		void setm(String, Variant);
+		void setm_no_notify(String, Variant);
 
 		Ref<GFEntity> get_source_entity();
 		ecs_entity_t get_source_id();
