@@ -256,10 +256,13 @@ Ref<GFEntity> GFEntity::set_componentv(
 	Array members
 ) {
 	ecs_entity_t c_id = get_world()->coerce_id(component);
-	set_component_no_notifyv(c_id, members);
-	ecs_modified_id(get_world()->raw(), get_id(), c_id);
+	Ref<GFEntity> result = set_component_no_notifyv(c_id, members);
+	if (result != nullptr) {
+		ecs_modified_id(get_world()->raw(), get_id(), c_id);
+		return nullptr;
+	}
 
-	return Ref(this);
+	return result;
 }
 
 Ref<GFEntity> GFEntity::set_component_no_notify(
@@ -304,7 +307,7 @@ Ref<GFEntity> GFEntity::set_component_no_notifyv(
 				&& !ecs_has_id(w->raw(), second_id, ecs_id(EcsComponent))
 			) {
 				// ID is not a component, error
-				ERR(Ref(this),
+				ERR(nullptr,
 					"Failed to set data in pair\n",
 					"Neither ID ", first_id,
 					" nor ", second_id, "are components"
@@ -313,7 +316,7 @@ Ref<GFEntity> GFEntity::set_component_no_notifyv(
 
 		} else if (!ecs_has_id(w->raw(), c_id, ecs_id(EcsComponent))) {
 			// Error, passed variant is not a real component
-			ERR(Ref(this),
+			ERR(nullptr,
 				"Failed to add component to entity\n",
 				"ID coerced from ", component, " is not a component"
 			);
