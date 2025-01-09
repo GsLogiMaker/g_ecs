@@ -14,6 +14,7 @@ static func update_body_transform(
 	pos_c:GFPosition2D,
 	rot_c:GFRotation2D,
 	scl_c:GFScale2D,
+	_shapes=null,
 ) -> void:
 	var pos:= pos_c.get_vec() if pos_c else Vector2.ZERO
 	var rot:= rot_c.get_angle() if rot_c else 0.0
@@ -47,8 +48,7 @@ func _register(w: GFWorld) -> void:
 				)
 			GFCanvasItem.get_main_canvas()
 			static_body._set_rid(rid)
-			static_body.get_source_entity() \
-				.add_component(GFCollisionShapes)
+			static_body.get_source_entity().add(GFCollisionShapes)
 			)
 
 
@@ -59,8 +59,8 @@ func _register(w: GFWorld) -> void:
 		.for_each(func(static_body:GFCollisionObject2D):
 			PhysicsServer2D.free_rid(static_body.get_rid())
 			)
-	
-	
+
+
 	# On set rigid body
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnAdd") \
@@ -72,8 +72,8 @@ func _register(w: GFWorld) -> void:
 				PhysicsServer2D.BODY_MODE_RIGID,
 				)
 			)
-	
-	
+
+
 	# On set static body
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnAdd") \
@@ -85,8 +85,8 @@ func _register(w: GFWorld) -> void:
 				PhysicsServer2D.BODY_MODE_STATIC,
 				)
 			)
-	
-	
+
+
 	# On update transform in collision shape when added
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnAdd") \
@@ -94,9 +94,10 @@ func _register(w: GFWorld) -> void:
 		.maybe_with(GFPosition2D) \
 		.maybe_with(GFRotation2D) \
 		.maybe_with(GFScale2D) \
+		.with(GFCollisionShapes).access_filter() \
 		.for_each(update_body_transform)
-		
-	
+
+
 	# On update transform in collision shape when set
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnSet") \
@@ -104,6 +105,7 @@ func _register(w: GFWorld) -> void:
 		.maybe_with(GFPosition2D).access_in() \
 		.maybe_with(GFRotation2D).access_in() \
 		.maybe_with(GFScale2D).access_in() \
+		.with(GFCollisionShapes).access_filter() \
 		.for_each(update_body_transform)
 	#endregion
 
@@ -129,8 +131,8 @@ func _register(w: GFWorld) -> void:
 				shape.get_rid(),
 				)
 			)
-	
-	
+
+
 	# Set rectangle shape size
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnSet") \
@@ -141,8 +143,8 @@ func _register(w: GFWorld) -> void:
 				shape.get_size(),
 				)
 			)
-	
-	
+
+
 	# On set transform in shape
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnSet") \
@@ -170,8 +172,8 @@ func _register(w: GFWorld) -> void:
 				Transform2D(rot, scl, 0.0, pos),
 				)
 			)
-	
-	
+
+
 	# Remove rectangle shape from collision object
 	GFObserverBuilder.new_in_world(w) \
 		.set_events("/root/flecs/core/OnRemove") \
@@ -199,12 +201,6 @@ static func rigid_body_sync(
 	gf_rotation_2d:int,
 ) -> void:
 	if gf_position_2d != 0:
-		entity.set_component(
-			gf_position_2d,
-			state.transform.origin,
-		)
+		entity.set(gf_position_2d, state.transform.origin)
 	if gf_rotation_2d != 0:
-		entity.set_component(
-			gf_rotation_2d,
-			state.transform.get_rotation(),
-		)
+		entity.set(gf_rotation_2d, state.transform.get_rotation())
