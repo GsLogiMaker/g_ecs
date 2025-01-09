@@ -255,6 +255,39 @@ Ref<GFEntity> GFEntity::set_componentv(
 	Variant component,
 	Array members
 ) {
+	ecs_entity_t c_id = get_world()->coerce_id(component);
+	set_component_no_notifyv(c_id, members);
+	ecs_modified_id(get_world()->raw(), get_id(), c_id);
+
+	return Ref(this);
+}
+
+Ref<GFEntity> GFEntity::set_component_no_notify(
+	const Variant** args, GDExtensionInt arg_count, GDExtensionCallError &error
+) {
+	if (arg_count < 1) {
+		// Too few arguments, return with error.
+		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
+		error.argument = arg_count;
+		error.expected = 1;
+		return this;
+	}
+
+	// Parse arguments
+	Array members = Array();
+	members.resize(arg_count);
+	for (int i=0; i != arg_count; i++) {
+		members[i] = *args[i];
+	}
+	Variant comopnent = members.pop_front();
+
+	return set_component_no_notifyv(comopnent, members);
+}
+
+Ref<GFEntity> GFEntity::set_component_no_notifyv(
+	Variant component,
+	Array members
+) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t c_id = w->coerce_id(component);
@@ -296,7 +329,7 @@ Ref<GFEntity> GFEntity::set_componentv(
 		c_id,
 		get_world()
 	);
-	ecs_modified_id(w->raw(), get_id(), c_id);
+
 
 	return Ref(this);
 }
@@ -451,6 +484,12 @@ void GFEntity::_bind_methods() {
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
 		mi.name = "set";
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set"), &GFEntity::set_component, mi);
+	}
+	{
+		MethodInfo mi;
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
+		mi.name = "set_no_notify";
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_no_notify"), &GFEntity::set_component_no_notify, mi);
 	}
 
 	{
