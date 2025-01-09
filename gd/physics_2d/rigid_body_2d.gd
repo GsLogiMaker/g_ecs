@@ -1,8 +1,6 @@
 
-class_name GFRigidBody2D extends GFComponent
+class_name GFRigidBody extends GFRegisterableEntity
 
-func get_rid() -> RID: return getm("rid")
-func set_rid(rid:RID) -> void: setm("rid", rid)
-
-func _build(b:GFComponentBuilder) -> void: b \
-	.add_member("rid", TYPE_RID)
+func _register(world: GFWorld) -> void:
+	add_tag("/root/flecs/core/Target")
+	add_tag("/root/flecs/core/Exclusive")
