@@ -18,7 +18,7 @@ func after_all():
 
 func test_auto_register_script():
 	GFEntity.new_in_world(world) \
-		.add_component(AComponent)
+		.add(AComponent)
 
 	assert_ne(
 		world.lookup(
