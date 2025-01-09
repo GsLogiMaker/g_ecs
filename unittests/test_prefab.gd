@@ -32,8 +32,8 @@ func test_prefab():
 	entity.add_tag(pair)
 
 	# Test inhereted components exist entity
-	var foo:Foo = entity.get_component(Foo)
-	var bar:Bar = entity.get_component(Bar)
+	var foo:Foo = entity.get(Foo)
+	var bar:Bar = entity.get(Bar)
 	assert_ne(foo, null)
 	assert_ne(bar, null)
 
@@ -84,7 +84,7 @@ class Bar extends GFComponent:
 class MyPrefab extends GFRegisterableEntity:
 	func _register(_world:GFWorld) -> void:
 		add_tag("flecs/core/Prefab")
-		add_component(Foo, true, 23, 2.33)
-		add_component(Bar, Vector2(2, 1.1), 5.6)
+		add(Foo, true, 23, 2.33)
+		add(Bar, Vector2(2, 1.1), 5.6)
 
 #endregion

@@ -66,6 +66,12 @@ void GFComponent::_register_internal() {
 }
 
 void GFComponent::setm(String member, Variant value) {
+	setm_no_notify(member, value);
+
+	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
+}
+
+void GFComponent::setm_no_notify(String member, Variant value) {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -83,9 +89,7 @@ void GFComponent::setm(String member, Variant value) {
 		);
 	}
 
-	// Return member
 	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
-	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
 }
 
 Variant GFComponent::getm(String member) {
@@ -375,6 +379,7 @@ void GFComponent::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
+	godot::ClassDB::bind_method(D_METHOD("setm_no_notify", "member", "value"), &GFComponent::setm_no_notify);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);

@@ -33,14 +33,14 @@ func test_world_deletion():
 	var w:= GFWorld.new()
 
 	var e:= GFEntity.new_in_world(w) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
-	var foo:Foo = e.get_component(Foo)
+	var foo:Foo = e.get(Foo)
 
 	var e2:= GFEntity.new_in_world(w) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
-	var foo2:Foo = e2.get_component(Foo)
+	var foo2:Foo = e2.get(Foo)
 
 	foo.setm(&"vec", 24.3)
 	foo2.setm(&"vec", 125.1)
@@ -75,12 +75,12 @@ func test_simple_system():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
 
 	world.progress(0.0)
 
-	assert_almost_eq(entity.get_component(Foo).getm(&"vec"), 2.67, 0.01)
+	assert_almost_eq(entity.get(Foo).getm(&"vec"), 2.67, 0.01)
 
 class Foo extends GFComponent:
 	func _build(b: GFComponentBuilder) -> void:

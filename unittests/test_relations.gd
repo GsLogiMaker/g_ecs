@@ -14,19 +14,19 @@ func after_each():
 func test_add_and_set_pairs() -> void:
 	var eats:= GFEntity.new_in_world(world).set_name("Eats")
 	var grass:= GFEntity.new_in_world(world).set_name("Grass")
-	
+
 	var e:= GFEntity.new_in_world(world)
-	
+
 	e.add_pair("Eats", GFRotation2D, 3.0)
 	assert_almost_eq(
-		e.get_component(eats.pair(GFRotation2D)).get_angle(),
+		e.get(eats.pair(GFRotation2D)).get_angle(),
 		3.0,
 		0.01,
 	)
-	
+
 	e.set_pair(eats, GFRotation2D, 1.5)
 	e.add_pair(GFRotation2D, eats, 1.1)
-	
+
 	assert_almost_eq(
 		e.get_pair(eats, GFRotation2D).get_angle(),
 		1.5,
@@ -60,7 +60,7 @@ func test_basic_query():
 	for _x in grass_eater_iter.iterate():
 		grass_eater_count += 1
 	assert_eq(grass_eater_count, 1)
-	
+
 	var eater_iter:= GFQueryBuilder \
 		.new_in_world(world) \
 		.with(eats.pair("flecs/core/*")) \
@@ -74,7 +74,7 @@ func test_is_pair():
 	var likes = GFEntity.new_in_world(world).set_name("Likes")
 	var jill = GFEntity.new_in_world(world).set_name("Jill")
 	var likes_jill = likes.pair(jill)
-	
+
 	assert_true(likes_jill.is_pair())
 
 #endregion

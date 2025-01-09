@@ -45,36 +45,32 @@ namespace godot {
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _add_component(Variant, Array);
-		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _set_component(Variant, Array);
-
+		Ref<GFEntity> add_componentv(Variant, Array);
 		Ref<GFEntity> add_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _add_pair(Variant, Variant, Array);
-		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _set_pair(Variant, Variant, Array);
-
+		Ref<GFEntity> add_pairv(Variant, Variant, Array);
 		Ref<GFEntity> add_tag(Variant);
 
+		void delete_();
 		Ref<GFEntity> emit(Variant, Array, Array);
 
 		Ref<GFComponent> get_component(Variant);
-		Ref<GFComponent> get_pair(Variant, Variant);
-
-		void delete_();
-
 		ecs_entity_t get_id();
+		String get_name();
+		Ref<GFComponent> get_pair(Variant, Variant);
 		String get_path();
 		GFWorld* get_world();
 
 		bool is_alive();
 		bool is_pair();
 
-		Ref<GFEntity> set_name(String);
-		String get_name();
-
 		Ref<GFPair> pair(Variant second);
 		ecs_entity_t pair_id(ecs_entity_t second_id);
+
+		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
+		Ref<GFEntity> set_componentv(Variant, Array);
+		Ref<GFEntity> set_name(String);
+		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
+		Ref<GFEntity> set_pairv(Variant, Variant, Array);
 
 		String to_string();
 
