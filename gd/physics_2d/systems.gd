@@ -71,27 +71,27 @@ func _register(w: GFWorld) -> void:
 	
 	
 	# On set transform in collision shape
-	#GFObserverBuilder.new_in_world(w) \
-		#.set_events("/root/flecs/core/OnSet") \
-		#.with(w.pair(GFCollisionObject2D, "/root/flecs/core/*")).access_filter() \
-		#.maybe_with(GFPosition2D).access_in() \
-		#.maybe_with(GFRotation2D).access_in() \
-		#.maybe_with(GFScale2D).access_in() \
-		#.for_each(func(
-			#body:GFCollisionObject2D,
-			#pos_c:GFPosition2D,
-			#rot_c:GFRotation2D,
-			#scl_c:GFScale2D,
-			#):
-			#var pos:= pos_c.get_vec() if pos_c else Vector2.ZERO
-			#var rot:= rot_c.get_angle() if rot_c else 0.0
-			#var scl:= scl_c.get_scale() if false else Vector2.ONE
-			#PhysicsServer2D.body_set_state(
-				#body.get_rid(),
-				#PhysicsServer2D.BODY_STATE_TRANSFORM,
-				#Transform2D(rot, scl, 0.0, pos),
-				#)
-			#)
+	GFObserverBuilder.new_in_world(w) \
+		.set_events("/root/flecs/core/OnSet") \
+		.with(w.pair(GFCollisionObject2D, "/root/flecs/core/*")).access_filter() \
+		.maybe_with(GFPosition2D).access_in() \
+		.maybe_with(GFRotation2D).access_in() \
+		.maybe_with(GFScale2D).access_in() \
+		.for_each(func(
+			body:GFCollisionObject2D,
+			pos_c:GFPosition2D,
+			rot_c:GFRotation2D,
+			scl_c:GFScale2D,
+			):
+			var pos:= pos_c.get_vec() if pos_c else Vector2.ZERO
+			var rot:= rot_c.get_angle() if rot_c else 0.0
+			var scl:= scl_c.get_scale() if false else Vector2.ONE
+			PhysicsServer2D.body_set_state(
+				body.get_rid(),
+				PhysicsServer2D.BODY_STATE_TRANSFORM,
+				Transform2D(rot, scl, 0.0, pos),
+				)
+			)
 	#endregion
 
 
