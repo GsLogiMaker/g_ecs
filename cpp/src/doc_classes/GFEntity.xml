@@ -260,6 +260,27 @@
 				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
+		<method name="set_no_notify" qualifiers="const vararg">
+			<return type="GFEntity" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Sets component data of type [param component] in this entity without notifying [code]OnSet[/code] observers. Generally, [method set] should be preferred.
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				[codeblock]
+				var entity:= GFEntity.new()
+				entity.add(GFPosition2D)
+				entity.set(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				[/codeblock]
+				If the component is not added yet, then this method will add it automaticly. Note that [code]OnAdd[/code] observers will still by notified in this scenario.
+				[codeblock]
+				var entity:= GFEntity.new()
+				entity.set(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				[/codeblock]
+				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
 		<method name="set_pair" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="first" type="Variant" />

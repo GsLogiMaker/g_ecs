@@ -68,6 +68,8 @@ namespace godot {
 
 		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> set_componentv(Variant, Array);
+		Ref<GFEntity> set_component_no_notify(const Variant**, GDExtensionInt, GDExtensionCallError&);
+		Ref<GFEntity> set_component_no_notifyv(Variant, Array);
 		Ref<GFEntity> set_name(String);
 		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> set_pairv(Variant, Variant, Array);
