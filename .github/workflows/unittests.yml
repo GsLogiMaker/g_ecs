@@ -16,16 +16,6 @@ concurrency:
 
 jobs:
 
-  reproduce-error:
-    runs-on: windows-latest
-    steps:
-        - name: 🤖 Setup Godot binary
-          uses: lihop/setup-godot@v2
-          with:
-            version: 4.3-stable
-            bits: 64
-            mono: false
-
   data:
     runs-on: ubuntu-latest
     outputs:
@@ -237,7 +227,7 @@ jobs:
             cp -R ../addons/glecs addons/glecs
 
         - name: 🤖 Setup Godot binary
-          uses: lihop/setup-godot@v2.1.2
+          uses: lihop/setup-godot@v2
           with:
             version: 4.3-stable
             bits: 64
