@@ -71,6 +71,8 @@ namespace godot {
 		GFWorld* get_world() const;
 
 		bool has_entity(Variant) const;
+		bool has_pair(Variant, Variant) const;
+		bool has_child(String) const;
 
 		bool is_alive() const;
 		bool is_pair() const;

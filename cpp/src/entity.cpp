@@ -237,6 +237,17 @@ Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) const {
 	return get_component(ecs_pair(first_id, second_id));
 }
 
+bool GFEntity::has_entity(Variant entity) const {
+	return ecs_has_id(get_world()->raw(), get_id(), get_world()->coerce_id(entity));
+}
+
+bool GFEntity::has_pair(Variant first, Variant second) const {
+	return ecs_has_id(get_world()->raw(), get_id(), get_world()->pair_ids(
+		get_world()->coerce_id(first),
+		get_world()->coerce_id(second)
+	));
+}
+
 bool GFEntity::has_child(String path) const {
 	return ecs_lookup_path_w_sep(
 		get_world()->raw(),
@@ -540,6 +551,8 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
 
 	godot::ClassDB::bind_method(D_METHOD("has_child", "path"), &GFEntity::has_child);
+	godot::ClassDB::bind_method(D_METHOD("has_entity", "entity"), &GFEntity::has_entity);
+	godot::ClassDB::bind_method(D_METHOD("has_pair", "first", "second"), &GFEntity::has_pair);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);

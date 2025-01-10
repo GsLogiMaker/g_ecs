@@ -120,7 +120,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_child">
+		<method name="get_child" qualifiers="const">
 			<return type="GFEntity" />
 			<param index="0" name="path" type="String" />
 			<description>
@@ -135,7 +135,7 @@
 				[/codeblock&gt;
 			</description>
 		</method>
-		<method name="get_component">
+		<method name="get_component" qualifiers="const">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
 			<description>
@@ -148,7 +148,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_id">
+		<method name="get_id" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the ID of this entity.
@@ -158,7 +158,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_name">
+		<method name="get_name" qualifiers="const">
 			<return type="String" />
 			<description>
 				Returns the name of this entity.
@@ -169,7 +169,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_pair">
+		<method name="get_pair" qualifiers="const">
 			<return type="GFComponent" />
 			<param index="0" name="first" type="Variant" />
 			<param index="1" name="second" type="Variant" />
@@ -184,7 +184,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_parent">
+		<method name="get_parent" qualifiers="const">
 			<return type="GFEntity" />
 			<description>
 				Returns this enitty's parent entity, or [code]null[/code] if the entity doesn't have a parent.
@@ -199,7 +199,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_path">
+		<method name="get_path" qualifiers="const">
 			<return type="String" />
 			<description>
 				Returns this entity's path in the tree.
@@ -209,7 +209,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_world">
+		<method name="get_world" qualifiers="const">
 			<return type="GFWorld" />
 			<description>
 				Returns the world this entity is from.
@@ -220,7 +220,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="has_child">
+		<method name="has_child" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="path" type="String" />
 			<description>
@@ -235,7 +235,35 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="is_alive">
+		<method name="has_entity" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Returns [code]true[/code] if [param entity] wass added to this entity.
+				[codeblock]
+				var enemy = GFEntity.new()
+				var robot:= GFEntity.new() \
+				    .add_tag(enemy)
+				robot.has_entity(enemy) # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="has_pair" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the pair of [param first] and [param second] was added to this entity.
+				[codeblock]
+				var eats:= GFEntity.new()
+				var grass:= GFEntity.new()
+				var cow:= GFEntity.new() \
+				    .add_pair(eats, grass)
+				entity.has_pair(eats, grass) # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="is_alive" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if this entity is still alive.
@@ -247,7 +275,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="is_pair">
+		<method name="is_pair" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the ID of this entity is a pair.
@@ -269,7 +297,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="pair">
+		<method name="pair" qualifiers="const">
 			<return type="GFPair" />
 			<param index="0" name="second" type="Variant" />
 			<description>
@@ -281,7 +309,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="pair_id">
+		<method name="pair_id" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="second_id" type="int" />
 			<description>
