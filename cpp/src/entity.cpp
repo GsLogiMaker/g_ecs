@@ -45,7 +45,9 @@ Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 
 Ref<GFEntity> GFEntity::add_child(Variant entity) {
 	ecs_entity_t id = get_world()->coerce_id(entity);
-	get_world()->id_set_parent(id, get_id());
+	if (!get_world()->id_set_parent(id, get_id())) {
+		return nullptr;
+	}
 	return this;
 }
 
@@ -68,12 +70,12 @@ Ref<GFEntity> GFEntity::add_component(
 	}
 	Variant comopnent = members.pop_front();
 
-	add_componentv(comopnent, members);
+	_add_component(comopnent, members);
 
 	return this;
 }
 
-Ref<GFEntity> GFEntity::add_componentv(Variant component, Array members) {
+Ref<GFEntity> GFEntity::_add_component(Variant component, Array members) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t c_id = w->coerce_id(component);
@@ -85,7 +87,7 @@ Ref<GFEntity> GFEntity::add_componentv(Variant component, Array members) {
 		)
 	}
 
-	set_componentv(c_id, members);
+	_set_component(c_id, members);
 
 	return this;
 }
@@ -110,11 +112,11 @@ Ref<GFEntity> GFEntity::add_pair(
 	Variant first = members.pop_front();
 	Variant sec = members.pop_front();
 
-	add_pairv(first, sec, members);
+	_add_pair(first, sec, members);
 
 	return this;
 }
-Ref<GFEntity> GFEntity::add_pairv(Variant first, Variant second, Array members) {
+Ref<GFEntity> GFEntity::_add_pair(Variant first, Variant second, Array members) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t first_id = w->coerce_id(first);
@@ -125,7 +127,7 @@ Ref<GFEntity> GFEntity::add_pairv(Variant first, Variant second, Array members) 
 		|| ecs_has_id(w->raw(), pair_id, FLECS_IDEcsComponentID_)
 	) {
 		// Add pair as a component
-		add_componentv(pair_id, members);
+		_add_component(pair_id, members);
 	} else {
 		// Add pair as a dataless tag
 		add_tag(pair_id);
@@ -208,7 +210,7 @@ Ref<GFEntity> GFEntity::emit(
 	return this;
 }
 
-Ref<GFComponent> GFEntity::get_component(Variant component) {
+Ref<GFComponent> GFEntity::get_component(Variant component) const {
 	Ref<GFComponent> c = GFComponent::from_id(
 		get_world()->coerce_id(component),
 		get_id(),
@@ -229,10 +231,32 @@ Ref<GFComponent> GFEntity::get_component(Variant component) {
 	return c;
 }
 
-Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) {
+Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) const {
 	ecs_entity_t first_id = get_world()->coerce_id(first);
 	ecs_entity_t second_id = get_world()->coerce_id(second);
 	return get_component(ecs_pair(first_id, second_id));
+}
+
+bool GFEntity::has_entity(Variant entity) const {
+	return ecs_has_id(get_world()->raw(), get_id(), get_world()->coerce_id(entity));
+}
+
+bool GFEntity::has_pair(Variant first, Variant second) const {
+	return ecs_has_id(get_world()->raw(), get_id(), get_world()->pair_ids(
+		get_world()->coerce_id(first),
+		get_world()->coerce_id(second)
+	));
+}
+
+bool GFEntity::has_child(String path) const {
+	return ecs_lookup_path_w_sep(
+		get_world()->raw(),
+		get_id(),
+		path.utf8(),
+		"/",
+		"/root/",
+		false
+	) != 0;
 }
 
 Ref<GFEntity> GFEntity::set_component(
@@ -254,46 +278,10 @@ Ref<GFEntity> GFEntity::set_component(
 	}
 	Variant comopnent = members.pop_front();
 
-	return set_componentv(comopnent, members);
+	return _set_component(comopnent, members);
 }
 
-Ref<GFEntity> GFEntity::set_componentv(
-	Variant component,
-	Array members
-) {
-	ecs_entity_t c_id = get_world()->coerce_id(component);
-	Ref<GFEntity> result = set_component_no_notifyv(c_id, members);
-	if (result != nullptr) {
-		ecs_modified_id(get_world()->raw(), get_id(), c_id);
-		return nullptr;
-	}
-
-	return result;
-}
-
-Ref<GFEntity> GFEntity::set_component_no_notify(
-	const Variant** args, GDExtensionInt arg_count, GDExtensionCallError &error
-) {
-	if (arg_count < 1) {
-		// Too few arguments, return with error.
-		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
-		error.argument = arg_count;
-		error.expected = 1;
-		return this;
-	}
-
-	// Parse arguments
-	Array members = Array();
-	members.resize(arg_count);
-	for (int i=0; i != arg_count; i++) {
-		members[i] = *args[i];
-	}
-	Variant comopnent = members.pop_front();
-
-	return set_component_no_notifyv(comopnent, members);
-}
-
-Ref<GFEntity> GFEntity::set_component_no_notifyv(
+Ref<GFEntity> GFEntity::_set_component(
 	Variant component,
 	Array members
 ) {
@@ -313,7 +301,7 @@ Ref<GFEntity> GFEntity::set_component_no_notifyv(
 				&& !ecs_has_id(w->raw(), second_id, ecs_id(EcsComponent))
 			) {
 				// ID is not a component, error
-				ERR(nullptr,
+				ERR(Ref(this),
 					"Failed to set data in pair\n",
 					"Neither ID ", first_id,
 					" nor ", second_id, "are components"
@@ -322,7 +310,7 @@ Ref<GFEntity> GFEntity::set_component_no_notifyv(
 
 		} else if (!ecs_has_id(w->raw(), c_id, ecs_id(EcsComponent))) {
 			// Error, passed variant is not a real component
-			ERR(nullptr,
+			ERR(Ref(this),
 				"Failed to add component to entity\n",
 				"ID coerced from ", component, " is not a component"
 			);
@@ -338,7 +326,7 @@ Ref<GFEntity> GFEntity::set_component_no_notifyv(
 		c_id,
 		get_world()
 	);
-
+	ecs_modified_id(w->raw(), get_id(), c_id);
 
 	return Ref(this);
 }
@@ -363,17 +351,17 @@ Ref<GFEntity> GFEntity::set_pair(
 	Variant first = members.pop_front();
 	Variant sec = members.pop_front();
 
-	return set_pairv(first, sec, members);
+	return _set_pair(first, sec, members);
 }
 
-Ref<GFEntity> GFEntity::set_pairv(
+Ref<GFEntity> GFEntity::_set_pair(
 	Variant first,
 	Variant second,
 	Array members
 ) {
 	ecs_entity_t first_id = get_world()->coerce_id(first);
 	ecs_entity_t second_id = get_world()->coerce_id(second);
-	set_componentv(ecs_pair(first_id, second_id), members);
+	_set_component(ecs_pair(first_id, second_id), members);
 
 	return Ref(this);
 }
@@ -382,8 +370,8 @@ void GFEntity::delete_() {
 	ecs_delete(get_world()->raw(), get_id());
 }
 
-ecs_entity_t GFEntity::get_id() { return id; }
-String GFEntity::get_path() {
+ecs_entity_t GFEntity::get_id() const { return id; }
+String GFEntity::get_path() const {
 	return String(ecs_get_path_w_sep(
 		get_world()->raw(),
 		0,
@@ -392,11 +380,11 @@ String GFEntity::get_path() {
 		"/root/"
 	));
 }
-GFWorld* GFEntity::get_world() { return Object::cast_to<GFWorld>(
+GFWorld* GFEntity::get_world() const { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
 
-bool GFEntity::is_alive() {
+bool GFEntity::is_alive() const {
 	if (get_world() == nullptr) {
 		return false;
 	}
@@ -406,13 +394,42 @@ bool GFEntity::is_alive() {
 
 	return get_world()->is_id_alive(get_id());
 }
-bool GFEntity::is_pair() {
+bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
 
-String GFEntity::get_name() {
+Ref<GFEntity> GFEntity::get_child(String name) const {
+	ecs_entity_t id = ecs_lookup_path_w_sep(
+		get_world()->raw(),
+		get_id(),
+		name.utf8(),
+		"/",
+		"/root/",
+		false
+	);
+	if (id == 0) {
+		return nullptr;
+	}
+	return GFEntity::from_id(id, get_world());
+}
+
+String GFEntity::get_name() const {
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
+
+Ref<GFEntity> GFEntity::get_parent() const {
+	ecs_entity_t parent = ecs_get_parent(
+		get_world()->raw(),
+		get_id()
+	);
+
+	if (parent == 0) {
+		return nullptr;
+	}
+
+	return GFEntity::from_id(parent, get_world());
+}
+
 Ref<GFEntity> GFEntity::set_name(String name_) {
 	ecs_entity_t parent = ecs_get_parent(
 		get_world()->raw(),
@@ -457,10 +474,18 @@ Ref<GFEntity> GFEntity::set_name(String name_) {
 	return Ref(this);
 }
 
-Ref<GFPair> GFEntity::pair(Variant second) {
+Ref<GFEntity> GFEntity::set_parent(Variant entity) {
+	ecs_entity_t id = get_world()->coerce_id(entity);
+	if (!get_world()->id_set_parent(get_id(), id)) {
+		return nullptr;
+	}
+	return this;
+}
+
+Ref<GFPair> GFEntity::pair(Variant second) const {
 	return GFPair::from_id(pair_id(get_world()->coerce_id(second)), get_world());
 }
-ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
+ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
@@ -486,19 +511,13 @@ void GFEntity::_bind_methods() {
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
 		mi.name = "add";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("add"), &GFEntity::add_component, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::add_component, mi);
 	}
 	{
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
 		mi.name = "set";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set"), &GFEntity::set_component, mi);
-	}
-	{
-		MethodInfo mi;
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
-		mi.name = "set_no_notify";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_no_notify"), &GFEntity::set_component_no_notify, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::set_component, mi);
 	}
 
 	{
@@ -506,34 +525,42 @@ void GFEntity::_bind_methods() {
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));
 		mi.name = "add_pair";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("add_pair"), &GFEntity::add_pair, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::add_pair, mi);
 	}
 	{
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));
 		mi.name = "set_pair";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_pair"), &GFEntity::set_pair, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::set_pair, mi);
 	}
 
 	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"), &GFEntity::add_child);
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &GFEntity::add_tag);
-	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
-	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());
-
 	godot::ClassDB::bind_method(D_METHOD("get", "component"), &GFEntity::get_component);
 	godot::ClassDB::bind_method(D_METHOD("get_pair", "first", "second"), &GFEntity::get_pair);
+
+	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());
+	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
+
+	godot::ClassDB::bind_method(D_METHOD("get_child", "path"), &GFEntity::get_child);
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
+	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
+	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);
 	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
-	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
+
+	godot::ClassDB::bind_method(D_METHOD("has_child", "path"), &GFEntity::has_child);
+	godot::ClassDB::bind_method(D_METHOD("has_entity", "entity"), &GFEntity::has_entity);
+	godot::ClassDB::bind_method(D_METHOD("has_pair", "first", "second"), &GFEntity::has_pair);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
-
 	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFEntity::to_string);
+
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
+	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &GFEntity::set_parent);
 }

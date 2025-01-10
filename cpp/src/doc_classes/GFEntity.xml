@@ -27,19 +27,21 @@
 			<return type="GFEntity" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
-				Adds an entity as a child of this entity.
+				Adds a child entity.
 				Equivalent to the following:
 				[codeblock]
 				entity.add_pair("flecs/core/ChildOf", self)
 				[/codeblock]
 				Example:
 				[codeblock]
-				GFEntity.new() \
-				    .set_name("parent") \
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
 				    .add_child(
-				        GFEntity.new().set_name("child")
+				        GFEntity.new().set_name("Child")
 				    )
+				par.has_child("Child") # true
 				[/codeblock]
+				[b]Note:[/b] If [param entity] already has a parent then it will be removed from the old parent and added to this entity.
 				This codeblock returns [code]self[/code] for chaining.
 			</description>
 		</method>
@@ -117,7 +119,22 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get">
+		<method name="get_child" qualifiers="const">
+			<return type="GFEntity" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Returns a reference to a child entity of this entity.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				par.get_child("Child") != null # true
+				[/codeblock&gt;
+			</description>
+		</method>
+		<method name="get" qualifiers="const">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
 			<description>
@@ -130,7 +147,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_id">
+		<method name="get_id" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the ID of this entity.
@@ -140,7 +157,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_name">
+		<method name="get_name" qualifiers="const">
 			<return type="String" />
 			<description>
 				Returns the name of this entity.
@@ -151,7 +168,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_pair">
+		<method name="get_pair" qualifiers="const">
 			<return type="GFComponent" />
 			<param index="0" name="first" type="Variant" />
 			<param index="1" name="second" type="Variant" />
@@ -166,7 +183,22 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_path">
+		<method name="get_parent" qualifiers="const">
+			<return type="GFEntity" />
+			<description>
+				Returns this enitty's parent entity, or [code]null[/code] if the entity doesn't have a parent.
+				Example:
+				[codeblock]
+				var child:= GFEntity.new() \
+				    .set_name("Child") \
+				    .set_parent(
+				        GFEntity.new().set_name("Parent")
+				    )
+				child.get_parent().get_name() == "Parent" # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="get_path" qualifiers="const">
 			<return type="String" />
 			<description>
 				Returns this entity's path in the tree.
@@ -176,7 +208,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_world">
+		<method name="get_world" qualifiers="const">
 			<return type="GFWorld" />
 			<description>
 				Returns the world this entity is from.
@@ -187,7 +219,50 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="is_alive">
+		<method name="has_child" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Returns [code]true[/code] [param path] points to a valid entity.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				par.has_child("Child") # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="has_entity" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Returns [code]true[/code] if [param entity] wass added to this entity.
+				[codeblock]
+				var enemy = GFEntity.new()
+				var robot:= GFEntity.new() \
+				    .add_tag(enemy)
+				robot.has_entity(enemy) # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="has_pair" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Returns [code]true[/code] if the pair of [param first] and [param second] was added to this entity.
+				[codeblock]
+				var eats:= GFEntity.new()
+				var grass:= GFEntity.new()
+				var cow:= GFEntity.new() \
+				    .add_pair(eats, grass)
+				entity.has_pair(eats, grass) # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="is_alive" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if this entity is still alive.
@@ -199,7 +274,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="is_pair">
+		<method name="is_pair" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the ID of this entity is a pair.
@@ -221,7 +296,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="pair">
+		<method name="pair" qualifiers="const">
 			<return type="GFPair" />
 			<param index="0" name="second" type="Variant" />
 			<description>
@@ -233,7 +308,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="pair_id">
+		<method name="pair_id" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="second_id" type="int" />
 			<description>
@@ -257,7 +332,8 @@
 				entity.set(GFPosition2D, Vector2(10, 10))
 				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
-				If the component is not added yet, then this method will add it automaticly.
+				If the component is not added yet, then this method will add
+				it automaticly.
 				[codeblock]
 				var entity:= GFEntity.new()
 				entity.set(GFPosition2D, Vector2(10, 10))
@@ -279,27 +355,6 @@
 				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
-		<method name="set_no_notify" qualifiers="const vararg">
-			<return type="GFEntity" />
-			<param index="0" name="component" type="Variant" />
-			<description>
-				Sets component data of type [param component] in this entity without notifying [code]OnSet[/code] observers. Generally, [method set] should be preferred.
-				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				[codeblock]
-				var entity:= GFEntity.new()
-				entity.add(GFPosition2D)
-				entity.set(GFPosition2D, Vector2(10, 10))
-				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
-				[/codeblock]
-				If the component is not added yet, then this method will add it automaticly. Note that [code]OnAdd[/code] observers will still by notified in this scenario.
-				[codeblock]
-				var entity:= GFEntity.new()
-				entity.set(GFPosition2D, Vector2(10, 10))
-				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
-				[/codeblock]
-				This method returns [code]self[/code] for chaining.
-			</description>
-		</method>
 		<method name="set_pair" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="first" type="Variant" />
@@ -316,6 +371,26 @@
 				entity.get_pair(start, GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Set this entity as a child of [param entity].
+				Equivalent to the following:
+				[codeblock]
+				self.add_pair("flecs/core/ChildOf", entity)
+				[/codeblock]
+				Example:
+				[codeblock]
+				var par = GFEntity.new().set_name("Parent")
+				GFEntity.new() \
+				    .set_name("Child") \
+				    .set_parent(par)
+				par.has_child("Child") # true
+				[/codeblock]
+				This codeblock returns [code]self[/code] for chaining.
 			</description>
 		</method>
 	</methods>
