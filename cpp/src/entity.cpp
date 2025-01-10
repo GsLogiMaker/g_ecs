@@ -237,6 +237,17 @@ Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) {
 	return get_component(ecs_pair(first_id, second_id));
 }
 
+bool GFEntity::has_child(String path) {
+	return ecs_lookup_path_w_sep(
+		get_world()->raw(),
+		get_id(),
+		path.utf8(),
+		"/",
+		"/root/",
+		false
+	) != 0;
+}
+
 Ref<GFEntity> GFEntity::set_component(
 	const Variant** args, GDExtensionInt arg_count, GDExtensionCallError &error
 ) {
@@ -530,6 +541,8 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);
 	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
+
+	godot::ClassDB::bind_method(D_METHOD("has_child", "path"), &GFEntity::has_child);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);

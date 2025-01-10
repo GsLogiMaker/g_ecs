@@ -70,6 +70,8 @@ namespace godot {
 		String get_path();
 		GFWorld* get_world();
 
+		bool has_child(String);
+
 		bool is_alive();
 		bool is_pair();
 

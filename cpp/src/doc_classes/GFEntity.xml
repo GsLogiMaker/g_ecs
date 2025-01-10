@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -13,7 +14,7 @@
 			<return type="GFEntity" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
-				Adds an entity as a child of this entity.
+				Adds a child entity.
 				Equivalent to the following:
 				[codeblock]
 				entity.add_pair("flecs/core/ChildOf", self)
@@ -27,6 +28,7 @@
 				    )
 				par.has_child("Child") # true
 				[/codeblock]
+				[b]Note:[/b] If [param entity] already has a parent then it will be removed from the old parent and added to this entity.
 				This codeblock returns [code]self[/code] for chaining.
 			</description>
 		</method>
@@ -185,16 +187,16 @@
 		<method name="get_parent">
 			<return type="GFEntity" />
 			<description>
-				Returns the parent entity of this entity.
+				Returns this enitty's parent entity, or [code]null[/code] if the entity doesn't have a parent.
 				Example:
 				[codeblock]
 				var child:= GFEntity.new() \
 				    .set_name("Child") \
-					.set_parent(
-						GFEntity.new().set_name("Parent")
-					)
+				    .set_parent(
+				        GFEntity.new().set_name("Parent")
+				    )
 				child.get_parent().get_name() == "Parent" # true
-				[/codeblock>
+				[/codeblock]
 			</description>
 		</method>
 		<method name="get_path">
@@ -215,6 +217,21 @@
 				var world:= GFWorld.new()
 				var entity:= GFEntity.new_in_world(world)
 				entity.get_world() == world # true
+				[/codeblock]
+			</description>
+		</method>
+		<method name="has_child">
+			<return type="bool" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Returns [code]true[/code] [param path] points to a valid entity.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				par.has_child("Child") # true
 				[/codeblock]
 			</description>
 		</method>
