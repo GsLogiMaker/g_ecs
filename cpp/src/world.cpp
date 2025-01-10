@@ -2,7 +2,6 @@
 #include "world.h"
 #include "entity.h"
 #include "component_builder.h"
-#include "godot_cpp/classes/resource.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
@@ -18,7 +17,6 @@
 #include <cassert>
 #include <cctype>
 #include <flecs.h>
-#include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include <godot_cpp/core/class_db.hpp>
@@ -73,6 +71,16 @@ ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector4_array = 0;
 
 GFWorld::GFWorld() {
+	setup_glecs();
+}
+
+GFWorld::GFWorld(void*) {}
+
+GFWorld::~GFWorld() {
+	ecs_fini(_raw);
+}
+
+void GFWorld::setup_glecs() {
 	_raw = ecs_init();
 	ECS_IMPORT(raw(), FlecsStats);
 
@@ -490,11 +498,9 @@ GFWorld::GFWorld() {
 	#undef DEFINE_GD_COMPONENT
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
 
-	_register_modules_from_scripts(0);
-}
 
-GFWorld::~GFWorld() {
-	ecs_fini(_raw);
+
+	_register_modules_from_scripts(0);
 }
 
 ecs_entity_t GFWorld::coerce_id(Variant value) {

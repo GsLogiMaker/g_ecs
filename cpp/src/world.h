@@ -24,7 +24,10 @@ namespace godot {
 
 	public:
 		GFWorld();
+		GFWorld(void*); // Construct without setup (Used when registering singleton)
 		~GFWorld();
+
+		void setup_glecs();
 
 		// **************************************
 		// *** Exposed ***
