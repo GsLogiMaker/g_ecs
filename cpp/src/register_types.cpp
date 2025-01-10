@@ -6,6 +6,7 @@
 #include "entity_builder.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
+#include "godot_cpp/core/memory.hpp"
 #include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
@@ -16,6 +17,7 @@
 #include "register_types.h"
 #include "registerable_entity.h"
 #include "system_builder.h"
+#include "tag.h"
 #include "world.h"
 
 using namespace godot;
@@ -34,6 +36,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			godot::ClassDB::register_class<GFRegisterableEntity>();
 			godot::ClassDB::register_class<GFComponent>();
 			godot::ClassDB::register_class<GFModule>();
+			godot::ClassDB::register_class<GFTag>();
 
 			godot::ClassDB::register_class<GFEntityBuilder>();
 			godot::ClassDB::register_class<GFComponentBuilder>();
@@ -44,6 +47,12 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			godot::ClassDB::register_class<GFObserverBuilder>();
 			godot::ClassDB::register_class<GFQueryBuilder>();
 			godot::ClassDB::register_class<GFSystemBuilder>();
+
+			if (Engine::get_singleton()->has_singleton(GFWorld::SINGLETON_NAME)) {
+				Object* world = Engine::get_singleton()->get_singleton(GFWorld::SINGLETON_NAME);
+				Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
+				memdelete(world);
+			}
      	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));
 			break;
         case MODULE_INITIALIZATION_LEVEL_EDITOR:
