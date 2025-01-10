@@ -61,8 +61,8 @@
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
 				var entity = GFEntity.new()
-				entity.add_component(Vector2C)
-				var vec2 = entity.get_component(Vector2C)
+				entity.add(Vector2C)
+				var vec2 = entity.get(Vector2C)
 
 				vec2.get_source_entity().get_id() == Vector2C.get_id() # True
 				[/codeblock]
@@ -75,8 +75,8 @@
 				[codeblock]
 				var Vector2C = GFEntity.from("glecs/meta/Vector2")
 				var entity = GFEntity.new()
-				entity.add_component(Vector2C)
-				var vec2 = entity.get_component(Vector2C)
+				entity.add(Vector2C)
+				var vec2 = entity.get(Vector2C)
 
 				vec2.get_source_id() == Vector2C.get_id() # True
 				[/codeblock]
@@ -89,8 +89,8 @@
 				Returns the value of a component's member.
 				[codeblock]
 				var entity = GFEntity.new()
-				entity.add_component("glecs/meta/Vector2")
-				var vec2 = entity.get_component("glecs/meta/Vector2")
+				entity.add("glecs/meta/Vector2")
+				var vec2 = entity.get("glecs/meta/Vector2")
 
 				vec2.getm("x")
 				[/codeblock]
@@ -110,8 +110,8 @@
 				Sets the value of a component's member.
 				[codeblock]
 				var entity = GFEntity.new()
-				entity.add_component("glecs/meta/Vector2")
-				var vec2 = entity.get_component("glecs/meta/Vector2")
+				entity.add("glecs/meta/Vector2")
+				var vec2 = entity.get("glecs/meta/Vector2")
 
 				vec2.setm("x", 3.14)
 				[/codeblock]

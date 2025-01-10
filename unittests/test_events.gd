@@ -22,7 +22,7 @@ func test_on_add_event():
 			)
 
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Ints) \
+		.add(Ints) \
 		.set_name("WithInts")
 	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
@@ -31,7 +31,7 @@ func test_on_add_event():
 	var e4:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
 
-	e3.add_component(Ints)
+	e3.add(Ints)
 
 	assert_eq(data.i, 2)
 
@@ -51,7 +51,7 @@ func test_on_set_event():
 			)
 
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Ints, 2, 31) \
+		.add(Ints, 2, 31) \
 		.set_name("WithInts")
 	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
@@ -60,7 +60,7 @@ func test_on_set_event():
 	var e4:= GFEntity.new_in_world(world) \
 		.set_name("WithoutInts")
 
-	e3.add_component(Ints, 99, 2)
+	e3.add(Ints, 99, 2)
 
 	assert_eq(data.i, 2 + 31 + 99 + 2)
 
@@ -80,10 +80,10 @@ func test_on_add_event_with_objects():
 			)
 
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Textures) \
+		.add(Textures) \
 		.set_name("WithInts")
 	assert_eq(data.i, 1)
-	assert_eq(e.get_component(Textures).a, null)
+	assert_eq(e.get(Textures).a, null)
 
 	e.delete()
 
@@ -92,16 +92,16 @@ func test_on_add_event_with_objects():
 	data.i = 0
 	var e2:= GFEntity.new_in_world(world) \
 		.set_name("WithTextures")
-	e2.add_component(Textures, load("res://icon.png"))
+	e2.add(Textures, load("res://icon.png"))
 	assert_eq(data.i, 1)
-	assert_eq(e2.get_component(Textures).a, load("res://icon.png"))
+	assert_eq(e2.get(Textures).a, load("res://icon.png"))
 
 	e2.delete()
 
 func test_user_signal() -> void:
 	var Update = GFEntity.new_in_world(world) \
 		.set_name("Update")
-	
+
 	var data:= {i = 0}
 	GFObserverBuilder.new_in_world(world) \
 		.set_events(Update) \
@@ -109,15 +109,15 @@ func test_user_signal() -> void:
 		.for_each(func(ints:Ints):
 			data.i += 1
 			)
-	
+
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Ints)
+		.add(Ints)
 	# Observer shouldn't match against this entity
 	var e2:= GFEntity.new_in_world(world) \
-		.add_component(Ints)
-	
+		.add(Ints)
+
 	Update.emit(e, [Ints])
-	
+
 	assert_eq(data.i, 1, "Expected observer to match an `Update` event once")
 
 #endregion

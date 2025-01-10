@@ -32,7 +32,7 @@
 				This codeblock returns [code]self[/code] for chaining.
 			</description>
 		</method>
-		<method name="add_component" qualifiers="const vararg">
+		<method name="add" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />
 			<description>
@@ -40,8 +40,8 @@
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
 				var entity:= GFEntity.new()
-				entity.add_component(GFPosition2D, Vector2(10, 10))
-				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				entity.add(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
 			</description>
@@ -135,7 +135,7 @@
 				[/codeblock&gt;
 			</description>
 		</method>
-		<method name="get_component" qualifiers="const">
+		<method name="get" qualifiers="const">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
 			<description>
@@ -143,8 +143,8 @@
 				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
 				var entity:= GFEntity.new()
-				entity.add_component("glecs/meta/Array")
-				entity.get_component("glecs/meta/Array") != null # true
+				entity.add("glecs/meta/Array")
+				entity.get("glecs/meta/Array") != null # true
 				[/codeblock]
 			</description>
 		</method>
@@ -179,8 +179,8 @@
 				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
 				var entity:= GFEntity.new()
-				entity.add_component("glecs/meta/Array")
-				entity.get_component("glecs/meta/Array") != null # true
+				entity.add("glecs/meta/Array")
+				entity.get("glecs/meta/Array") != null # true
 				[/codeblock]
 			</description>
 		</method>
@@ -321,7 +321,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="set_component" qualifiers="const vararg">
+		<method name="set" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />
 			<description>
@@ -329,16 +329,16 @@
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 				[codeblock]
 				var entity:= GFEntity.new()
-				entity.add_component(GFPosition2D)
-				entity.set_component(GFPosition2D, Vector2(10, 10))
-				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				entity.add(GFPosition2D)
+				entity.set(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				If the component is not added yet, then this method will add
 				it automaticly.
 				[codeblock]
 				var entity:= GFEntity.new()
-				entity.set_component(GFPosition2D, Vector2(10, 10))
-				entity.get_component(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				entity.set(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
 			</description>

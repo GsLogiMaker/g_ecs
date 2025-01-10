@@ -510,14 +510,14 @@ void GFEntity::_bind_methods() {
 	{
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
-		mi.name = "add_component";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("add_component"), &GFEntity::add_component, mi);
+		mi.name = "add";
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::add_component, mi);
 	}
 	{
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
-		mi.name = "set_component";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_component"), &GFEntity::set_component, mi);
+		mi.name = "set";
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::set_component, mi);
 	}
 
 	{
@@ -525,19 +525,19 @@ void GFEntity::_bind_methods() {
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));
 		mi.name = "add_pair";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("add_pair"), &GFEntity::add_pair, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::add_pair, mi);
 	}
 	{
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));
 		mi.name = "set_pair";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("set_pair"), &GFEntity::set_pair, mi);
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::set_pair, mi);
 	}
 
 	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"), &GFEntity::add_child);
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &GFEntity::add_tag);
-	godot::ClassDB::bind_method(D_METHOD("get_component", "component"), &GFEntity::get_component);
+	godot::ClassDB::bind_method(D_METHOD("get", "component"), &GFEntity::get_component);
 	godot::ClassDB::bind_method(D_METHOD("get_pair", "first", "second"), &GFEntity::get_pair);
 
 	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());

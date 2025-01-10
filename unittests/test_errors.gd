@@ -13,16 +13,16 @@ func after_all():
 
 func test_get_nonexistant_property():
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
-	var foo:Foo = entity.get_component(Foo)
+	var foo:Foo = entity.get(Foo)
 
 	assert_eq(foo.getm(&"not a real property"), null)
 
 
 func test_new_entity_with_unregistered_component():
 	var _entity:= GFEntity.new_in_world(world) \
-		.add_component(Unregistered) \
+		.add(Unregistered) \
 		.set_name("Test")
 
 	# We can't assert the right error is thrown, but it should be fine as
