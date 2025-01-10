@@ -106,26 +106,31 @@ func test_builder():
 	assert_eq(i, 1, "Expected query to find the built entity")
 
 
-func test_add_child():
-	GFEntity.new_in_world(world) \
+func test_add_get_child():
+	var child:= GFEntity.new_in_world(world).set_name("Child")
+	var par:= GFEntity.new_in_world(world) \
 		.set_name("Parent") \
-		.add_child(
-			GFEntity.new_in_world(world).set_name("Child")
-		)
+		.add_child(child)
 	
-	var child:= world.lookup("Parent/Child")
-	assert_not_null(child, "Expected to find `Child` as a child of `Parent`")
+	assert_eq(
+		child.get_id(),
+		par.get_child("Child").get_id(),
+		"Expected to find `Child` as a child of `Parent`",
+	)
 
 
-func test_set_parent():
-	GFEntity.new_in_world(world) \
+func test_set_get_parent():
+	var child:= GFEntity.new_in_world(world) \
 		.set_name("Child") \
 		.set_parent(
 			GFEntity.new_in_world(world).set_name("Parent")
 		)
 	
-	var child:= world.lookup("Parent/Child")
-	assert_not_null(child, "Expected to find `Child` as a child of `Parent`")
+	assert_eq(
+		child.get_parent().get_name(),
+		"Parent",
+		"Expected to find `Child` as a child of `Parent`"
+	)
 
 #endregion
 

@@ -66,6 +66,7 @@ namespace godot {
 		ecs_entity_t get_id();
 		String get_name();
 		Ref<GFComponent> get_pair(Variant, Variant);
+		Ref<GFEntity> get_parent();
 		String get_path();
 		GFWorld* get_world();
 

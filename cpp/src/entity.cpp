@@ -394,6 +394,23 @@ Ref<GFEntity> GFEntity::get_child(String name) {
 String GFEntity::get_name() {
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
+
+Ref<GFEntity> GFEntity::get_parent() {
+	ecs_entity_t parent = ecs_get_parent(
+		get_world()->raw(),
+		get_id()
+	);
+
+	if (parent == 0) {
+		ERR(nullptr,
+			"Failed to get parent of entity\n",
+			"	Entity ", get_world()->id_to_text(parent), " has no parent."
+		);
+	}
+
+	return GFEntity::from_id(parent, get_world());
+}
+
 Ref<GFEntity> GFEntity::set_name(String name_) {
 	ecs_entity_t parent = ecs_get_parent(
 		get_world()->raw(),
@@ -507,9 +524,10 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
-	godot::ClassDB::bind_method(D_METHOD("get_child"), &GFEntity::get_child);
+	godot::ClassDB::bind_method(D_METHOD("get_child", "path"), &GFEntity::get_child);
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
 	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
+	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);
 	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
 
