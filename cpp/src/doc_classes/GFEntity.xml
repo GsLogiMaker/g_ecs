@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -12,7 +11,7 @@
 	<methods>
 		<method name="add_child">
 			<return type="GFEntity" />
-			<param index="0" name="child" type="Variant" />
+			<param index="0" name="entity" type="Variant" />
 			<description>
 				Adds an entity as a child of this entity.
 				Equivalent to the following:
@@ -21,11 +20,12 @@
 				[/codeblock]
 				Example:
 				[codeblock]
-				GFEntity.new() \
-				    .set_name("parent") \
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
 				    .add_child(
-				        GFEntity.new().set_name("child")
+				        GFEntity.new().set_name("Child")
 				    )
+				par.has_child("Child") # true
 				[/codeblock]
 				This codeblock returns [code]self[/code] for chaining.
 			</description>
@@ -297,6 +297,26 @@
 				entity.get_pair(start, GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Set this entity as a child of [param entity].
+				Equivalent to the following:
+				[codeblock]
+				self.add_pair("flecs/core/ChildOf", entity)
+				[/codeblock]
+				Example:
+				[codeblock]
+				var par = GFEntity.new().set_name("Parent")
+				GFEntity.new() \
+				    .set_name("Child") \
+				    .set_parent(par)
+				par.has_child("Child") # true
+				[/codeblock]
+				This codeblock returns [code]self[/code] for chaining.
 			</description>
 		</method>
 	</methods>

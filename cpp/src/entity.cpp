@@ -45,7 +45,9 @@ Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 
 Ref<GFEntity> GFEntity::add_child(Variant entity) {
 	ecs_entity_t id = get_world()->coerce_id(entity);
-	get_world()->id_set_parent(id, get_id());
+	if (!get_world()->id_set_parent(id, get_id())) {
+		return nullptr;
+	}
 	return this;
 }
 
@@ -421,6 +423,14 @@ Ref<GFEntity> GFEntity::set_name(String name_) {
 	return Ref(this);
 }
 
+Ref<GFEntity> GFEntity::set_parent(Variant entity) {
+	ecs_entity_t id = get_world()->coerce_id(entity);
+	if (!get_world()->id_set_parent(get_id(), id)) {
+		return nullptr;
+	}
+	return this;
+}
+
 Ref<GFPair> GFEntity::pair(Variant second) {
 	return GFPair::from_id(pair_id(get_world()->coerce_id(second)), get_world());
 }
@@ -495,4 +505,5 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFEntity::to_string);
 
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
+	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &GFEntity::set_parent);
 }

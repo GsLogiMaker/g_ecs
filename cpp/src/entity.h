@@ -57,25 +57,25 @@ namespace godot {
 
 		Ref<GFEntity> add_tag(Variant);
 
+		void delete_();
+
 		Ref<GFEntity> emit(Variant, Array, Array);
 
 		Ref<GFComponent> get_component(Variant);
-		Ref<GFComponent> get_pair(Variant, Variant);
-
-		void delete_();
-
 		ecs_entity_t get_id();
+		String get_name();
+		Ref<GFComponent> get_pair(Variant, Variant);
 		String get_path();
 		GFWorld* get_world();
 
 		bool is_alive();
 		bool is_pair();
 
-		Ref<GFEntity> set_name(String);
-		String get_name();
-
 		Ref<GFPair> pair(Variant second);
 		ecs_entity_t pair_id(ecs_entity_t second_id);
+
+		Ref<GFEntity> set_name(String);
+		Ref<GFEntity> set_parent(Variant entity);
 
 		String to_string();
 

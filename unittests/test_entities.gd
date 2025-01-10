@@ -116,6 +116,17 @@ func test_add_child():
 	var child:= world.lookup("Parent/Child")
 	assert_not_null(child, "Expected to find `Child` as a child of `Parent`")
 
+
+func test_set_parent():
+	GFEntity.new_in_world(world) \
+		.set_name("Child") \
+		.set_parent(
+			GFEntity.new_in_world(world).set_name("Parent")
+		)
+	
+	var child:= world.lookup("Parent/Child")
+	assert_not_null(child, "Expected to find `Child` as a child of `Parent`")
+
 #endregion
 
 #region Classes
