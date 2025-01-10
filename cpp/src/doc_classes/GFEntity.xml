@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -10,9 +9,23 @@
 		<link title="More on Flecs Entities">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html</link>
 	</tutorials>
 	<methods>
+		<method name="add" qualifiers="const vararg">
+			<return type="GFEntity" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Adds component data of type [param component] to this entity.
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				[codeblock]
+				var entity:= GFEntity.new()
+				entity.add(GFPosition2D, Vector2(10, 10))
+				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
+				[/codeblock]
+				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
 		<method name="add_child">
 			<return type="GFEntity" />
-			<param index="0" name="child" type="Variant" />
+			<param index="0" name="entity" type="Variant" />
 			<description>
 				Adds an entity as a child of this entity.
 				Equivalent to the following:
@@ -28,20 +41,6 @@
 				    )
 				[/codeblock]
 				This codeblock returns [code]self[/code] for chaining.
-			</description>
-		</method>
-		<method name="add" qualifiers="const vararg">
-			<return type="GFEntity" />
-			<param index="0" name="component" type="Variant" />
-			<description>
-				Adds component data of type [param component] to this entity.
-				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				[codeblock]
-				var entity:= GFEntity.new()
-				entity.add(GFPosition2D, Vector2(10, 10))
-				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
-				[/codeblock]
-				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
 		<method name="add_pair" qualifiers="const vararg">
