@@ -70,18 +70,14 @@ ecs_entity_t GFWorld::glecs_meta_packed_vector3_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector4_array = 0;
 
-GFWorld::GFWorld() {
-	setup_glecs();
-}
-
-GFWorld::GFWorld(void*) {}
-
 GFWorld::~GFWorld() {
 	ecs_fini(_raw);
 }
 
 void GFWorld::setup_glecs() {
 	_raw = ecs_init();
+	registered_entity_ids = Dictionary();
+	registered_entity_scripts = Dictionary();
 	ECS_IMPORT(raw(), FlecsStats);
 
 	// Add glecs module

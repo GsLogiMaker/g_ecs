@@ -491,9 +491,7 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
 }
 
 String GFEntity::_to_string() const {
-	return get_name()
-		+ "#"
-		+ String::num_int64(get_id());
+	return get_world()->id_to_text(get_id());
 }
 
 // ----------------------------------------------

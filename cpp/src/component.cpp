@@ -235,12 +235,8 @@ Variant GFComponent::member_value_as_type(
 }
 
 String GFComponent::_to_string() const {
-	return String() + ecs_get_name(get_world()->raw(), get_source_id())
-		+ "#" + String::num_int64(get_source_id())
-		+ "."
-		+ ecs_get_name(get_world()->raw(), get_id())
-		+ "#" + String::num_int64(get_id())
-		;
+	return get_world()->id_to_text(get_source_id())
+		+ "." + get_world()->id_to_text(get_id());
 }
 
 Ref<GFEntity> GFComponent::get_source_entity() const {

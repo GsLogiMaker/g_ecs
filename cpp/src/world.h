@@ -23,8 +23,10 @@ namespace godot {
 		GDCLASS(GFWorld, Object)
 
 	public:
-		GFWorld();
-		GFWorld(void*); // Construct without setup (Used when registering singleton)
+		GFWorld(): GFWorld(nullptr) {
+			setup_glecs();
+		};
+		GFWorld(void*) {}; // Construct without setup (Used when registering singleton)
 		~GFWorld();
 
 		void setup_glecs();
@@ -132,11 +134,11 @@ namespace godot {
 		static void _bind_methods();
 
 	private:
-		ecs_world_t* _raw;
+		ecs_world_t* _raw {nullptr};
 		/// Maps registered scripts to entity IDs
-		Dictionary registered_entity_ids;
+		Dictionary registered_entity_ids {Dictionary()};
 		/// Maps entity IDs to their registered scripts
-		Dictionary registered_entity_scripts;
+		Dictionary registered_entity_scripts {Dictionary()};
 
 		template<typename T>
 		static void gd_type_ctor(
