@@ -7,6 +7,7 @@
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/core/memory.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
@@ -48,12 +49,19 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			godot::ClassDB::register_class<GFQueryBuilder>();
 			godot::ClassDB::register_class<GFSystemBuilder>();
 
+			UtilityFunctions::prints(11);
 			if (Engine::get_singleton()->has_singleton(GFWorld::SINGLETON_NAME)) {
+				UtilityFunctions::prints(12);
 				Object* world = Engine::get_singleton()->get_singleton(GFWorld::SINGLETON_NAME);
+				UtilityFunctions::prints(13);
 				Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
+				UtilityFunctions::prints(14);
 				memdelete(world);
+				UtilityFunctions::prints(15);
 			}
+			UtilityFunctions::prints(16);
      	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));
+			UtilityFunctions::prints(17);
 			break;
         case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen

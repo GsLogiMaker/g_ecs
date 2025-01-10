@@ -83,7 +83,7 @@ namespace godot {
 		Ref<GFEntity> set_name(String);
 		Ref<GFEntity> set_parent(Variant entity);
 
-		String to_string();
+		String _to_string() const;
 
 		// --------------------------------------
 		// --- Unexposed ---

@@ -489,7 +489,7 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
-String GFEntity::to_string() {
+String GFEntity::_to_string() const {
 	return get_name()
 		+ "#"
 		+ String::num_int64(get_id());
@@ -559,7 +559,6 @@ void GFEntity::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
-	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFEntity::to_string);
 
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &GFEntity::set_parent);
