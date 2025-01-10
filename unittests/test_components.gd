@@ -21,13 +21,13 @@ func test_add_entity():
 func test_world_deletion():
 	var w:= GFWorld.new()
 	var e:= GFEntity.new_in_world(w) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
-	var foo:= e.get_component(Foo)
+	var foo:= e.get(Foo)
 	var e2:= GFEntity.new_in_world(w) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
-	var foo2:= e2.get_component(Foo)
+	var foo2:= e2.get(Foo)
 
 	foo.set_value(Vector2(24.3, 2.1))
 	foo2.set_value(Vector2(125.1, 3.3))
@@ -50,19 +50,19 @@ func test_registration():
 	var w:= world
 
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(RegistrationA) \
-		.add_component(RegistrationB) \
+		.add(RegistrationA) \
+		.add(RegistrationB) \
 		.set_name("Test")
 
-	e.get_component(RegistrationA).set_value(3)
-	e.get_component(RegistrationB).set_value(11)
+	e.get(RegistrationA).set_value(3)
+	e.get(RegistrationB).set_value(11)
 
 	# A system defined in RegistrationA's _registered function should run
 	# on GFWorld's process pipeline
 	w.progress(0.0)
 
-	assert_almost_eq(e.get_component(RegistrationA).get_result(), 14.0, .001)
-	assert_almost_eq(e.get_component(RegistrationB).get_result(), 33.0, .001)
+	assert_almost_eq(e.get(RegistrationA).get_result(), 14.0, .001)
+	assert_almost_eq(e.get(RegistrationB).get_result(), 33.0, .001)
 
 
 func test_simple_system():
@@ -73,12 +73,12 @@ func test_simple_system():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
 
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Foo).get_value(), Vector2(2, 5))
+	assert_eq(entity.get(Foo).get_value(), Vector2(2, 5))
 
 
 # test components components_in_relationships
@@ -87,12 +87,12 @@ func test_components_in_relationships():
 
 	var e:= GFEntity.new_in_world(w)
 	var foo:Foo = e.add_pair(Targets, Foo) \
-		.get_component(w.pair(Targets, Foo))
+		.get(w.pair(Targets, Foo))
 
 	foo.set_value(Vector2(54, 6))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
 
-	foo = e.get_component(w.pair(Targets, Foo))
+	foo = e.get(w.pair(Targets, Foo))
 	assert_almost_eq(foo.get_value(), Vector2(54, 6), Vector2(.001, .001))
 
 	w.free()
