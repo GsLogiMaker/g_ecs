@@ -10,6 +10,26 @@
 		<link title="More on Flecs Entities">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html</link>
 	</tutorials>
 	<methods>
+		<method name="add_child">
+			<return type="GFEntity" />
+			<param index="0" name="child" type="Variant" />
+			<description>
+				Adds an entity as a child of this entity.
+				Equivalent to the following:
+				[codeblock]
+				entity.add_pair("flecs/core/ChildOf", self)
+				[/codeblock]
+				Example:
+				[codeblock]
+				GFEntity.new() \
+				    .set_name("parent") \
+				    .add_child(
+				        GFEntity.new().set_name("child")
+				    )
+				[/codeblock]
+				This codeblock returns [code]self[/code] for chaining.
+			</description>
+		</method>
 		<method name="add" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />

@@ -1043,6 +1043,28 @@ void GFWorld::init_gd_type_ptr(
 	}
 }
 
+bool GFWorld::id_has_child(ecs_entity_t parent, const char* child_name) {
+	return ecs_lookup_child(raw(),parent, child_name) != 0;
+}
+
+bool GFWorld::id_set_parent(ecs_entity_t id, ecs_entity_t parent) {
+	CHECK_ENTITY_ALIVE(id, this, false,
+		"Failed to set parent\nChild is not alive\n"
+	);
+	CHECK_ENTITY_ALIVE(parent, this, false,
+		"Failed to set parent\nParent is not alive\n"
+	);
+
+	// TODO: Handle name conflicts rather than throw error
+	CHECK_NOT_HAS_CHILD(parent, ecs_get_name(raw(), id), this, false,
+		"Failed to set parent\n"
+	);
+
+	ecs_add_id(raw(), id, ecs_childof(parent));
+
+	return true;
+}
+
 bool GFWorld::is_id_alive(ecs_entity_t id) {
 	if (ECS_IS_PAIR(id)) {
 		if (!ecs_is_alive(raw(), ECS_PAIR_FIRST(id))) {

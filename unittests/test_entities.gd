@@ -105,6 +105,17 @@ func test_builder():
 
 	assert_eq(i, 1, "Expected query to find the built entity")
 
+
+func test_add_child():
+	GFEntity.new_in_world(world) \
+		.set_name("Parent") \
+		.add_child(
+			GFEntity.new_in_world(world).set_name("Child")
+		)
+	
+	var child:= world.lookup("Parent/Child")
+	assert_not_null(child, "Expected to find `Child` as a child of `Parent`")
+
 #endregion
 
 #region Classes

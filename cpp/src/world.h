@@ -31,7 +31,9 @@ namespace godot {
 		// **************************************
 
 		ecs_entity_t coerce_id(Variant);
+
 		Ref<GFEntity> lookup(String);
+
 		Ref<GFPair> pair(Variant, Variant);
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
 		void progress(double delta);
@@ -40,10 +42,16 @@ namespace godot {
 		ecs_entity_t register_script_id(Ref<Script>);
 		ecs_entity_t register_new_script_id(Ref<Script> script);
 		Ref<GFRegisterableEntity> register_script_id_no_user_call(Ref<Script> script);
+
 		void _register_modules_from_scripts(int);
 
 		void start_rest_api();
 		static ecs_entity_t variant_type_to_id(Variant::Type);
+
+		bool id_has_child(ecs_entity_t parent, const char* child_name);
+
+		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent);
+
 		String id_to_text(ecs_entity_t);
 		static Variant::Type id_to_variant_type(ecs_entity_t);
 

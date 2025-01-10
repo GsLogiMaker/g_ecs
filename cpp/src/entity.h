@@ -44,6 +44,7 @@ namespace godot {
 		static Ref<GFEntity> from(Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
+		Ref<GFEntity> add_child(Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> add_componentv(Variant, Array);
 		Ref<GFEntity> add_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
