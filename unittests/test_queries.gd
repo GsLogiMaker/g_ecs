@@ -23,17 +23,17 @@ func test_optional_terms():
 
 	var empty:= GFEntity.new_in_world(w) \
 		.set_name("Empty") \
-		.add_component(Bools)
+		.add(Bools)
 	var just_ints:= GFEntity.new_in_world(w) \
 		.set_name("JustInts") \
-		.add_component(Ints)
+		.add(Ints)
 	var just_bools:= GFEntity.new_in_world(w) \
 		.set_name("JustBools") \
-		.add_component(Bools)
+		.add(Bools)
 	var all:= GFEntity.new_in_world(w) \
 		.set_name("All") \
-		.add_component(Ints) \
-		.add_component(Bools)
+		.add(Ints) \
+		.add(Bools)
 
 	data.ints = 0
 	data.bools = 0
@@ -68,11 +68,11 @@ func test_or_operation_terms():
 				data.bools += 1
 			)
 
-	GFEntity.new_in_world(w).add_component(Ints)
-	GFEntity.new_in_world(w).add_component(Ints)
-	GFEntity.new_in_world(w).add_component(Ints)
-	GFEntity.new_in_world(w).add_component(Bools)
-	GFEntity.new_in_world(w).add_component(Ints).add_component(Bools)
+	GFEntity.new_in_world(w).add(Ints)
+	GFEntity.new_in_world(w).add(Ints)
+	GFEntity.new_in_world(w).add(Ints)
+	GFEntity.new_in_world(w).add(Bools)
+	GFEntity.new_in_world(w).add(Ints).add(Bools)
 
 	w.progress(0.0)
 
@@ -83,17 +83,17 @@ func test_or_operation_terms():
 func test_up_traversal():
 	var par:= GFEntity.new_in_world(world) \
 		.set_name("Parent") \
-		.add_component(Bools)
+		.add(Bools)
 	var child:= GFEntity.new_in_world(world) \
 		.set_name("Child") \
-		.add_component(Bools) \
+		.add(Bools) \
 		.add_pair("flecs/core/ChildOf", par)
 
 	var parent_descriptions:GFQuery = GFQueryBuilder.new_in_world(world) \
 		.with(Bools).up() \
 		.with(Bools) \
 		.build()
-	
+
 	var i:= 0
 	for desc in parent_descriptions.iterate():
 		assert_true(desc[0].get_source_id() == par.get_id(), "Expecteded 1st item to be the parent")

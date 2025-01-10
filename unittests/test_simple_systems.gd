@@ -17,10 +17,10 @@ func after_all():
 	#world.new_pipeline(&"second")
 #
 	#var entity:= GFEntity.new_in_world(world) \
-		#.add_component(Bools) \
-		#.add_component(Ints) \
+		#.add(Bools) \
+		#.add(Ints) \
 		#.set_name("Test")
-	#var ints:Ints = entity.get_component(Ints)
+	#var ints:Ints = entity.get(Ints)
 #
 	#world.system_builder(&"first") \
 		#.with(Ints) \
@@ -35,19 +35,19 @@ func after_all():
 #
 	#ints.a = 0
 	#ints.b = 0
-	#assert_eq(entity.get_component(Ints).a, 0)
-	#assert_eq(entity.get_component(Ints).b, 0)
+	#assert_eq(entity.get(Ints).a, 0)
+	#assert_eq(entity.get(Ints).b, 0)
 	#world.run_pipeline(&"first", 0.0)
-	#assert_eq(entity.get_component(Ints).a, 25)
-	#assert_eq(entity.get_component(Ints).b, 0)
+	#assert_eq(entity.get(Ints).a, 25)
+	#assert_eq(entity.get(Ints).b, 0)
 #
 	#ints.a = 0
 	#ints.b = 0
-	#assert_eq(entity.get_component(Ints).a, 0)
-	#assert_eq(entity.get_component(Ints).b, 0)
+	#assert_eq(entity.get(Ints).a, 0)
+	#assert_eq(entity.get(Ints).b, 0)
 	#world.run_pipeline(&"second", 0.0)
-	#assert_eq(entity.get_component(Ints).a, 0)
-	#assert_eq(entity.get_component(Ints).b, 50)
+	#assert_eq(entity.get(Ints).a, 0)
+	#assert_eq(entity.get(Ints).b, 50)
 #
 	#entity.free()
 
@@ -60,13 +60,13 @@ func test_bools():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Bools) \
+		.add(Bools) \
 		.set_name("Test")
 
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Bools).a, true)
-	assert_eq(entity.get_component(Bools).b, false)
+	assert_eq(entity.get(Bools).a, true)
+	assert_eq(entity.get(Bools).b, false)
 
 	entity.delete()
 
@@ -79,15 +79,15 @@ func test_ints():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Ints) \
+		.add(Ints) \
 		.set_name("Test")
-	entity.get_component(Ints).b = 1
+	entity.get(Ints).b = 1
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Ints).a, 14)
+	assert_eq(entity.get(Ints).a, 14)
 
 	entity.delete()
 
@@ -100,15 +100,15 @@ func test_floats():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Floats) \
+		.add(Floats) \
 		.set_name("Test")
-	entity.get_component(Floats).b = 1.2
+	entity.get(Floats).b = 1.2
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_almost_eq(entity.get_component(Floats).a, 16.8, 0.05)
+	assert_almost_eq(entity.get(Floats).a, 16.8, 0.05)
 
 	entity.delete()
 
@@ -123,8 +123,8 @@ func test_strings():
 
 	var entity:= GFEntity.new_in_world(world) \
 		.set_name("Test") \
-		.add_component(Strings, "", "po")
-	var strings:Strings = entity.get_component(Strings)
+		.add(Strings, "", "po")
+	var strings:Strings = entity.get(Strings)
 	assert_eq(strings.a, "")
 	assert_eq(strings.b, "po")
 
@@ -146,16 +146,16 @@ func test_byte_arrays():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(ByteArrays) \
+		.add(ByteArrays) \
 		.set_name("Test")
-	entity.get_component(ByteArrays).a = PackedByteArray([1, 2, 3])
-	entity.get_component(ByteArrays).b = PackedByteArray([2, 4, 3])
+	entity.get(ByteArrays).a = PackedByteArray([1, 2, 3])
+	entity.get(ByteArrays).b = PackedByteArray([2, 4, 3])
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(ByteArrays).a, PackedByteArray([7, 14, 12]))
+	assert_eq(entity.get(ByteArrays).a, PackedByteArray([7, 14, 12]))
 
 	entity.delete()
 
@@ -168,23 +168,23 @@ func test_textures():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Textures) \
+		.add(Textures) \
 		.set_name("Test")
-	entity.get_component(Textures).a = null
-	entity.get_component(Textures).b = load("res://icon.svg")
+	entity.get(Textures).a = null
+	entity.get(Textures).b = load("res://icon.svg")
 
 	# Assert that setting Object to null works
-	assert_eq(entity.get_component(Textures).b, load("res://icon.svg"))
-	entity.get_component(Textures).b = null
-	assert_eq(entity.get_component(Textures).b, null)
-	entity.get_component(Textures).b = load("res://icon.svg")
+	assert_eq(entity.get(Textures).b, load("res://icon.svg"))
+	entity.get(Textures).b = null
+	assert_eq(entity.get(Textures).b, null)
+	entity.get(Textures).b = load("res://icon.svg")
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Textures).a, load("res://icon.svg"))
-	assert_eq(entity.get_component(Textures).b, load("res://icon.svg"))
+	assert_eq(entity.get(Textures).a, load("res://icon.svg"))
+	assert_eq(entity.get(Textures).b, load("res://icon.svg"))
 
 	entity.delete()
 
@@ -193,13 +193,13 @@ func test_ref_counts():
 	assert_eq(rc.get_reference_count(), 1)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(RefCounts) \
+		.add(RefCounts) \
 		.set_name("Test")
 
-	entity.get_component(RefCounts).a = rc
+	entity.get(RefCounts).a = rc
 	assert_eq(rc.get_reference_count(), 2)
 
-	entity.get_component(RefCounts).a = null
+	entity.get(RefCounts).a = null
 	assert_eq(rc.get_reference_count(), 1)
 
 	entity.delete()
@@ -213,17 +213,17 @@ func test_arrays():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Arrays) \
+		.add(Arrays) \
 		.set_name("Test")
-	entity.get_component(Arrays).a = [23, 4, 6]
-	entity.get_component(Arrays).b = [1, 2, 1]
+	entity.get(Arrays).a = [23, 4, 6]
+	entity.get(Arrays).b = [1, 2, 1]
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Arrays).a, [23, 4, 6])
-	assert_eq(entity.get_component(Arrays).b, [70, 14, 19])
+	assert_eq(entity.get(Arrays).a, [23, 4, 6])
+	assert_eq(entity.get(Arrays).b, [70, 14, 19])
 
 	entity.delete()
 
@@ -235,17 +235,17 @@ func test_dicts():
 			)
 
 	var entity:= GFEntity.new_in_world(world) \
-		.add_component(Dicts) \
+		.add(Dicts) \
 		.set_name("Test")
-	entity.get_component(Dicts).a = {"add_by": 5}
-	entity.get_component(Dicts).b = {"value": 2}
+	entity.get(Dicts).a = {"add_by": 5}
+	entity.get(Dicts).b = {"value": 2}
 
 	world.progress(0.0)
 	world.progress(0.0)
 	world.progress(0.0)
 
-	assert_eq(entity.get_component(Dicts).a, {"add_by":5})
-	assert_eq(entity.get_component(Dicts).b, {"value":17})
+	assert_eq(entity.get(Dicts).a, {"add_by":5})
+	assert_eq(entity.get(Dicts).b, {"value":17})
 
 	entity.delete()
 

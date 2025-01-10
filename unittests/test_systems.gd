@@ -22,10 +22,10 @@ func test_stuff():
 			)
 
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Bools) \
+		.add(Bools) \
 		.set_name("Test")
 	world.register_script(Bools)
-	var bools = e.get_component(Bools)
+	var bools = e.get(Bools)
 	bools.a = true
 	bools.b = false
 

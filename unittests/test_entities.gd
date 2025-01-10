@@ -13,10 +13,10 @@ func after_all():
 
 func test_component_get_and_set():
 	var e:GFEntity = GFEntity.new_in_world(world) \
-		.add_component(Foo) \
+		.add(Foo) \
 		.set_name("Test")
 
-	var foo:Foo = e.get_component(Foo)
+	var foo:Foo = e.get(Foo)
 	assert_almost_eq(foo.value, 0.0, 0.01)
 
 	foo.value = 2.3
@@ -26,10 +26,10 @@ func test_component_get_and_set():
 
 func test_component_string_get_and_set():
 	var e:= GFEntity.new_in_world(world) \
-		.add_component(Stringy) \
+		.add(Stringy) \
 		.set_name("Test")
 
-	var foo:Stringy = e.get_component(Stringy)
+	var foo:Stringy = e.get(Stringy)
 	foo.a = "po"
 	foo.b = "em"
 	assert_eq(foo.a, "po")
@@ -41,9 +41,9 @@ func test_component_string_get_and_set():
 
 func test_new_entity_with_unregistered_component():
 	var e:GFEntity = GFEntity.new_in_world(world) \
-		.add_component(Unregistered) \
+		.add(Unregistered) \
 		.set_name("Test")
-	assert_eq(e.get_component(Unregistered).value, 0)
+	assert_eq(e.get(Unregistered).value, 0)
 
 func test_creating_entity_by_new():
 	# Test that an entity is invalidated by being deleted
@@ -90,19 +90,19 @@ func test_builder():
 		.add_pair(Foo, Stringy) \
 		.add_pair(Stringy, Foo) \
 		.build()
-	
+
 	assert_eq(e.get_name(), "Built", "Expected entity to be named 'Built'")
-	
+
 	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
 		.with(Foo) \
 		.with(world.pair(Foo, Stringy)) \
 		.with(world.pair(Stringy, Foo)) \
 		.build()
-	
+
 	var i:= 0
 	for _x in query.iterate():
 		i += 1
-	
+
 	assert_eq(i, 1, "Expected query to find the built entity")
 
 #endregion
