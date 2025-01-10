@@ -28,11 +28,13 @@ Ref<GFModule> GFModule::new_named_in_world(String name, GFWorld* world_) {
 		world->raw(),
 		name_utf8,
 		&comp_desc
+
 	);
 	return from_id(module_id, world);
 }
 
-Ref<GFModule> GFModule::from(Variant module, GFWorld* world) {
+Ref<GFModule> GFModule::from(Variant module, GFWorld* world_) {
+	GFWorld* world = GFWorld::world_or_singleton(world_);
 	ecs_entity_t module_id = world->coerce_id(module);
 	return from_id(module_id, world);
 }

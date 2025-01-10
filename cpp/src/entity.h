@@ -26,9 +26,9 @@ namespace godot {
 		// New entity in global world
 		GFEntity();
 		// New entity in specific world
-		GFEntity(GFWorld* world) ;
+		GFEntity(const GFWorld* world) ;
 		// Reference an entity
-		GFEntity(ecs_entity_t id_, GFWorld* world_):
+		GFEntity(const ecs_entity_t id_, const GFWorld* world_):
 			id(id_),
 			world_instance_id(world_->get_instance_id())
 		{}
@@ -40,9 +40,9 @@ namespace godot {
 		// --- Exposed ---
 		// --------------------------------------
 
-		static Ref<GFEntity> new_in_world(GFWorld*);
-		static Ref<GFEntity> from(Variant, GFWorld*);
-		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
+		static Ref<GFEntity> new_in_world(const GFWorld*);
+		static Ref<GFEntity> from(const Variant, GFWorld*);
+		static Ref<GFEntity> from_id(const ecs_entity_t, const GFWorld*);
 
 		Ref<GFEntity> add_child(Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
@@ -57,7 +57,7 @@ namespace godot {
 
 		Ref<GFEntity> add_tag(Variant);
 
-		void delete_();
+		void delete_() const;
 
 		Ref<GFEntity> emit(Variant, Array, Array);
 
@@ -83,7 +83,7 @@ namespace godot {
 		Ref<GFEntity> set_name(String);
 		Ref<GFEntity> set_parent(Variant entity);
 
-		String to_string();
+		String _to_string() const;
 
 		// --------------------------------------
 		// --- Unexposed ---
@@ -120,7 +120,7 @@ namespace godot {
 
 
 		void set_id(ecs_entity_t);
-		void set_world(GFWorld*);
+		void set_world(const GFWorld*);
 
 	protected:
 		static void _bind_methods();

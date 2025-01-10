@@ -23,6 +23,7 @@
 using namespace godot;
 
 void initialize_module(ModuleInitializationLevel p_level) {
+	GFWorld* world = nullptr;
 	switch (p_level) {
         case MODULE_INITIALIZATION_LEVEL_CORE:
         case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -53,7 +54,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
 				Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
 				memdelete(world);
 			}
-     	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, memnew(GFWorld));
+			world = memnew(GFWorld(nullptr));
+     	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, world);
+			world->setup_glecs();
 			break;
         case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen

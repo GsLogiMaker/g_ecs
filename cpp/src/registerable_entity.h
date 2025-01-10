@@ -34,7 +34,7 @@ namespace godot {
 
 		static Ref<GFRegisterableEntity> new_in_world(GFWorld*);
 		static Ref<GFRegisterableEntity> from_id(ecs_entity_t id, GFWorld* world);
-		static Ref<GFRegisterableEntity> from_script(Ref<Script>, GFWorld*);
+		static Ref<GFRegisterableEntity> from_script(const Ref<Script>, const GFWorld*);
 
 		// --------------------------------------------------------
 		// --- Unexposed ---

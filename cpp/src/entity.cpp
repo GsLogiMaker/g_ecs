@@ -1,5 +1,6 @@
 
 #include "entity.h"
+#include "godot_cpp/classes/global_constants.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/array.hpp"
@@ -23,23 +24,23 @@ GFEntity::GFEntity() {
 	id = ecs_new(world->raw());
 	world_instance_id = world->get_instance_id();
 }
-GFEntity::GFEntity(GFWorld* world) {
+GFEntity::GFEntity(const GFWorld* world) {
 	id = ecs_new(world->raw());
 	world_instance_id = world->get_instance_id();
 }
 GFEntity::~GFEntity() {
 }
 
-Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
+Ref<GFEntity> GFEntity::new_in_world(const GFWorld* world) {
 	return memnew(GFEntity(world));
 }
-Ref<GFEntity> GFEntity::from(Variant entity, GFWorld* world) {
+Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
 	if (world == nullptr) {
 		world = GFWorld::singleton();
 	}
 	return from_id(world->coerce_id(entity), world);
 }
-Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
+Ref<GFEntity> GFEntity::from_id(const ecs_entity_t id, const GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 
@@ -48,7 +49,7 @@ Ref<GFEntity> GFEntity::add_child(Variant entity) {
 	if (!get_world()->id_set_parent(id, get_id())) {
 		return nullptr;
 	}
-	return this;
+	return Ref(this);
 }
 
 Ref<GFEntity> GFEntity::add_component(
@@ -59,7 +60,7 @@ Ref<GFEntity> GFEntity::add_component(
 		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
 		error.argument = arg_count;
 		error.expected = 1;
-		return this;
+		return Ref(this);
 	}
 
 	// Parse arguments
@@ -72,7 +73,7 @@ Ref<GFEntity> GFEntity::add_component(
 
 	_add_component(comopnent, members);
 
-	return this;
+	return Ref(this);
 }
 
 Ref<GFEntity> GFEntity::_add_component(Variant component, Array members) {
@@ -81,7 +82,7 @@ Ref<GFEntity> GFEntity::_add_component(Variant component, Array members) {
 	ecs_entity_t c_id = w->coerce_id(component);
 
 	if (ecs_has_id(w->raw(), get_id(), c_id)) {
-		ERR(this,
+		ERR(Ref(this),
 			"Can't add component to entity\n",
 			"ID coerced from ", component, " is already added to ", get_id()
 		)
@@ -89,7 +90,7 @@ Ref<GFEntity> GFEntity::_add_component(Variant component, Array members) {
 
 	_set_component(c_id, members);
 
-	return this;
+	return Ref(this);
 }
 
 Ref<GFEntity> GFEntity::add_pair(
@@ -100,7 +101,7 @@ Ref<GFEntity> GFEntity::add_pair(
 		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
 		error.argument = arg_count;
 		error.expected = 2;
-		return this;
+		return Ref(this);
 	}
 
 	// Parse arguments
@@ -114,7 +115,7 @@ Ref<GFEntity> GFEntity::add_pair(
 
 	_add_pair(first, sec, members);
 
-	return this;
+	return Ref(this);
 }
 Ref<GFEntity> GFEntity::_add_pair(Variant first, Variant second, Array members) {
 	GFWorld* w = get_world();
@@ -207,7 +208,7 @@ Ref<GFEntity> GFEntity::emit(
 		delete [] event_data;
 	}
 
-	return this;
+	return Ref(this);
 }
 
 Ref<GFComponent> GFEntity::get_component(Variant component) const {
@@ -267,7 +268,7 @@ Ref<GFEntity> GFEntity::set_component(
 		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
 		error.argument = arg_count;
 		error.expected = 1;
-		return this;
+		return Ref(this);
 	}
 
 	// Parse arguments
@@ -339,7 +340,7 @@ Ref<GFEntity> GFEntity::set_pair(
 		error.error = GDExtensionCallErrorType::GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS;
 		error.argument = arg_count;
 		error.expected = 1;
-		return this;
+		return Ref(this);
 	}
 
 	// Parse arguments
@@ -366,7 +367,7 @@ Ref<GFEntity> GFEntity::_set_pair(
 	return Ref(this);
 }
 
-void GFEntity::delete_() {
+void GFEntity::delete_() const {
 	ecs_delete(get_world()->raw(), get_id());
 }
 
@@ -479,7 +480,7 @@ Ref<GFEntity> GFEntity::set_parent(Variant entity) {
 	if (!get_world()->id_set_parent(get_id(), id)) {
 		return nullptr;
 	}
-	return this;
+	return Ref(this);
 }
 
 Ref<GFPair> GFEntity::pair(Variant second) const {
@@ -489,10 +490,8 @@ ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
-String GFEntity::to_string() {
-	return get_name()
-		+ "#"
-		+ String::num_int64(get_id());
+String GFEntity::_to_string() const {
+	return get_world()->id_to_text(get_id());
 }
 
 // ----------------------------------------------
@@ -500,7 +499,7 @@ String GFEntity::to_string() {
 // ----------------------------------------------
 
 void GFEntity::set_id(ecs_entity_t value) { id = value; }
-void GFEntity::set_world(GFWorld* value) { world_instance_id = value->get_instance_id(); }
+void GFEntity::set_world(const GFWorld* value) { world_instance_id = value->get_instance_id(); }
 
 void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("new_in_world", "world"), &GFEntity::new_in_world);
@@ -511,7 +510,8 @@ void GFEntity::_bind_methods() {
 		MethodInfo mi;
 		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));
 		mi.name = "add";
-		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &GFEntity::add_component, mi);
+		mi.flags = METHOD_FLAGS_DEFAULT;
+		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName("add"), &GFEntity::add_component, mi);
 	}
 	{
 		MethodInfo mi;
@@ -559,7 +559,6 @@ void GFEntity::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
-	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFEntity::to_string);
 
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntity::set_name);
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &GFEntity::set_parent);
