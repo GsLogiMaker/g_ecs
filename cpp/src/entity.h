@@ -61,22 +61,22 @@ namespace godot {
 
 		Ref<GFEntity> emit(Variant, Array, Array);
 
-		Ref<GFEntity> get_child(String);
-		Ref<GFComponent> get_component(Variant);
-		ecs_entity_t get_id();
-		String get_name();
-		Ref<GFComponent> get_pair(Variant, Variant);
-		Ref<GFEntity> get_parent();
-		String get_path();
-		GFWorld* get_world();
+		Ref<GFEntity> get_child(String) const;
+		Ref<GFComponent> get_component(Variant) const;
+		ecs_entity_t get_id() const;
+		String get_name() const;
+		Ref<GFComponent> get_pair(Variant, Variant) const;
+		Ref<GFEntity> get_parent() const;
+		String get_path() const;
+		GFWorld* get_world() const;
 
-		bool has_child(String);
+		bool has_entity(Variant) const;
 
-		bool is_alive();
-		bool is_pair();
+		bool is_alive() const;
+		bool is_pair() const;
 
-		Ref<GFPair> pair(Variant second);
-		ecs_entity_t pair_id(ecs_entity_t second_id);
+		Ref<GFPair> pair(Variant second) const;
+		ecs_entity_t pair_id(ecs_entity_t second_id) const;
 
 		Ref<GFEntity> set_name(String);
 		Ref<GFEntity> set_parent(Variant entity);

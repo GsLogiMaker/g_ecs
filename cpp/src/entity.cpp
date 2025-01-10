@@ -210,7 +210,7 @@ Ref<GFEntity> GFEntity::emit(
 	return this;
 }
 
-Ref<GFComponent> GFEntity::get_component(Variant component) {
+Ref<GFComponent> GFEntity::get_component(Variant component) const {
 	Ref<GFComponent> c = GFComponent::from_id(
 		get_world()->coerce_id(component),
 		get_id(),
@@ -231,13 +231,13 @@ Ref<GFComponent> GFEntity::get_component(Variant component) {
 	return c;
 }
 
-Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) {
+Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) const {
 	ecs_entity_t first_id = get_world()->coerce_id(first);
 	ecs_entity_t second_id = get_world()->coerce_id(second);
 	return get_component(ecs_pair(first_id, second_id));
 }
 
-bool GFEntity::has_child(String path) {
+bool GFEntity::has_child(String path) const {
 	return ecs_lookup_path_w_sep(
 		get_world()->raw(),
 		get_id(),
@@ -359,8 +359,8 @@ void GFEntity::delete_() {
 	ecs_delete(get_world()->raw(), get_id());
 }
 
-ecs_entity_t GFEntity::get_id() { return id; }
-String GFEntity::get_path() {
+ecs_entity_t GFEntity::get_id() const { return id; }
+String GFEntity::get_path() const {
 	return String(ecs_get_path_w_sep(
 		get_world()->raw(),
 		0,
@@ -369,11 +369,11 @@ String GFEntity::get_path() {
 		"/root/"
 	));
 }
-GFWorld* GFEntity::get_world() { return Object::cast_to<GFWorld>(
+GFWorld* GFEntity::get_world() const { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
 
-bool GFEntity::is_alive() {
+bool GFEntity::is_alive() const {
 	if (get_world() == nullptr) {
 		return false;
 	}
@@ -383,11 +383,11 @@ bool GFEntity::is_alive() {
 
 	return get_world()->is_id_alive(get_id());
 }
-bool GFEntity::is_pair() {
+bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
 
-Ref<GFEntity> GFEntity::get_child(String name) {
+Ref<GFEntity> GFEntity::get_child(String name) const {
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		get_world()->raw(),
 		get_id(),
@@ -402,11 +402,11 @@ Ref<GFEntity> GFEntity::get_child(String name) {
 	return GFEntity::from_id(id, get_world());
 }
 
-String GFEntity::get_name() {
+String GFEntity::get_name() const {
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
 
-Ref<GFEntity> GFEntity::get_parent() {
+Ref<GFEntity> GFEntity::get_parent() const {
 	ecs_entity_t parent = ecs_get_parent(
 		get_world()->raw(),
 		get_id()
@@ -471,10 +471,10 @@ Ref<GFEntity> GFEntity::set_parent(Variant entity) {
 	return this;
 }
 
-Ref<GFPair> GFEntity::pair(Variant second) {
+Ref<GFPair> GFEntity::pair(Variant second) const {
 	return GFPair::from_id(pair_id(get_world()->coerce_id(second)), get_world());
 }
-ecs_entity_t GFEntity::pair_id(ecs_entity_t second) {
+ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
