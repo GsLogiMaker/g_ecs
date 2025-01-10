@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -116,6 +117,21 @@
 				[codeblock]
 				var entity:= GFEntity.from_id(255)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="get_child">
+			<return type="GFEntity" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Returns a reference to a child entity of this entity.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				par.get_child("Child") != null # true
+				[/codeblock>
 			</description>
 		</method>
 		<method name="get_component">

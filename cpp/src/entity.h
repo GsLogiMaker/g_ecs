@@ -61,6 +61,7 @@ namespace godot {
 
 		Ref<GFEntity> emit(Variant, Array, Array);
 
+		Ref<GFEntity> get_child(String);
 		Ref<GFComponent> get_component(Variant);
 		ecs_entity_t get_id();
 		String get_name();

@@ -376,6 +376,21 @@ bool GFEntity::is_pair() {
 	return ecs_id_is_pair(get_id());
 }
 
+Ref<GFEntity> GFEntity::get_child(String name) {
+	ecs_entity_t id = ecs_lookup_path_w_sep(
+		get_world()->raw(),
+		get_id(),
+		name.utf8(),
+		"/",
+		"/root/",
+		false
+	);
+	if (id == 0) {
+		return nullptr;
+	}
+	return GFEntity::from_id(id, get_world());
+}
+
 String GFEntity::get_name() {
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
@@ -492,10 +507,11 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("emit", "event", "components", "event_members"), &GFEntity::emit, Array(), Array());
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
+	godot::ClassDB::bind_method(D_METHOD("get_child"), &GFEntity::get_child);
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
+	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
 	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
-	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
