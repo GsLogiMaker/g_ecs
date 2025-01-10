@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -114,21 +113,6 @@
 				var vec2 = entity.get("glecs/meta/Vector2")
 
 				vec2.setm("x", 3.14)
-				[/codeblock]
-			</description>
-		</method>
-		<method name="setm_no_notify">
-			<return type="void" />
-			<param index="0" name="member" type="String" />
-			<param index="1" name="value" type="Variant" />
-			<description>
-				Sets the value of a component's member without notifying [code]OnSet[/code] observers. Generally, [method setm] should be preferred.
-				[codeblock]
-				var entity = GFEntity.new()
-				entity.add("glecs/meta/Vector2")
-				var vec2 = entity.get("glecs/meta/Vector2")
-
-				vec2.setm_no_nofify("x", 3.14)
 				[/codeblock]
 			</description>
 		</method>

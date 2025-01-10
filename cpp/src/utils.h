@@ -17,7 +17,15 @@
 	if (!gf_world->is_id_alive(entity)) { \
 		ERR(return_value, \
 			err, \
-			"	Entity ", world->id_to_text(entity), " is not alive" \
+			"	Entity ", gf_world->id_to_text(entity), " is not alive" \
+		); \
+	}
+
+#define CHECK_NOT_HAS_CHILD(entity, child_name, gf_world, return_value, err) \
+	if (gf_world->id_has_child(entity, child_name)) { \
+		ERR(return_value, \
+			err, \
+			"	", gf_world->id_to_text(entity) ," already has a child named \"", child_name, "\"" \
 		); \
 	}
 

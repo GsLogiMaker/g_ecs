@@ -3,10 +3,10 @@ extends GutTest
 
 var world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
 
-func after_all():
+func after_each():
 	world.free()
 
 #region Tests
@@ -104,6 +104,45 @@ func test_builder():
 		i += 1
 
 	assert_eq(i, 1, "Expected query to find the built entity")
+
+
+func test_add_get_child():
+	var child:= GFEntity.new_in_world(world).set_name("Child")
+	var par:= GFEntity.new_in_world(world) \
+		.set_name("Parent") \
+		.add_child(child)
+
+	assert_eq(
+		child.get_id(),
+		par.get_child("Child").get_id(),
+		"Expected to find `Child` as a child of `Parent`",
+	)
+
+
+func test_set_get_parent():
+	var child:= GFEntity.new_in_world(world) \
+		.set_name("Child") \
+		.set_parent(
+			GFEntity.new_in_world(world).set_name("Parent")
+		)
+
+	assert_eq(
+		child.get_parent().get_name(),
+		"Parent",
+		"Expected to find `Child` as a child of `Parent`"
+	)
+
+
+func test_has_child():
+	var flecs:= GFEntity.from("flecs", world)
+	assert_true(
+		flecs.has_child("core"),
+		"Expected to `flecs` module to have a child named `core`"
+	)
+	assert_true(
+		flecs.has_child("core/OnAdd"),
+		"Expected to `flecs` module to have a grandchild named `core/OnAdd`"
+	)
 
 #endregion
 

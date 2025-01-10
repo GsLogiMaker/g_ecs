@@ -42,17 +42,16 @@ namespace godot {
 		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
 		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
-		Variant getm(String);
-		void setm(String, Variant);
-		void setm_no_notify(String, Variant);
+		Variant getm(String) const;
+		void setm(String, Variant) const;
 
-		Ref<GFEntity> get_source_entity();
-		ecs_entity_t get_source_id();
-		int get_data_size();
-		int get_data_alignment();
+		Ref<GFEntity> get_source_entity() const;
+		ecs_entity_t get_source_id() const;
+		int get_data_size() const;
+		int get_data_alignment() const;
 
-		bool is_alive();
-		String to_string();
+		bool is_alive() const;
+		String _to_string() const;
 
 		// --------------------------------------
 		// --- Unexposed
@@ -60,7 +59,7 @@ namespace godot {
 
 		void _register_internal();
 
-		void build_data_from_variant(Variant, void* output);
+		void build_data_from_variant(Variant, void* output) const;
 		static void build_data_from_members(Array, void*, ecs_entity_t, GFWorld*);
 		static const EcsComponent* get_component_ptr(GFWorld*, ecs_entity_t);
 		static const EcsStruct* get_struct_ptr(GFWorld*, ecs_entity_t);
@@ -70,14 +69,11 @@ namespace godot {
 	protected:
 		static void _bind_methods();
 
-		void* get_member_ptr_mut_at(int offset);
-		const EcsMember* get_member_data(String);
+		void* get_member_ptr_mut_at(int offset) const;
+		const EcsMember* get_member_data(String) const;
 
-		Variant member_value_as_primitive(void*, ecs_primitive_kind_t);
-		Variant member_value_as_type(void*, ecs_entity_t);
-		void set_member_value_as_primitive(void*, Variant, ecs_primitive_kind_t);
-		void set_member_value_as_type(void*, Variant, ecs_entity_t);
-
+		Variant member_value_as_primitive(void*, ecs_primitive_kind_t) const;
+		Variant member_value_as_type(void*, ecs_entity_t) const;
 
 	private:
 		ecs_entity_t source_entity_id {0};

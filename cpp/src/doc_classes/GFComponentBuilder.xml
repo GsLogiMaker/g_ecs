@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponentBuilder" inherits="GFEntityBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponentBuilder" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Builder for a new component type.
 	</brief_description>
@@ -30,9 +31,10 @@
 				Creates the new component from the settings of the builder.
 			</description>
 		</method>
-		<method name="get_member_count">
-			<return type="int" />
+		<method name="is_built">
+			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if this builder has already been built.
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">
@@ -40,6 +42,13 @@
 			<param index="0" name="world" type="GFWorld" />
 			<description>
 				Returns a new builder in [param world].
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFComponentBuilder" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Sets the name of the new component.
 			</description>
 		</method>
 	</methods>

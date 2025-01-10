@@ -7,7 +7,7 @@ var texture:= load("res://icon.png")
 func _ready() -> void:
 	await get_tree().process_frame
 	GFGlobalWorld.start_rest_api()
-	
+
 	var body:= GFEntity.new() \
 		.set_name("Body") \
 		.add(GFTexture2D, texture) \
@@ -23,6 +23,6 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	GFGlobalWorld.progress(delta)
-	
+
 	if Input.is_action_just_pressed("ui_accept"):
 		GFGlobalWorld.lookup("Body").set(GFPosition2D, Vector2(200, 000))

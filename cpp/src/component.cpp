@@ -65,13 +65,7 @@ void GFComponent::_register_internal() {
 	GFRegisterableEntity::_register_internal();
 }
 
-void GFComponent::setm(String member, Variant value) {
-	setm_no_notify(member, value);
-
-	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
-}
-
-void GFComponent::setm_no_notify(String member, Variant value) {
+void GFComponent::setm(String member, Variant value) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -89,10 +83,12 @@ void GFComponent::setm_no_notify(String member, Variant value) {
 		);
 	}
 
+	// Return member
 	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
 }
 
-Variant GFComponent::getm(String member) {
+Variant GFComponent::getm(String member) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -113,7 +109,7 @@ Variant GFComponent::getm(String member) {
 	return member_value_as_type(member_value_ptr, member_data->type);
 }
 
-void* GFComponent::get_member_ptr_mut_at(int offset) {
+void* GFComponent::get_member_ptr_mut_at(int offset) const {
 	ecs_world_t* raw = get_world()->raw();
 	int8_t* bytes = static_cast<int8_t*>(
 		ecs_get_mut_id(raw, get_source_id(), get_id())
@@ -121,7 +117,7 @@ void* GFComponent::get_member_ptr_mut_at(int offset) {
 	return static_cast<void*>(&bytes[offset]);
 }
 
-const EcsMember* GFComponent::get_member_data(String member) {
+const EcsMember* GFComponent::get_member_data(String member) const {
 	ecs_world_t* raw = get_world()->raw();
 	const char* c_str = member.utf8().get_data();
 
@@ -149,7 +145,7 @@ const EcsMember* GFComponent::get_member_data(String member) {
 Variant GFComponent::member_value_as_primitive(
 	void* ptr,
 	ecs_primitive_kind_t primitive
-) {
+) const {
 	switch (primitive) {
 		case ecs_primitive_kind_t::EcsBool: return *static_cast<bool*>(ptr);
 		case ecs_primitive_kind_t::EcsChar: return *static_cast<char*>(ptr);
@@ -176,7 +172,7 @@ Variant GFComponent::member_value_as_primitive(
 Variant GFComponent::member_value_as_type(
 	void* ptr,
 	ecs_entity_t type
-) {
+) const {
 	ecs_world_t* raw = get_world()->raw();
 	Variant::Type vari_type = get_world()->id_to_variant_type(type);
 
@@ -238,32 +234,28 @@ Variant GFComponent::member_value_as_type(
 	throw "Unreachable";
 }
 
-String GFComponent::to_string() {
-	return String() + ecs_get_name(get_world()->raw(), get_source_id())
-		+ "#" + String::num_int64(get_source_id())
-		+ "."
-		+ ecs_get_name(get_world()->raw(), get_id())
-		+ "#" + String::num_int64(get_id())
-		;
+String GFComponent::_to_string() const {
+	return get_world()->id_to_text(get_source_id())
+		+ "." + get_world()->id_to_text(get_id());
 }
 
-Ref<GFEntity> GFComponent::get_source_entity() {
+Ref<GFEntity> GFComponent::get_source_entity() const {
 	return GFEntity::from(get_source_id(), get_world());
 }
 
-ecs_entity_t GFComponent::get_source_id() {
+ecs_entity_t GFComponent::get_source_id() const {
 	return source_entity_id;
 }
 
-int GFComponent::get_data_size() {
+int GFComponent::get_data_size() const {
 	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->size;
 }
-int GFComponent::get_data_alignment() {
+int GFComponent::get_data_alignment() const {
 	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->alignment;
 }
 
-bool GFComponent::is_alive() {
-	GFEntity* entity = this;
+bool GFComponent::is_alive() const {
+	const GFEntity* entity = this;
 	return entity->is_alive()
 		&& ecs_has_id(get_world()->raw(), get_source_id(), get_id());
 }
@@ -271,7 +263,7 @@ bool GFComponent::is_alive() {
 void GFComponent::build_data_from_variant(
 	Variant vari,
 	void* output
-) {
+) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	const EcsStruct* struct_data = ecs_get(raw, get_id(), EcsStruct);
@@ -379,12 +371,11 @@ void GFComponent::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
-	godot::ClassDB::bind_method(D_METHOD("setm_no_notify", "member", "value"), &GFComponent::setm_no_notify);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
 	godot::ClassDB::bind_method(D_METHOD("get_data_size"), &GFComponent::get_data_size);
 	godot::ClassDB::bind_method(D_METHOD("get_data_alignment"), &GFComponent::get_data_alignment);
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFComponent::is_alive);
-	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFComponent::to_string);
+	godot::ClassDB::bind_method(D_METHOD("_to_string"), &GFComponent::_to_string);
 }

@@ -2,7 +2,6 @@
 #include "world.h"
 #include "entity.h"
 #include "component_builder.h"
-#include "godot_cpp/classes/resource.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
@@ -18,7 +17,6 @@
 #include <cassert>
 #include <cctype>
 #include <flecs.h>
-#include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include <godot_cpp/core/class_db.hpp>
@@ -72,8 +70,14 @@ ecs_entity_t GFWorld::glecs_meta_packed_vector3_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector4_array = 0;
 
-GFWorld::GFWorld() {
+GFWorld::~GFWorld() {
+	ecs_fini(_raw);
+}
+
+void GFWorld::setup_glecs() {
 	_raw = ecs_init();
+	registered_entity_ids = Dictionary();
+	registered_entity_scripts = Dictionary();
 	ECS_IMPORT(raw(), FlecsStats);
 
 	// Add glecs module
@@ -490,11 +494,9 @@ GFWorld::GFWorld() {
 	#undef DEFINE_GD_COMPONENT
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
 
-	_register_modules_from_scripts(0);
-}
 
-GFWorld::~GFWorld() {
-	ecs_fini(_raw);
+
+	_register_modules_from_scripts(0);
 }
 
 ecs_entity_t GFWorld::coerce_id(Variant value) {
@@ -575,7 +577,7 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 	);
 }
 
-Ref<GFEntity> GFWorld::lookup(String path) {
+Ref<GFEntity> GFWorld::lookup(String path) const {
 	const char* path_ptr = path.utf8().get_data();
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		raw(),
@@ -597,7 +599,7 @@ Ref<GFPair> GFWorld::pair(Variant first, Variant second) {
 	return GFPair::from_ids(coerce_id(first), coerce_id(second), this);
 }
 
-ecs_entity_t GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) {
+ecs_entity_t GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) const {
 	if (ECS_IS_PAIR(first)) {
 		ERR(0,
 			"Could not pair IDs\n",
@@ -613,7 +615,7 @@ ecs_entity_t GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) {
 	return ecs_make_pair(first, second);
 }
 
-void GFWorld::progress(double delta) {
+void GFWorld::progress(double delta) const {
 	ecs_progress(raw(), delta);
 }
 
@@ -728,7 +730,7 @@ void GFWorld::_register_modules_from_scripts(int depth=0) {
 	}
 }
 
-void GFWorld::start_rest_api() {
+void GFWorld::start_rest_api() const {
 	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);
 	EcsRest rest = (EcsRest)EcsRest();
 	ecs_set_id(raw(), rest_id, rest_id, sizeof(EcsRest), &rest);
@@ -741,7 +743,7 @@ ecs_entity_t GFWorld::variant_type_to_id(Variant::Type type) {
 	return GFWorld::glecs_meta_nil + type;
 }
 
-String GFWorld::id_to_text(ecs_entity_t id) {
+String GFWorld::id_to_text(ecs_entity_t id) const {
 	if (ecs_id_is_pair(id)) {
 		return String("(")
 			+ id_to_text(ECS_PAIR_FIRST(id)) + ", "
@@ -770,7 +772,7 @@ Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
 
 /// If id is a pair then returns the ID that is a component.
 /// Id id is not a pair, then just returns id.
-ecs_entity_t GFWorld::get_main_id(ecs_entity_t id) {
+ecs_entity_t GFWorld::get_main_id(ecs_entity_t id) const {
 	if (ECS_IS_PAIR(id)) {
 		ecs_entity_t first = ECS_PAIR_FIRST(id);
 		if (ecs_has_id(raw(), first, FLECS_IDEcsStructID_)) {
@@ -781,11 +783,11 @@ ecs_entity_t GFWorld::get_main_id(ecs_entity_t id) {
 	return id;
 }
 
-ecs_entity_t GFWorld::get_registered_id(Ref<Script> script) {
+ecs_entity_t GFWorld::get_registered_id(Ref<Script> script) const {
 	return registered_entity_ids.get(script, 0);
 }
 
-Ref<Script> GFWorld::get_registered_script(ecs_entity_t id) {
+Ref<Script> GFWorld::get_registered_script(ecs_entity_t id) const {
 	if (ecs_id_is_pair(id)) {
 		Ref<Script> first = registered_entity_scripts.get(
 			ECS_PAIR_FIRST(id),
@@ -837,7 +839,7 @@ void GFWorld::copy_component_ptr(
 	const void* src_ptr,
 	void* dst_ptr,
 	ecs_entity_t component
-) {
+) const {
 	const EcsStruct* c_struct = ecs_get(_raw, component, EcsStruct);
 	if (c_struct == nullptr) {
 		return;
@@ -854,7 +856,7 @@ void GFWorld::copy_gd_type_ptr(
 	const void* src_ptr,
 	void* dst_ptr,
 	ecs_entity_t type
-) {
+) const {
 	Variant::Type vari_type = id_to_variant_type(type);
 
 	switch (vari_type) {
@@ -909,7 +911,7 @@ void GFWorld::copy_gd_type_ptr(
 void GFWorld::deinit_component_ptr(
 	void* ptr,
 	ecs_entity_t component
-) {
+) const {
 	const EcsStruct* c_struct = ecs_get(_raw, component, EcsStruct);
 	if (c_struct == nullptr) {
 		return;
@@ -924,7 +926,7 @@ void GFWorld::deinit_component_ptr(
 void GFWorld::deinit_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
-) {
+) const {
 	Variant::Type vari_type = id_to_variant_type(type);
 
 	switch (vari_type) {
@@ -980,7 +982,7 @@ void GFWorld::init_component_ptr(
 	void* ptr,
 	ecs_entity_t component,
 	Variant args
-) {
+) const {
 	const EcsStruct* c_struct = ecs_get(_raw, component, EcsStruct);
 	if (c_struct == nullptr) {
 		return;
@@ -996,7 +998,7 @@ void GFWorld::init_component_ptr(
 void GFWorld::init_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
-) {
+) const {
 	Variant::Type vari_type = id_to_variant_type(type);
 
 	switch (vari_type) {
@@ -1043,7 +1045,29 @@ void GFWorld::init_gd_type_ptr(
 	}
 }
 
-bool GFWorld::is_id_alive(ecs_entity_t id) {
+bool GFWorld::id_has_child(ecs_entity_t parent, const char* child_name) const {
+	return ecs_lookup_child(raw(),parent, child_name) != 0;
+}
+
+bool GFWorld::id_set_parent(ecs_entity_t id, ecs_entity_t parent) const {
+	CHECK_ENTITY_ALIVE(id, this, false,
+		"Failed to set parent\nChild is not alive\n"
+	);
+	CHECK_ENTITY_ALIVE(parent, this, false,
+		"Failed to set parent\nParent is not alive\n"
+	);
+
+	// TODO: Handle name conflicts rather than throw error
+	CHECK_NOT_HAS_CHILD(parent, ecs_get_name(raw(), id), this, false,
+		"Failed to set parent\n"
+	);
+
+	ecs_add_id(raw(), id, ecs_childof(parent));
+
+	return true;
+}
+
+bool GFWorld::is_id_alive(const ecs_entity_t id) const {
 	if (ECS_IS_PAIR(id)) {
 		if (!ecs_is_alive(raw(), ECS_PAIR_FIRST(id))) {
 			return false;
@@ -1059,7 +1083,7 @@ bool GFWorld::is_id_alive(ecs_entity_t id) {
 	return true;
 }
 
-ecs_world_t * GFWorld::raw() {
+ecs_world_t * GFWorld::raw() const {
 	return _raw;
 }
 
@@ -1087,7 +1111,7 @@ void GFWorld::define_gd_literal(
 	const char* name,
 	ecs_primitive_kind_t primitive,
 	ecs_entity_t* id_storage
-) {
+) const {
 	ecs_primitive_desc_t desc = {
 		.entity = *id_storage,
 		.kind = primitive

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFTag" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A reference to an entity with no data.
+	</brief_description>
+	<description>
+		Tags are a kind of entity that can be attached to other entities to mark them without adding data, unlike components which will add data when attatched.
+	</description>
+	<tutorials>
+		<link title="More on Flecs Tags">https://www.flecs.dev/flecs/md_docs_2Quickstart.html#tag</link>
+	</tutorials>
+	<methods>
+		<method name="from" qualifiers="static">
+			<return type="GFTag" />
+			<param index="0" name="tag" type="Variant" />
+			<param index="1" name="world" type="GFWorld" default="null" />
+			<description>
+				Returns an entity from an ID coerced from a [Variant].
+				If no world is specified, a default world is used.
+				To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				[codeblock]
+				var entity:= GFTag.from("flecs/core/Trait")
+				[/codeblock]
+			</description>
+		</method>
+		<method name="from_id" qualifiers="static">
+			<return type="GFTag" />
+			<param index="0" name="tag_id" type="int" />
+			<param index="1" name="world" type="GFWorld" default="null" />
+			<description>
+				Returns an tag from an ID.
+				If no world is specified, a default world is used.
+				[codeblock]
+				var entity:= GFEntity.from_id(255)
+				[/codeblock]
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFTag" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a reference to a new entity created within [param world].
+				[codeblock]
+				var world:= GFWorld.new()
+				var entity:= GFEntity.new_in_world(world)
+				[/codeblock]
+			</description>
+		</method>
+	</methods>
+</class>
