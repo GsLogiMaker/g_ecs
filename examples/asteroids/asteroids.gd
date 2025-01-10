@@ -8,9 +8,9 @@ var texture:= load("res://icon.png")
 func _ready() -> void:
 	GFEntity.new() \
 		.set_name("Test") \
-		.add_component(GFTexture2D, texture) \
-		.add_component(GFCanvasItem) \
-		.add_component(GFPosition2D)
+		.add(GFTexture2D, texture) \
+		.add(GFCanvasItem) \
+		.add(GFPosition2D)
 
 	GFGlobalWorld.start_rest_api()
 
@@ -18,5 +18,5 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	GFGlobalWorld.progress(delta)
 	GFGlobalWorld.lookup("Test") \
-		.get_component(GFPosition2D) \
+		.get(GFPosition2D) \
 		.set_vec(get_global_mouse_position())

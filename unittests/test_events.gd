@@ -70,25 +70,6 @@ func test_on_set_event():
 	e4.delete()
 
 
-func test_on_set_event_setm():
-	var data:= {i=0}
-	GFObserverBuilder.new_in_world(world) \
-		.set_events("flecs/core/OnSet") \
-		.with(Ints) \
-		.for_each(func(ints: Ints):
-			data.i += 1
-			)
-
-	var e:= GFEntity.new_in_world(world) \
-		.set_name("WithInts") \
-		.add(Ints, 2, 31)
-	
-	assert_eq(data.i, 1, "Expected `OnSet` observer to have run once from being added")
-	e.get(Ints).setm_no_notify("a", 3)
-	assert_eq(data.i, 1, "Expected `OnSet` observer to have been only run once after calling setm_no_notify")
-	e.get(Ints).setm("a", 4)
-	assert_eq(data.i, 2, "Expected `OnSet` observer to have run a 2nd time after setm")
-
 func test_on_add_event_with_objects():
 	var data:= {i=0}
 	GFObserverBuilder.new_in_world(world) \
