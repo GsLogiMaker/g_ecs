@@ -3,10 +3,10 @@ extends GutTest
 
 var world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
 
-func after_all():
+func after_each():
 	world.free()
 
 #region Tests
