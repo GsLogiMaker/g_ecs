@@ -35,11 +35,11 @@ namespace godot {
 
 		ecs_entity_t coerce_id(Variant);
 
-		Ref<GFEntity> lookup(String);
+		Ref<GFEntity> lookup(String) const;
 
 		Ref<GFPair> pair(Variant, Variant);
-		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t);
-		void progress(double delta);
+		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t) const;
+		void progress(double delta) const;
 
 		Ref<GFRegisterableEntity> register_script(Ref<Script>);
 		ecs_entity_t register_script_id(Ref<Script>);
@@ -48,14 +48,14 @@ namespace godot {
 
 		void _register_modules_from_scripts(int);
 
-		void start_rest_api();
+		void start_rest_api() const;
 		static ecs_entity_t variant_type_to_id(Variant::Type);
 
-		bool id_has_child(ecs_entity_t parent, const char* child_name);
+		bool id_has_child(ecs_entity_t parent, const char* child_name) const;
 
-		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent);
+		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent) const;
 
-		String id_to_text(ecs_entity_t);
+		String id_to_text(ecs_entity_t) const;
 		static Variant::Type id_to_variant_type(ecs_entity_t);
 
 		// **************************************
@@ -108,25 +108,25 @@ namespace godot {
 		static ecs_entity_t glecs_meta_packed_color_array;
 		static ecs_entity_t glecs_meta_packed_vector4_array;
 
-		ecs_entity_t get_main_id(ecs_entity_t);
+		ecs_entity_t get_main_id(ecs_entity_t) const;
 		/// Returns the ID which was registered with the given Script.
 		/// Returns 0 if the entity has no registered script.
-		ecs_entity_t get_registered_id(Ref<Script> script);
+		ecs_entity_t get_registered_id(Ref<Script> script) const;
 		/// Returns the script which was registered with the given ID.
 		/// Returns null if the entity has no registered script.
-		Ref<Script> get_registered_script(ecs_entity_t id);
+		Ref<Script> get_registered_script(ecs_entity_t id) const;
 
-		void copy_component_ptr(const void*, void*, ecs_entity_t);
-		void copy_gd_type_ptr(const void*, void*, ecs_entity_t);
-		void deinit_component_ptr(void*, ecs_entity_t);
-		void deinit_gd_type_ptr(void*, ecs_entity_t);
-		void init_component_ptr(void*, ecs_entity_t, Variant);
-		void init_gd_type_ptr(void*, ecs_entity_t);
+		void copy_component_ptr(const void*, void*, ecs_entity_t) const;
+		void copy_gd_type_ptr(const void*, void*, ecs_entity_t) const;
+		void deinit_component_ptr(void*, ecs_entity_t) const;
+		void deinit_gd_type_ptr(void*, ecs_entity_t) const;
+		void init_component_ptr(void*, ecs_entity_t, Variant) const;
+		void init_gd_type_ptr(void*, ecs_entity_t) const;
 
 		static GFWorld* world_or_singleton(GFWorld* world);
 		static GFWorld* singleton();
-		bool is_id_alive(ecs_entity_t id);
-		ecs_world_t* raw();
+		bool is_id_alive(ecs_entity_t id) const;
+		ecs_world_t* raw() const;
 
 	protected:
 		static void _bind_methods();
@@ -218,7 +218,7 @@ namespace godot {
 			);
 		}
 
-		void define_gd_literal(const char*, ecs_primitive_kind_t, ecs_entity_t* id_storage);
+		void define_gd_literal(const char*, ecs_primitive_kind_t, ecs_entity_t* id_storage) const;
 	};
 }
 

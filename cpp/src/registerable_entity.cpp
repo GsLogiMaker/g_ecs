@@ -26,7 +26,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(ecs_entity_t id, GFWorld
 	return setup_template<GFRegisterableEntity>(memnew(GFRegisterableEntity(id, world_)));
 }
 
-Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, GFWorld* world) {
+Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, const GFWorld* world) {
 	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
 		script->get_instance_base_type()
 	);
