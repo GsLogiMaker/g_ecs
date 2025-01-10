@@ -413,10 +413,7 @@ Ref<GFEntity> GFEntity::get_parent() {
 	);
 
 	if (parent == 0) {
-		ERR(nullptr,
-			"Failed to get parent of entity\n",
-			"	Entity ", get_world()->id_to_text(parent), " has no parent."
-		);
+		return nullptr;
 	}
 
 	return GFEntity::from_id(parent, get_world());

@@ -90,19 +90,19 @@ func test_builder():
 		.add_pair(Foo, Stringy) \
 		.add_pair(Stringy, Foo) \
 		.build()
-	
+
 	assert_eq(e.get_name(), "Built", "Expected entity to be named 'Built'")
-	
+
 	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
 		.with(Foo) \
 		.with(world.pair(Foo, Stringy)) \
 		.with(world.pair(Stringy, Foo)) \
 		.build()
-	
+
 	var i:= 0
 	for _x in query.iterate():
 		i += 1
-	
+
 	assert_eq(i, 1, "Expected query to find the built entity")
 
 
@@ -111,7 +111,7 @@ func test_add_get_child():
 	var par:= GFEntity.new_in_world(world) \
 		.set_name("Parent") \
 		.add_child(child)
-	
+
 	assert_eq(
 		child.get_id(),
 		par.get_child("Child").get_id(),
@@ -125,11 +125,23 @@ func test_set_get_parent():
 		.set_parent(
 			GFEntity.new_in_world(world).set_name("Parent")
 		)
-	
+
 	assert_eq(
 		child.get_parent().get_name(),
 		"Parent",
 		"Expected to find `Child` as a child of `Parent`"
+	)
+
+
+func test_has_child():
+	var flecs:= GFEntity.from("flecs", world)
+	assert_true(
+		flecs.has_child("core"),
+		"Expected to `flecs` module to have a child named `core`"
+	)
+	assert_true(
+		flecs.has_child("core/OnAdd"),
+		"Expected to `flecs` module to have a grandchild named `core/OnAdd`"
 	)
 
 #endregion
