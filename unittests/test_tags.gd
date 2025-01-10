@@ -13,11 +13,10 @@ func after_each():
 
 func _test_tag_creation():
 	var enemy:= GFTag.new_in_world(world)
-	
 	var robot:=GFEntity.new_in_world(world) \
 		.add(enemy)
 	
-	assert_true(robot.has_entity(enemey), "Expected `robot` to have the `enemy` tag")
+	assert_true(robot.has_entity(enemy), "Expected `robot` to have the `enemy` tag")
 
 #endregion
 
