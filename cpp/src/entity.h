@@ -44,22 +44,22 @@ namespace godot {
 		static Ref<GFEntity> from(Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
-		Ref<GFEntity> add_child(Variant entity);
-		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _add_component(Variant, Array);
-		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _set_component(Variant, Array);
+		Ref<GFEntity> add_child(Variant entity) const;
+		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&) const;
+		Ref<GFEntity> _add_component(Variant, Array) const;
+		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&) const;
+		Ref<GFEntity> _set_component(Variant, Array) const;
 
-		Ref<GFEntity> add_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _add_pair(Variant, Variant, Array);
-		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> _set_pair(Variant, Variant, Array);
+		Ref<GFEntity> add_pair(const Variant**, GDExtensionInt, GDExtensionCallError&) const;
+		Ref<GFEntity> _add_pair(Variant, Variant, Array) const;
+		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&) const;
+		Ref<GFEntity> _set_pair(Variant, Variant, Array) const;
 
-		Ref<GFEntity> add_tag(Variant);
+		Ref<GFEntity> add_tag(Variant) const;
 
-		void delete_();
+		void delete_() const;
 
-		Ref<GFEntity> emit(Variant, Array, Array);
+		Ref<GFEntity> emit(Variant, Array, Array) const;
 
 		Ref<GFEntity> get_child(String) const;
 		Ref<GFComponent> get_component(Variant) const;
@@ -80,8 +80,8 @@ namespace godot {
 		Ref<GFPair> pair(Variant second) const;
 		ecs_entity_t pair_id(ecs_entity_t second_id) const;
 
-		Ref<GFEntity> set_name(String);
-		Ref<GFEntity> set_parent(Variant entity);
+		Ref<GFEntity> set_name(String) const;
+		Ref<GFEntity> set_parent(Variant entity) const;
 
 		String _to_string() const;
 
