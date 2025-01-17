@@ -197,7 +197,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant se
 	query_desc.terms[get_term_count()] = {
 		.id = term_id,
 		.inout = ecs_inout_kind_t::EcsInOut,
-		.oper = ecs_oper_kind_t::EcsAnd
+		.oper = static_cast<int16_t>(oper)
 	};
 	term_count += 1;
 
