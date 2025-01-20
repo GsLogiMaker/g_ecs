@@ -114,7 +114,22 @@ func _test_cascade_traversal():
 
 
 func test_with_pair():
-	pass
+	var w:= world
+	var data:= {ints_bools=0}
+	
+	GFEntityBuilder.new_in_world(world) \
+		.add_pair(Ints, Bools) \
+		.build()
+	
+	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
+		.with(Ints, Bools) \
+		.build()
+
+	var count:= 0
+	for _x in query.iterate():
+		count += 1
+	
+	assert_eq(count, 1, "Expected query to find 1 entity")
 
 
 #endregion
