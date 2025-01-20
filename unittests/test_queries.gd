@@ -16,6 +16,7 @@ func test_optional_terms():
 	var w:= world
 	var data:Dictionary = {ints=0, bools=0}
 	var callable:= func(ints, bools):
+		prints(ints, bools)
 		if ints:
 			data.ints += 1
 		if bools:
@@ -42,8 +43,8 @@ func test_optional_terms():
 		.maybe_with(Bools) \
 		.for_each(callable)
 	w.progress(0.0)
-	assert_eq(data.ints, 2)
-	assert_eq(data.bools, 1)
+	assert_eq(data.ints, 2, "Expected `Ints` to be queried 2 times")
+	assert_eq(data.bools, 1, "Expected `Bools` to be queried 1 times")
 
 	data.ints = 0
 	data.bools = 0
@@ -52,8 +53,8 @@ func test_optional_terms():
 		.with(Bools) \
 		.for_each(callable)
 	w.progress(0.0)
-	assert_eq(data.ints, 1 + (2)) # Extra 2 from previous system running
-	assert_eq(data.bools, 3 + (1)) # Extra 1 from previous system running
+	assert_eq(data.ints, 1 + (2), "Expected `Ints` to be queried 3 times total") # Extra 2 from previous system running
+	assert_eq(data.bools, 3 + (1), "Expected `Bools` to be queried 4 times total") # Extra 1 from previous system running
 
 func test_or_operation_terms():
 	var w:= world
@@ -111,6 +112,11 @@ func _test_desc_traversal():
 func _test_cascade_traversal():
 	# TODO: Implement test for cascade traversal
 	assert_true(false, "Unimplemnted")
+
+
+func test_with_pair():
+	pass
+
 
 #endregion
 
