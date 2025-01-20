@@ -6,6 +6,7 @@
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/packed_int32_array.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
+#include "godot_cpp/variant/variant.hpp"
 #include <query.h>
 
 #include <flecs.h>
@@ -48,10 +49,10 @@ namespace godot {
 		Ref<GFQuerylikeBuilder> access_inout();
 		Ref<GFQuerylikeBuilder> access_none();
 		Ref<GFQuerylikeBuilder> access_out();
-		Ref<GFQuerylikeBuilder> with(Variant component);
-		Ref<GFQuerylikeBuilder> maybe_with(Variant component);
-		Ref<GFQuerylikeBuilder> or_with(Variant component);
-		Ref<GFQuerylikeBuilder> without(Variant component);
+		Ref<GFQuerylikeBuilder> with(Variant, Variant);
+		Ref<GFQuerylikeBuilder> maybe_with(Variant, Variant);
+		Ref<GFQuerylikeBuilder> or_with(Variant, Variant);
+		Ref<GFQuerylikeBuilder> without(Variant, Variant);
 		Ref<GFQuerylikeBuilder> up(Variant component);
 		Ref<GFQuerylikeBuilder> descend(Variant component);
 		Ref<GFQuerylikeBuilder> cascade(Variant component);
@@ -61,6 +62,8 @@ namespace godot {
 		// **************************************
 
 		void set_world(GFWorld*);
+
+		Ref<GFQuerylikeBuilder> _add_term(Variant term, Variant second, ecs_oper_kind_t oper);
 
 	protected:
 		/// The Flecs description of the building query.

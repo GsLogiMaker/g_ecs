@@ -13,10 +13,10 @@
 	UtilityFunctions::push_error(__VA_ARGS__); \
 	return return_value;
 
-#define CHECK_ENTITY_ALIVE(entity, gf_world, return_value, err) \
+#define CHECK_ENTITY_ALIVE(entity, gf_world, return_value, ...) \
 	if (!gf_world->is_id_alive(entity)) { \
 		ERR(return_value, \
-			err, \
+			__VA_ARGS__, \
 			"	Entity ", gf_world->id_to_text(entity), " is not alive" \
 		); \
 	}
@@ -26,6 +26,14 @@
 		ERR(return_value, \
 			err, \
 			"	", gf_world->id_to_text(entity) ," already has a child named \"", child_name, "\"" \
+		); \
+	}
+
+#define CHECK_NOT_PAIR(entity, gf_world, return_value, ...) \
+	if (!gf_world->is_id_alive(entity)) { \
+		ERR(return_value, \
+			__VA_ARGS__, \
+			"	Entity ", gf_world->id_to_text(entity), " is a pair" \
 		); \
 	}
 
