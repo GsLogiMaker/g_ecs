@@ -16,7 +16,6 @@ func test_optional_terms():
 	var w:= world
 	var data:Dictionary = {ints=0, bools=0}
 	var callable:= func(ints, bools):
-		prints(ints, bools)
 		if ints:
 			data.ints += 1
 		if bools:
