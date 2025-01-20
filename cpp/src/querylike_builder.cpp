@@ -82,41 +82,13 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
 	return Ref(this);
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant component) {
-	ecs_entity_t comp_id = world->coerce_id(component);
-
-	CHECK_ENTITY_ALIVE(comp_id, world,
-		Ref(this),
-		"Failed to add term to query\n"
-	);
-
-	query_desc.terms[get_term_count()] = {
-		.id = comp_id,
-		.inout = ecs_inout_kind_t::EcsInOut,
-		.oper = ecs_oper_kind_t::EcsAnd
-	};
-	term_count += 1;
-
-	return Ref(this);
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant term_v, Variant second) {
+	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant component) {
-	ecs_entity_t comp_id = world->coerce_id(component);
-
-	CHECK_ENTITY_ALIVE(comp_id, world,
-		Ref(this),
-		"Failed to add `optional` term to query\n"
-	);
-
-	query_desc.terms[get_term_count()] = {
-		.id = comp_id,
-		.inout = ecs_inout_kind_t::EcsInOut,
-		.oper = ecs_oper_kind_t::EcsOptional
-	};
-	term_count += 1;
-
-	return Ref(this);
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant term_v, Variant second) {
+	return _add_term(term_v, second, ecs_oper_kind_t::EcsOptional);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant term_v, Variant second) {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to add `or` term to query\n"
 	);
@@ -126,40 +98,12 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant component) {
 			"OR terms can only be added after AND terms; use \"with\" for previous term instead"
 		);
 	}
-
-	ecs_entity_t comp_id = world->coerce_id(component);
-
-	CHECK_ENTITY_ALIVE(comp_id, world,
-		Ref(this),
-		"Failed to add `or` term to query\n"
-	);
-
 	query_desc.terms[get_term_count()-1].oper = ecs_oper_kind_t::EcsOr;
-	query_desc.terms[get_term_count()] = {
-		.id = comp_id,
-		.inout = ecs_inout_kind_t::EcsInOut,
-		.oper = ecs_oper_kind_t::EcsAnd
-	};
-	term_count += 1;
 
-	return Ref(this);
+	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant component) {
-	ecs_entity_t comp_id = world->coerce_id(component);
-
-	CHECK_ENTITY_ALIVE(comp_id, world,
-		Ref(this),
-		"Failed to add `negative` term to query\n"
-	);
-
-	query_desc.terms[get_term_count()] = {
-		.id = comp_id,
-		.inout = ecs_inout_kind_t::EcsInOut,
-		.oper = ecs_oper_kind_t::EcsNot
-	};
-	term_count += 1;
-
-	return Ref(this);
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant term_v, Variant second) {
+	return _add_term(term_v, second, ecs_oper_kind_t::EcsNot);
 }
 
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::up(Variant entity) {
@@ -213,6 +157,53 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(Variant entity) {
 // *** Unexposed ***
 // **************************************
 
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant second, ecs_oper_kind_t oper) {
+	const char* oper_name = "";
+	switch (oper) {
+		case EcsAnd: oper_name = "and"; break;
+		case EcsOr: oper_name = "or"; break;
+		case EcsNot: oper_name = "not"; break;
+		case EcsOptional: oper_name = "optional"; break;
+		case EcsAndFrom: oper_name = "and_from"; break;
+		case EcsOrFrom: oper_name = "or_from"; break;
+		case EcsNotFrom: oper_name = "not_from"; break;
+	}
+
+	ecs_entity_t term_id = world->coerce_id(term_v);
+	CHECK_ENTITY_ALIVE(term_id, world,
+		nullptr,
+		"Failed to add term in `", oper_name, "` term to query\n"
+	);
+
+	if (second.booleanize()) {
+		CHECK_NOT_PAIR(term_id, world,
+			nullptr,
+			"Failed to add term as first of pair in `", oper_name, "` term to query\n"
+		);
+
+		ecs_entity_t second_id = world->coerce_id(second);
+		CHECK_ENTITY_ALIVE(second_id, world,
+			nullptr,
+			"Failed to add second in `", oper_name, "` term to query\n"
+		);
+		CHECK_NOT_PAIR(term_id, world,
+			nullptr,
+			"Failed to add second of pair in `", oper_name, "` term to query\n"
+		);
+
+		term_id = ecs_pair(term_id, second_id);
+	}
+
+	query_desc.terms[get_term_count()] = {
+		.id = term_id,
+		.inout = ecs_inout_kind_t::EcsInOut,
+		.oper = static_cast<int16_t>(oper)
+	};
+	term_count += 1;
+
+	return this;
+}
+
 void GFQuerylikeBuilder::set_world(GFWorld* world_) {
 	world = world_;
 }
@@ -255,10 +246,10 @@ void GFQuerylikeBuilder::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("access_none"), &GFQuerylikeBuilder::access_none);
 	godot::ClassDB::bind_method(D_METHOD("access_out"), &GFQuerylikeBuilder::access_out);
 
-	godot::ClassDB::bind_method(D_METHOD("with", "component"), &GFQuerylikeBuilder::with);
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "component"), &GFQuerylikeBuilder::maybe_with);
-	godot::ClassDB::bind_method(D_METHOD("or_with", "component"), &GFQuerylikeBuilder::or_with);
-	godot::ClassDB::bind_method(D_METHOD("without", "component"), &GFQuerylikeBuilder::without);
+	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &GFQuerylikeBuilder::with, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &GFQuerylikeBuilder::maybe_with, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &GFQuerylikeBuilder::or_with, nullptr);
+	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &GFQuerylikeBuilder::without, nullptr);
 
 	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &GFQuerylikeBuilder::up, 0);
 	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &GFQuerylikeBuilder::descend, 0);
