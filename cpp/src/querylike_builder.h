@@ -3,6 +3,7 @@
 #define QUERYLike_BUILDER_H
 
 #include "component.h"
+#include "entity_builder.h"
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/packed_int32_array.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
@@ -18,20 +19,23 @@ namespace godot {
 	class GFWorld;
 	class QueryIterationContext;
 
-	class GFQuerylikeBuilder : public RefCounted {
-		GDCLASS(GFQuerylikeBuilder, RefCounted)
+	class GFQuerylikeBuilder : public GFEntityBuilder {
+		GDCLASS(GFQuerylikeBuilder, GFEntityBuilder)
 
 		friend QueryIterationContext;
 
 	public:
 		GFQuerylikeBuilder():
-			GFQuerylikeBuilder(nullptr)
-		{}
-		GFQuerylikeBuilder(GFWorld* world):
+			GFEntityBuilder(),
 			query_desc( {0} ),
 			built(false),
-			term_count(0),
-			world(world)
+			term_count(0)
+		{}
+		GFQuerylikeBuilder(GFWorld* world):
+			GFEntityBuilder(world),
+			query_desc( {0} ),
+			built(false),
+			term_count(0)
 		{}
 		~GFQuerylikeBuilder();
 
@@ -40,7 +44,6 @@ namespace godot {
 		// **************************************
 
 		int get_term_count();
-		GFWorld* get_world();
 		bool is_built();
 		Ref<GFQuerylikeBuilder> access_default();
 		Ref<GFQuerylikeBuilder> access_filter();
@@ -60,8 +63,6 @@ namespace godot {
 		// *** Unexposed ***
 		// **************************************
 
-		void set_world(GFWorld*);
-
 	protected:
 		/// The Flecs description of the building query.
 		ecs_query_desc_t query_desc{0};
@@ -74,8 +75,6 @@ namespace godot {
 	private:
 		/// The number of terms added to the query so far.
 		int term_count{0};
-		/// The world to query in.
-		GFWorld* world{nullptr};
 
 	};
 

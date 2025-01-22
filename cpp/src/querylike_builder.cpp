@@ -31,10 +31,6 @@ int GFQuerylikeBuilder::get_term_count() {
 	return term_count;
 }
 
-GFWorld* GFQuerylikeBuilder::get_world() {
-	return world;
-}
-
 bool GFQuerylikeBuilder::is_built() {
 	return built;
 }
@@ -213,10 +209,6 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(Variant entity) {
 // *** Unexposed ***
 // **************************************
 
-void GFQuerylikeBuilder::set_world(GFWorld* world_) {
-	world = world_;
-}
-
 // **********************************************
 // *** PROTECTED ***
 // **********************************************
@@ -226,6 +218,9 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 		Ref(this),
 		callable
 	);
+	if (query_desc.binding_ctx != nullptr) {
+		delete static_cast<QueryIterationContext*>(query_desc.binding_ctx);
+	}
 	query_desc.binding_ctx = ctx;
 	query_desc.binding_ctx_free = [](void* ptr) {
 		delete static_cast<QueryIterationContext*>(ptr);
