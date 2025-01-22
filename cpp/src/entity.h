@@ -3,7 +3,6 @@
 #define GL_ENTITY_H
 
 #include "godot_cpp/core/class_db.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -29,9 +28,10 @@ namespace godot {
 		GFEntity(const GFWorld* world) ;
 		// Reference an entity
 		GFEntity(const ecs_entity_t id_, const GFWorld* world_):
-			id(id_),
-			world_instance_id(world_->get_instance_id())
-		{}
+			id(id_)
+		{
+			world_instance_id = world_->get_instance_id();
+		}
 		// Copy an entity reference
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
 		~GFEntity();

@@ -13,6 +13,32 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/string.hpp>
 
+#define OVERRIDE_QUERYLIKE_SELF_METHODS(Self)	\
+	OVERRIDE_ENTITY_BUILDER_SELF_METHODS(Self)	\
+	Ref<Self> with(Variant method_arg0) { return GFQuerylikeBuilder::with(method_arg0); } \
+	Ref<Self> or_with(Variant method_arg0) { return GFQuerylikeBuilder::or_with(method_arg0); } \
+	Ref<Self> without(Variant method_arg0) { return GFQuerylikeBuilder::without(method_arg0); } \
+	Ref<Self> maybe_with(Variant method_arg0) { return GFQuerylikeBuilder::maybe_with(method_arg0); } \
+	Ref<Self> up(Variant method_arg0) { return GFQuerylikeBuilder::up(method_arg0); } \
+	Ref<Self> descend(Variant method_arg0) { return GFQuerylikeBuilder::descend(method_arg0); } \
+	Ref<Self> cascade(Variant method_arg0) { return GFQuerylikeBuilder::cascade(method_arg0); } \
+
+#define REGISTER_QUERYLIKE_SELF_METHODS(Self)	\
+	REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)	\
+	godot::ClassDB::bind_method(D_METHOD("with", "component"), &Self::with);	\
+	godot::ClassDB::bind_method(D_METHOD("or_with", "component"), &Self::or_with);	\
+	godot::ClassDB::bind_method(D_METHOD("without", "component"), &Self::without);	\
+	godot::ClassDB::bind_method(D_METHOD("maybe_with", "component"), &Self::maybe_with);	\
+	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &Self::up, 0);	\
+	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &Self::descend, 0);	\
+	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &Self::cascade, 0);	\
+	godot::ClassDB::bind_method(D_METHOD("access_default"), &Self::access_default);	\
+	godot::ClassDB::bind_method(D_METHOD("access_filter"), &Self::access_filter);	\
+	godot::ClassDB::bind_method(D_METHOD("access_in"), &Self::access_in);	\
+	godot::ClassDB::bind_method(D_METHOD("access_inout"), &Self::access_inout);	\
+	godot::ClassDB::bind_method(D_METHOD("access_none"), &Self::access_none);	\
+	godot::ClassDB::bind_method(D_METHOD("access_out"), &Self::access_out);
+
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies

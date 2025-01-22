@@ -33,6 +33,8 @@ namespace godot {
 		static Ref<GFQueryBuilder> new_in_world(GFWorld*);
 		Ref<GFQuery> build();
 
+		OVERRIDE_QUERYLIKE_SELF_METHODS(GFQueryBuilder);
+
 		// **************************************
 		// *** Unexposed ***
 		// **************************************

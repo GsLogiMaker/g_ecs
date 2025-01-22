@@ -66,6 +66,8 @@ Ref<GFObserverBuilder> GFObserverBuilder::set_events_varargs(
 
 
 void GFObserverBuilder::_bind_methods() {
+	REGISTER_QUERYLIKE_SELF_METHODS(GFObserverBuilder);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFObserverBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFObserverBuilder::for_each);
 	godot::ClassDB::bind_method(D_METHOD("set_event", "index", "event"), &GFObserverBuilder::set_event);
