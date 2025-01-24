@@ -133,6 +133,8 @@ void GFModule::_register_user() {
 
 
 void GFModule::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFModule);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFModule::new_named_in_world);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_named_in_world", "name", "world"), &GFModule::new_named_in_world);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "module", "world"), &GFModule::from, nullptr);

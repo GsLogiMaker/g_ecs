@@ -36,6 +36,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFComponent);
+
 		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
 
 		static Ref<GFComponent> from(Variant c, Variant e, GFWorld*);

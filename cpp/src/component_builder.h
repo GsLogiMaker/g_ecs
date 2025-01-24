@@ -32,6 +32,8 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
+		OVERRIDE_ENTITY_BUILDER_SELF_METHODS(GFComponentBuilder);
+
 		Ref<GFComponentBuilder> add_member(String, Variant::Type);
 		int get_member_count();
 		bool is_built();

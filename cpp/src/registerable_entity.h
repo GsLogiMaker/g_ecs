@@ -30,6 +30,8 @@ namespace godot {
 		// --- Exposed ---
 		// --------------------------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFRegisterableEntity);
+
 		GDVIRTUAL1(_register, GFWorld*)
 
 		static Ref<GFRegisterableEntity> new_in_world(GFWorld*);

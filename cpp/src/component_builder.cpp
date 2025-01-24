@@ -112,6 +112,8 @@ Ref<GFEntity> GFComponentBuilder::build() {
 // **********************************************
 
 void GFComponentBuilder::_bind_methods() {
+	REGISTER_ENTITY_BUILDER_SELF_METHODS(GFComponentBuilder);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFComponentBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFComponentBuilder::build);
 	godot::ClassDB::bind_method(D_METHOD("add_member", "member", "type"), &GFComponentBuilder::add_member);

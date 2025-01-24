@@ -31,6 +31,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFPair);
+
 		static Ref<GFPair> from(Variant first, Variant second, GFWorld*);
 		static Ref<GFPair> from_id(ecs_entity_t, GFWorld*);
 		static Ref<GFPair> from_ids(ecs_entity_t, ecs_entity_t, GFWorld*);

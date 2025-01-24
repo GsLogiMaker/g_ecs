@@ -40,6 +40,8 @@ Ref<GFTag> GFTag::from_id(ecs_entity_t tag_id, GFWorld* world_) {
 
 
 void GFTag::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFTag);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFTag::new_in_world);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "tag", "world"), &GFTag::from, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "tag_id", "world"), &GFTag::from_id, nullptr);

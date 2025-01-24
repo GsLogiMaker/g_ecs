@@ -89,7 +89,7 @@ func test_up_traversal():
 		.add(Bools) \
 		.add_pair("flecs/core/ChildOf", par)
 
-	var parent_descriptions:GFQuery = GFQueryBuilder.new_in_world(world) \
+	var parent_descriptions:= GFQueryBuilder.new_in_world(world) \
 		.with(Bools).up() \
 		.with(Bools) \
 		.build()
