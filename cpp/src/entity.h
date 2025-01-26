@@ -35,7 +35,7 @@
 	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"), &Self::add_pairv);	\
 	godot::ClassDB::bind_method(D_METHOD("set_pairv", "first", "second", "members"), &Self::set_pairv);	\
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &Self::add_tag);	\
-	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "components", "event_members"), &Self::emit);	\
+	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "components", "event_members"), &Self::emit, Array());	\
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &Self::set_name);	\
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &Self::set_parent);	\
 	{	\

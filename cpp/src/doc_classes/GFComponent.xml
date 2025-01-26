@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -23,13 +24,68 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="add" qualifiers="const vararg">
+			<return type="GFComponent" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add].
+			</description>
+		</method>
+		<method name="add_child">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_child].
+			</description>
+		</method>
+		<method name="add_pair" qualifiers="const vararg">
+			<return type="GFComponent" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_pair].
+			</description>
+		</method>
+		<method name="add_pairv">
+			<return type="GFComponent" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<param index="2" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_pairv].
+			</description>
+		</method>
+		<method name="add_tag">
+			<return type="GFComponent" />
+			<param index="0" name="tag" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_tag].
+			</description>
+		</method>
+		<method name="addv">
+			<return type="GFComponent" />
+			<param index="0" name="component" type="Variant" />
+			<param index="1" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.addv].
+			</description>
+		</method>
+		<method name="emit">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="components" type="Array" />
+			<param index="2" name="event_members" type="Array" />
+			<description>
+				Overrides [method GFEntity.emit].
+			</description>
+		</method>
 		<method name="from" qualifiers="static">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
 			<param index="1" name="world" type="Variant" />
 			<param index="2" name="_unnamed_arg2" type="GFWorld" default="null" />
 			<description>
-				Overrides [method GFEntity.from()].
+				Overrides [method GFEntity.from].
 			</description>
 		</method>
 		<method name="from_id" qualifiers="static">
@@ -38,22 +94,22 @@
 			<param index="1" name="world" type="int" />
 			<param index="2" name="_unnamed_arg2" type="GFWorld" default="null" />
 			<description>
-				Overrides [method GFEntity.from_id()].
+				Overrides [method GFEntity.from_id].
 			</description>
 		</method>
-		<method name="get_data_alignment">
+		<method name="get_data_alignment" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the memory alignment of this component's data.
 			</description>
 		</method>
-		<method name="get_data_size">
+		<method name="get_data_size" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the size in bytes of this component's data.
 			</description>
 		</method>
-		<method name="get_source_entity">
+		<method name="get_source_entity" qualifiers="const">
 			<return type="GFEntity" />
 			<description>
 				Returns a [GFEntity] reference to the entity this component's data is from.
@@ -67,7 +123,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="get_source_id">
+		<method name="get_source_id" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the ID of the entity that this component's data is from.
@@ -81,7 +137,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="getm">
+		<method name="getm" qualifiers="const">
 			<return type="Variant" />
 			<param index="0" name="member" type="String" />
 			<description>
@@ -95,13 +151,51 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="is_alive">
+		<method name="is_alive" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Overrides [method GFEntity.is_alive()].
+				Overrides [method GFEntity.is_alive].
 			</description>
 		</method>
-		<method name="setm">
+		<method name="set" qualifiers="const vararg">
+			<return type="GFComponent" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set].
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFComponent" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Overrides [method GFEntity.set_name].
+			</description>
+		</method>
+		<method name="set_pair" qualifiers="const vararg">
+			<return type="GFComponent" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_pair].
+			</description>
+		</method>
+		<method name="set_pairv">
+			<return type="GFComponent" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<param index="2" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_pairv].
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_parent].
+			</description>
+		</method>
+		<method name="setm" qualifiers="const">
 			<return type="void" />
 			<param index="0" name="member" type="String" />
 			<param index="1" name="value" type="Variant" />
@@ -114,6 +208,14 @@
 
 				vec2.setm("x", 3.14)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="setv">
+			<return type="GFComponent" />
+			<param index="0" name="component" type="Variant" />
+			<param index="1" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.setv].
 			</description>
 		</method>
 	</methods>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFEntityBuilder" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_entity">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Adds a new entity to the builder. The built entity have [param entity] added to it.
+				TODO: Add code examples.
+			</description>
+		</method>
+		<method name="add_pair">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Adds a pair to the builder. The built entity will have the pair of [param first] and [param second] added to it.
+				TODO: Add code examples.
+			</description>
+		</method>
+		<method name="build">
+			<return type="GFEntity" />
+			<description>
+				Creates a new entity from the settings of the builder and returns a reference to it.
+				TODO: Add code examples.
+			</description>
+		</method>
+		<method name="build_id">
+			<return type="int" />
+			<description>
+				Creates a new entity from the settings of the builder and returns a its id.
+				TODO: Add code examples.
+			</description>
+		</method>
+		<method name="get_world">
+			<return type="GFWorld" />
+			<description>
+				Returns the world the built entity will be added to.
+			</description>
+		</method>
+		<method name="new_in_world" qualifiers="static">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Returns a new builder in [param world].
+				TODO: Add code examples.
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Sets the name of the entity to be built.
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="entity" type="Variant" default="0" />
+			<description>
+				Sets the parent of the entity to be built.
+			</description>
+		</method>
+		<method name="set_target_entity">
+			<return type="GFEntityBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Sets the target entity. When set, the settings of the builder will be applied to [param entity], otherwise a new entity will be created according to the settings of the builder.
+			</description>
+		</method>
+	</methods>
+</class>
