@@ -31,8 +31,8 @@
 
 #define REGISTER_ENTITY_SELF_METHODS(Self)	\
 	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"), &Self::add_child);	\
-	godot::ClassDB::bind_method(D_METHOD("add_componentv", "component", "members"), &Self::add_componentv);	\
-	godot::ClassDB::bind_method(D_METHOD("set_componentv", "component", "members"), &Self::set_componentv);	\
+	godot::ClassDB::bind_method(D_METHOD("addv", "component", "members"), &Self::add_componentv);	\
+	godot::ClassDB::bind_method(D_METHOD("setv", "component", "members"), &Self::set_componentv);	\
 	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"), &Self::add_pairv);	\
 	godot::ClassDB::bind_method(D_METHOD("set_pairv", "first", "second", "members"), &Self::set_pairv);	\
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &Self::add_tag);	\
