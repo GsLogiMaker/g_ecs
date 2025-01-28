@@ -42,6 +42,8 @@ void GFSystemBuilder::for_each(Callable callable) {
 
 
 void GFSystemBuilder::_bind_methods() {
+	REGISTER_QUERYLIKE_SELF_METHODS(GFSystemBuilder);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFSystemBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFSystemBuilder::for_each);
 }

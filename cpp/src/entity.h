@@ -29,9 +29,10 @@ namespace godot {
 		GFEntity(const GFWorld* world) ;
 		// Reference an entity
 		GFEntity(const ecs_entity_t id_, const GFWorld* world_):
-			id(id_),
-			world_instance_id(world_->get_instance_id())
-		{}
+			id(id_)
+		{
+			world_instance_id = world_->get_instance_id();
+		}
 		// Copy an entity reference
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
 		~GFEntity();

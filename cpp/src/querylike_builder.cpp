@@ -233,24 +233,7 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 }
 
 void GFQuerylikeBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFQuerylikeBuilder::is_built);
-
-	godot::ClassDB::bind_method(D_METHOD("access_default"), &GFQuerylikeBuilder::access_default);
-	godot::ClassDB::bind_method(D_METHOD("access_filter"), &GFQuerylikeBuilder::access_filter);
-	godot::ClassDB::bind_method(D_METHOD("access_in"), &GFQuerylikeBuilder::access_in);
-	godot::ClassDB::bind_method(D_METHOD("access_inout"), &GFQuerylikeBuilder::access_inout);
-	godot::ClassDB::bind_method(D_METHOD("access_none"), &GFQuerylikeBuilder::access_none);
-	godot::ClassDB::bind_method(D_METHOD("access_out"), &GFQuerylikeBuilder::access_out);
-
-	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &GFQuerylikeBuilder::with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &GFQuerylikeBuilder::maybe_with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &GFQuerylikeBuilder::or_with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &GFQuerylikeBuilder::without, nullptr);
-
-	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &GFQuerylikeBuilder::up, 0);
-	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &GFQuerylikeBuilder::descend, 0);
-	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &GFQuerylikeBuilder::cascade, 0);
-
+	REGISTER_QUERYLIKE_SELF_METHODS(GFQuerylikeBuilder);
 }
 
 // **********************************************

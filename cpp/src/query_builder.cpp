@@ -35,6 +35,8 @@ Ref<GFQuery> GFQueryBuilder::build() {
 // **********************************************
 
 void GFQueryBuilder::_bind_methods() {
+	REGISTER_QUERYLIKE_SELF_METHODS(GFQueryBuilder);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFQueryBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("build"), &GFQueryBuilder::build);
 }
