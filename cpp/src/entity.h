@@ -13,15 +13,15 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 
 #define OVERRIDE_ENTITY_SELF_METHODS(Self)	\
-	Ref<Self> add_child(Variant v0)                                                         	{ return GFEntity::add_child(v0); }            	\
-	Ref<Self> add_componentv(Variant v0, Variant v1)                                        	{ return GFEntity::add_componentv(v0, v1); }   	\
-	Ref<Self> set_componentv(Variant v0, Variant v1)                                        	{ return GFEntity::set_componentv(v0, v1); }   	\
-	Ref<Self> set_pairv(Variant v0, Variant v1, Variant v2)                                 	{ return GFEntity::set_pairv(v0, v1, v2); }    	\
-	Ref<Self> add_pairv(Variant v0, Variant v1, Variant v2)                                 	{ return GFEntity::add_pairv(v0, v1, v2); }    	\
-	Ref<Self> add_tag(Variant v0)                                                           	{ return GFEntity::add_tag(v0); }              	\
-	Ref<Self> emit(Variant v0, Array v1, Array v2)                                          	{ return GFEntity::emit(v0, v1, v2); }         	\
-	Ref<Self> set_name(String v0)                                                           	{ return GFEntity::set_name(v0); }             	\
-	Ref<Self> set_parent(Variant v0)                                                        	{ return GFEntity::set_parent(v0); }           	\
+	Ref<Self> add_child(const Variant v0)                                                   	{ return GFEntity::add_child(v0); }            	\
+	Ref<Self> add_componentv(const Variant v0, const Variant v1)                            	{ return GFEntity::add_componentv(v0, v1); }   	\
+	Ref<Self> set_componentv(const Variant v0, const Variant v1)                            	{ return GFEntity::set_componentv(v0, v1); }   	\
+	Ref<Self> set_pairv(const Variant v0, const Variant v1, const Variant v2)               	{ return GFEntity::set_pairv(v0, v1, v2); }    	\
+	Ref<Self> add_pairv(const Variant v0, const Variant v1, const Variant v2)               	{ return GFEntity::add_pairv(v0, v1, v2); }    	\
+	Ref<Self> add_tag(const Variant v0)                                                     	{ return GFEntity::add_tag(v0); }              	\
+	Ref<Self> emit(const Variant v0, const Array v1, const Array v2)                        	{ return GFEntity::emit(v0, v1, v2); }         	\
+	Ref<Self> set_name(const String v0)                                                     	{ return GFEntity::set_name(v0); }             	\
+	Ref<Self> set_parent(const Variant v0)                                                  	{ return GFEntity::set_parent(v0); }           	\
 	Ref<Self> add_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::add_component(v0, v1, v2); }	\
 	Ref<Self> set_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::set_component(v0, v1, v2); }	\
 	Ref<Self> add_pair(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)     	{ return GFEntity::add_pair(v0, v1, v2); }     	\
@@ -99,7 +99,7 @@ namespace godot {
 		static Ref<GFEntity> from(const Variant, GFWorld*);
 		static Ref<GFEntity> from_id(const ecs_entity_t, const GFWorld*);
 
-		Ref<GFEntity> add_child(Variant entity);
+		Ref<GFEntity> add_child(const Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> add_componentv(const Variant, const Array);
 		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
