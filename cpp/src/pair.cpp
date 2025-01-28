@@ -60,6 +60,8 @@ ecs_entity_t GFPair::second_id() {
 }
 
 void GFPair::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFPair);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "first", "second", "world"), &GFPair::from, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "pair_id", "world"), &GFPair::from_id, nullptr);
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_ids", "first", "second", "world"), &GFPair::from_ids, nullptr);

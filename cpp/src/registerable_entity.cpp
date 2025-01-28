@@ -77,6 +77,8 @@ void GFRegisterableEntity::_register_user() {
 }
 
 void GFRegisterableEntity::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFRegisterableEntity);
+
 	GDVIRTUAL_BIND(_register, "world");
 	godot::ClassDB::bind_static_method(GFRegisterableEntity::get_class_static(), D_METHOD("new_in_world", "world"), &GFRegisterableEntity::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFRegisterableEntity::_register_internal);
