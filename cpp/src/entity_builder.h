@@ -11,19 +11,19 @@
 #include <godot_cpp/variant/string.hpp>
 
 #define OVERRIDE_ENTITY_BUILDER_SELF_METHODS(Self)	\
-	Ref<Self> add_entity(Variant v0) { return GFEntityBuilder::add_entity(v0); } \
-	Ref<Self> add_pair(Variant v0, Variant v1) { return GFEntityBuilder::add_pair(v0, v1); } \
-	Ref<Self> set_target_entity(Variant v0) { return GFEntityBuilder::set_target_entity(v0); } \
-	Ref<Self> set_name(Variant v0) { return GFEntityBuilder::set_name(v0); } \
-	Ref<Self> set_parent(Variant v0) { return GFEntityBuilder::set_parent(v0); } \
+	Ref<Self> add_entity(Variant v0)          	{ return GFEntityBuilder::add_entity(v0); }       	\
+	Ref<Self> add_pair(Variant v0, Variant v1)	{ return GFEntityBuilder::add_pair(v0, v1); }     	\
+	Ref<Self> set_target_entity(Variant v0)   	{ return GFEntityBuilder::set_target_entity(v0); }	\
+	Ref<Self> set_name(Variant v0)            	{ return GFEntityBuilder::set_name(v0); }         	\
+	Ref<Self> set_parent(Variant v0)          	{ return GFEntityBuilder::set_parent(v0); }       	\
 ;
 
 #define REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)	\
-	godot::ClassDB::bind_method(D_METHOD("add_entity", "entity"), &Self::add_entity);	\
-	godot::ClassDB::bind_method(D_METHOD("add_pair", "first", "second"), &Self::add_pair);	\
-	godot::ClassDB::bind_method(D_METHOD("set_target_entity", "entity"), &Self::set_target_entity);	\
-	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &Self::set_name);	\
-	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &Self::set_parent, 0);	\
+	godot::ClassDB::bind_method(D_METHOD("add_entity", "entity"),       	&Self::add_entity);       	\
+	godot::ClassDB::bind_method(D_METHOD("add_pair", "first", "second"),	&Self::add_pair);         	\
+	godot::ClassDB::bind_method(D_METHOD("set_target_entity", "entity"),	&Self::set_target_entity);	\
+	godot::ClassDB::bind_method(D_METHOD("set_name", "name"),           	&Self::set_name);         	\
+	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"),       	&Self::set_parent, 0);    	\
 ;
 
 namespace godot {

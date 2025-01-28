@@ -3,7 +3,6 @@
 #define GL_ENTITY_H
 
 #include "godot_cpp/core/class_db.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -14,56 +13,56 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 
 #define OVERRIDE_ENTITY_SELF_METHODS(Self)	\
-	Ref<Self> add_child(Variant v0) { return GFEntity::add_child(v0); } \
-	Ref<Self> add_componentv(Variant v0, Variant v1) { return GFEntity::add_componentv(v0, v1); } \
-	Ref<Self> set_componentv(Variant v0, Variant v1) { return GFEntity::set_componentv(v0, v1); } \
-	Ref<Self> set_pairv(Variant v0, Variant v1, Variant v2) { return GFEntity::set_pairv(v0, v1, v2); } \
-	Ref<Self> add_pairv(Variant v0, Variant v1, Variant v2) { return GFEntity::add_pairv(v0, v1, v2); } \
-	Ref<Self> add_tag(Variant v0) { return GFEntity::add_tag(v0); } \
-	Ref<Self> emit(Variant v0, Array v1, Array v2) { return GFEntity::emit(v0, v1, v2); } \
-	Ref<Self> set_name(String v0) { return GFEntity::set_name(v0); } \
-	Ref<Self> set_parent(Variant v0) { return GFEntity::set_parent(v0); }	\
-	Ref<Self> add_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2) { return GFEntity::add_component(v0, v1, v2); } \
-	Ref<Self> set_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2) { return GFEntity::set_component(v0, v1, v2); } \
-	Ref<Self> add_pair(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2) { return GFEntity::add_pair(v0, v1, v2); } \
-	Ref<Self> set_pair(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2) { return GFEntity::set_pair(v0, v1, v2); } \
+	Ref<Self> add_child(Variant v0)                                                         	{ return GFEntity::add_child(v0); }            	\
+	Ref<Self> add_componentv(Variant v0, Variant v1)                                        	{ return GFEntity::add_componentv(v0, v1); }   	\
+	Ref<Self> set_componentv(Variant v0, Variant v1)                                        	{ return GFEntity::set_componentv(v0, v1); }   	\
+	Ref<Self> set_pairv(Variant v0, Variant v1, Variant v2)                                 	{ return GFEntity::set_pairv(v0, v1, v2); }    	\
+	Ref<Self> add_pairv(Variant v0, Variant v1, Variant v2)                                 	{ return GFEntity::add_pairv(v0, v1, v2); }    	\
+	Ref<Self> add_tag(Variant v0)                                                           	{ return GFEntity::add_tag(v0); }              	\
+	Ref<Self> emit(Variant v0, Array v1, Array v2)                                          	{ return GFEntity::emit(v0, v1, v2); }         	\
+	Ref<Self> set_name(String v0)                                                           	{ return GFEntity::set_name(v0); }             	\
+	Ref<Self> set_parent(Variant v0)                                                        	{ return GFEntity::set_parent(v0); }           	\
+	Ref<Self> add_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::add_component(v0, v1, v2); }	\
+	Ref<Self> set_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::set_component(v0, v1, v2); }	\
+	Ref<Self> add_pair(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)     	{ return GFEntity::add_pair(v0, v1, v2); }     	\
+	Ref<Self> set_pair(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)     	{ return GFEntity::set_pair(v0, v1, v2); }     	\
 ;
 
 #define REGISTER_ENTITY_SELF_METHODS(Self)	\
-	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"), &Self::add_child);	\
-	godot::ClassDB::bind_method(D_METHOD("addv", "component", "members"), &Self::add_componentv);	\
-	godot::ClassDB::bind_method(D_METHOD("setv", "component", "members"), &Self::set_componentv);	\
-	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"), &Self::add_pairv);	\
-	godot::ClassDB::bind_method(D_METHOD("set_pairv", "first", "second", "members"), &Self::set_pairv);	\
-	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"), &Self::add_tag);	\
-	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "components", "event_members"), &Self::emit);	\
-	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &Self::set_name);	\
-	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"), &Self::set_parent);	\
-	{	\
-		MethodInfo mi;	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));	\
-		mi.name = "add";	\
-		mi.flags = METHOD_FLAGS_DEFAULT;	\
+	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"),                          	&Self::add_child);     	\
+	godot::ClassDB::bind_method(D_METHOD("addv", "component", "members"),                 	&Self::add_componentv);	\
+	godot::ClassDB::bind_method(D_METHOD("setv", "component", "members"),                 	&Self::set_componentv);	\
+	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"),      	&Self::add_pairv);     	\
+	godot::ClassDB::bind_method(D_METHOD("set_pairv", "first", "second", "members"),      	&Self::set_pairv);     	\
+	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"),                               	&Self::add_tag);       	\
+	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "components", "event_members"),	&Self::emit);          	\
+	godot::ClassDB::bind_method(D_METHOD("set_name", "name"),                             	&Self::set_name);      	\
+	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"),                         	&Self::set_parent);    	\
+	{                                                                                     	\
+		MethodInfo mi;                                                                                          	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));                                        	\
+		mi.name = "add";                                                                                        	\
+		mi.flags = METHOD_FLAGS_DEFAULT;                                                                        	\
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &Self::add_component, mi);	\
 	}	\
 	{	\
-		MethodInfo mi;	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));	\
-		mi.name = "set";	\
+		MethodInfo mi;                                                                                          	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "component"));                                        	\
+		mi.name = "set";                                                                                        	\
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &Self::set_component, mi);	\
 	}	\
 	{	\
-		MethodInfo mi;	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));	\
-		mi.name = "add_pair";	\
+		MethodInfo mi;                                                                                     	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));                                       	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));                                      	\
+		mi.name = "add_pair";                                                                              	\
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &Self::add_pair, mi);	\
 	}	\
 	{	\
-		MethodInfo mi;	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));	\
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));	\
-		mi.name = "set_pair";	\
+		MethodInfo mi;                                                                                     	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "first"));                                       	\
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "second"));                                      	\
+		mi.name = "set_pair";                                                                              	\
 		godot::ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, StringName(mi.name), &Self::set_pair, mi);	\
 	}	\
 ;
