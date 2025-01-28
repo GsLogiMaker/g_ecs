@@ -61,7 +61,10 @@ void GFRegisterableEntity::call_internal_register() {
 }
 
 void GFRegisterableEntity::call_user_register() {
+	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
+	ecs_set_scope(get_world()->raw(), get_id());
 	this->call("_register_user");
+	ecs_set_scope(get_world()->raw(), old_scope);
 }
 
 // --------------------------------------------------------
@@ -74,6 +77,8 @@ void GFRegisterableEntity::_register_user() {
 }
 
 void GFRegisterableEntity::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFRegisterableEntity);
+
 	GDVIRTUAL_BIND(_register, "world");
 	godot::ClassDB::bind_static_method(GFRegisterableEntity::get_class_static(), D_METHOD("new_in_world", "world"), &GFRegisterableEntity::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFRegisterableEntity::_register_internal);

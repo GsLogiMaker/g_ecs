@@ -363,6 +363,8 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 }
 
 void GFComponent::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFComponent);
+
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 

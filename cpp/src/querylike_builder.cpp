@@ -31,10 +31,6 @@ int GFQuerylikeBuilder::get_term_count() {
 	return term_count;
 }
 
-GFWorld* GFQuerylikeBuilder::get_world() {
-	return world;
-}
-
 bool GFQuerylikeBuilder::is_built() {
 	return built;
 }
@@ -204,10 +200,6 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant se
 	return this;
 }
 
-void GFQuerylikeBuilder::set_world(GFWorld* world_) {
-	world = world_;
-}
-
 // **********************************************
 // *** PROTECTED ***
 // **********************************************
@@ -217,6 +209,10 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 		Ref(this),
 		callable
 	);
+	if (query_desc.binding_ctx != nullptr) {
+		// Delete old context
+		delete static_cast<QueryIterationContext*>(query_desc.binding_ctx);
+	}
 	query_desc.binding_ctx = ctx;
 	query_desc.binding_ctx_free = [](void* ptr) {
 		delete static_cast<QueryIterationContext*>(ptr);
@@ -237,24 +233,7 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
 }
 
 void GFQuerylikeBuilder::_bind_methods() {
-	godot::ClassDB::bind_method(D_METHOD("is_built"), &GFQuerylikeBuilder::is_built);
-
-	godot::ClassDB::bind_method(D_METHOD("access_default"), &GFQuerylikeBuilder::access_default);
-	godot::ClassDB::bind_method(D_METHOD("access_filter"), &GFQuerylikeBuilder::access_filter);
-	godot::ClassDB::bind_method(D_METHOD("access_in"), &GFQuerylikeBuilder::access_in);
-	godot::ClassDB::bind_method(D_METHOD("access_inout"), &GFQuerylikeBuilder::access_inout);
-	godot::ClassDB::bind_method(D_METHOD("access_none"), &GFQuerylikeBuilder::access_none);
-	godot::ClassDB::bind_method(D_METHOD("access_out"), &GFQuerylikeBuilder::access_out);
-
-	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &GFQuerylikeBuilder::with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &GFQuerylikeBuilder::maybe_with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &GFQuerylikeBuilder::or_with, nullptr);
-	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &GFQuerylikeBuilder::without, nullptr);
-
-	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &GFQuerylikeBuilder::up, 0);
-	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &GFQuerylikeBuilder::descend, 0);
-	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &GFQuerylikeBuilder::cascade, 0);
-
+	REGISTER_QUERYLIKE_SELF_METHODS(GFQuerylikeBuilder);
 }
 
 // **********************************************

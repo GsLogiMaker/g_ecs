@@ -49,6 +49,8 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFModule);
+
 		static Ref<GFModule> new_in_world(GFWorld* world);
 		static Ref<GFModule> new_named_in_world(String name, GFWorld*);
 		static Ref<GFModule> from(Variant module, GFWorld*);

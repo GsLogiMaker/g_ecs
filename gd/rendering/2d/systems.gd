@@ -5,8 +5,9 @@ extends GFModule
 
 func _register(w:GFWorld):
 	#region GFCanvasItem
-	# On add GFCanvasItem
+	# Construct GFCanvasItem
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("construct_canvas_item") \
 		.set_events("/root/flecs/core/OnAdd") \
 		.with(GFCanvasItem) \
 		.for_each(func(item:GFCanvasItem):
@@ -19,6 +20,7 @@ func _register(w:GFWorld):
 
 	# On set GFCanvasItem
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_canvas_item") \
 		.set_events("/root/flecs/core/OnSet") \
 		.with(GFCanvasItem) \
 		.for_each(func(item:GFCanvasItem):
@@ -29,16 +31,18 @@ func _register(w:GFWorld):
 
 	# On remove GFCanvasItem
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("destruct_canvas_item") \
 		.set_events("/root/flecs/core/OnRemove") \
 		.with(GFCanvasItem) \
 		.for_each(func(item:GFCanvasItem):
 			RenderingServer.free_rid(item.get_rid())
 			)
 	#endregion
-	
+
 	#region GFPosition2D
 	# On GFPosition2D set, update visual transform of CanvasItemC
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_position") \
 		.set_events("/root/flecs/core/OnSet") \
 		.with(GFCanvasItem).access_filter() \
 		.with(GFPosition2D) \
@@ -56,8 +60,9 @@ func _register(w:GFWorld):
 
 	#region GFRotation2D
 	# On GFPosition2D set, update visual transform of GFCanvasItem
-	
+
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_rotation") \
 		.set_events("/root/flecs/core/OnSet") \
 		.with(GFCanvasItem).access_filter() \
 		.with(GFRotation2D) \
@@ -72,10 +77,11 @@ func _register(w:GFWorld):
 			item.update_transform_c(pos, rot, scl)
 			)
 	#endregion
-	
+
 	#region GFScale2D
 	# On GFScale2D set, update visual transform of GFCanvasItem
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_scale") \
 		.set_events("/root/flecs/core/OnSet") \
 		.with(GFCanvasItem).access_filter() \
 		.with(GFScale2D) \
@@ -93,12 +99,14 @@ func _register(w:GFWorld):
 
 	#region GFTexture2D
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_texture_sprite_on_add") \
 		.set_events("/root/flecs/core/OnAdd") \
 		.with(GFTexture2D) \
 		.with(GFCanvasItem) \
 		.for_each(GFTexture2D.update_texture_rect)
-		
+
 	GFObserverBuilder.new_in_world(w) \
+		.set_name("update_texture_sprite_on_set") \
 		.set_events("/root/flecs/core/OnSet") \
 		.with(GFTexture2D) \
 		.with(GFCanvasItem) \

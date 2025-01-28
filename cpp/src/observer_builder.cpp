@@ -16,25 +16,20 @@ Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(GFWorld* world) {
 }
 
 void GFObserverBuilder::for_each(Callable callable) {
-	const char* FAILED_TO_BUILD = "Failed to build observer\n";
-	if (is_built()) {
-		ERR(/**/,
-			FAILED_TO_BUILD,
-			"Observer builder was already built"
-		);
+	ecs_entity_t obs_id = GFEntityBuilder::build_id();
+	// Prevent creating new entity if builder is rebuilt
+	set_target_entity(obs_id);
+
+	if (!ecs_has_id(get_world()->raw(), obs_id, EcsObserver)) {
+		setup_ctx(callable);
+		ecs_observer_desc_t desc = {
+			.entity = obs_id,
+			.query = query_desc,
+			.events = {*events},
+			.callback = QueryIterationContext::iterator_callback
+		};
+		ecs_observer_init(get_world()->raw(), &desc);
 	}
-	built = true;
-
-	setup_ctx(callable);
-
-	ecs_entity_t obs_id = ecs_new(get_world()->raw());
-	ecs_observer_desc_t desc = {
-		.entity = obs_id,
-		.query = query_desc,
-		.events = {*events},
-		.callback = QueryIterationContext::iterator_callback
-	};
-	ecs_observer_init(get_world()->raw(), &desc);
 }
 
 Ref<GFObserverBuilder> GFObserverBuilder::set_event(int index, Variant event) {
@@ -72,6 +67,8 @@ Ref<GFObserverBuilder> GFObserverBuilder::set_events_varargs(
 
 
 void GFObserverBuilder::_bind_methods() {
+	REGISTER_QUERYLIKE_SELF_METHODS(GFObserverBuilder);
+
 	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("new_in_world", "world"), &GFObserverBuilder::new_in_world);
 	godot::ClassDB::bind_method(D_METHOD("for_each", "callback"), &GFObserverBuilder::for_each);
 	godot::ClassDB::bind_method(D_METHOD("set_event", "index", "event"), &GFObserverBuilder::set_event);

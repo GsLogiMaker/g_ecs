@@ -3,6 +3,7 @@
 #define QUERYLike_BUILDER_H
 
 #include "component.h"
+#include "entity_builder.h"
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/packed_int32_array.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
@@ -13,26 +14,57 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/string.hpp>
 
+#define OVERRIDE_QUERYLIKE_SELF_METHODS(Self)	\
+	OVERRIDE_ENTITY_BUILDER_SELF_METHODS(Self)  	\
+	Ref<Self> with(Variant v0, Variant v1)      	{ return GFQuerylikeBuilder::with(v0, v1); }      	\
+	Ref<Self> or_with(Variant v0, Variant v1)   	{ return GFQuerylikeBuilder::or_with(v0, v1); }   	\
+	Ref<Self> without(Variant v0, Variant v1)   	{ return GFQuerylikeBuilder::without(v0, v1); }   	\
+	Ref<Self> maybe_with(Variant v0, Variant v1)	{ return GFQuerylikeBuilder::maybe_with(v0, v1); }	\
+	Ref<Self> up(Variant v0)                    	{ return GFQuerylikeBuilder::up(v0); }            	\
+	Ref<Self> descend(Variant v0)               	{ return GFQuerylikeBuilder::descend(v0); }       	\
+	Ref<Self> cascade(Variant v0)               	{ return GFQuerylikeBuilder::cascade(v0); }       	\
+;
+
+#define REGISTER_QUERYLIKE_SELF_METHODS(Self)	\
+	REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)                                               	\
+	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &Self::with);            	\
+	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &Self::or_with);      	\
+	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &Self::without);      	\
+	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &Self::maybe_with);	\
+	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &Self::up, 0);                  	\
+	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &Self::descend, 0);        	\
+	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &Self::cascade, 0);        	\
+	godot::ClassDB::bind_method(D_METHOD("access_default"), &Self::access_default);          	\
+	godot::ClassDB::bind_method(D_METHOD("access_filter"), &Self::access_filter);            	\
+	godot::ClassDB::bind_method(D_METHOD("access_in"), &Self::access_in);                    	\
+	godot::ClassDB::bind_method(D_METHOD("access_inout"), &Self::access_inout);              	\
+	godot::ClassDB::bind_method(D_METHOD("access_none"), &Self::access_none);                	\
+	godot::ClassDB::bind_method(D_METHOD("access_out"), &Self::access_out);                  	\
+;
+
 namespace godot {
 
 	// Predefine instead of include to avoid cyclic dependencies
 	class GFWorld;
 	class QueryIterationContext;
 
-	class GFQuerylikeBuilder : public RefCounted {
-		GDCLASS(GFQuerylikeBuilder, RefCounted)
+	class GFQuerylikeBuilder : public GFEntityBuilder {
+		GDCLASS(GFQuerylikeBuilder, GFEntityBuilder)
 
 		friend QueryIterationContext;
 
 	public:
 		GFQuerylikeBuilder():
-			GFQuerylikeBuilder(nullptr)
-		{}
-		GFQuerylikeBuilder(GFWorld* world):
+			GFEntityBuilder(),
 			query_desc( {0} ),
 			built(false),
-			term_count(0),
-			world(world)
+			term_count(0)
+		{}
+		GFQuerylikeBuilder(GFWorld* world):
+			GFEntityBuilder(world),
+			query_desc( {0} ),
+			built(false),
+			term_count(0)
 		{}
 		~GFQuerylikeBuilder();
 
@@ -41,7 +73,6 @@ namespace godot {
 		// **************************************
 
 		int get_term_count();
-		GFWorld* get_world();
 		bool is_built();
 		Ref<GFQuerylikeBuilder> access_default();
 		Ref<GFQuerylikeBuilder> access_filter();
@@ -61,8 +92,6 @@ namespace godot {
 		// *** Unexposed ***
 		// **************************************
 
-		void set_world(GFWorld*);
-
 		Ref<GFQuerylikeBuilder> _add_term(Variant term, Variant second, ecs_oper_kind_t oper);
 
 	protected:
@@ -77,8 +106,6 @@ namespace godot {
 	private:
 		/// The number of terms added to the query so far.
 		int term_count{0};
-		/// The world to query in.
-		GFWorld* world{nullptr};
 
 	};
 

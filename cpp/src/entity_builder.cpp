@@ -48,6 +48,10 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_pair(Variant first, Variant second) {
 }
 
 Ref<GFEntity> GFEntityBuilder::build() {
+	return GFEntity::from_id(build_id(), world);
+}
+
+ecs_entity_t GFEntityBuilder::build_id() {
 	CharString name_utf8 = name.utf8();
 	desc.name = name_utf8.get_data();
 
@@ -66,7 +70,7 @@ Ref<GFEntity> GFEntityBuilder::build() {
 
 	built_count += 1;
 
-	return GFEntity::from_id(id, world);
+	return id;
 }
 
 GFWorld* GFEntityBuilder::get_world() {
@@ -111,15 +115,13 @@ void GFEntityBuilder::set_world(GFWorld* world_) {
 // **********************************************
 
 void GFEntityBuilder::_bind_methods() {
-	godot::ClassDB::bind_static_method(GFEntityBuilder::get_class_static(), D_METHOD("new_in_world", "world"), &GFEntityBuilder::new_in_world);
-	godot::ClassDB::bind_method(D_METHOD("add_entity", "entity"), &GFEntityBuilder::add_entity);
-	godot::ClassDB::bind_method(D_METHOD("add_pair", "first", "second"), &GFEntityBuilder::add_pair);
-	godot::ClassDB::bind_method(D_METHOD("build"), &GFEntityBuilder::build);
-	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntityBuilder::get_world);
-	godot::ClassDB::bind_method(D_METHOD("set_target_entity", "entity"), &GFEntityBuilder::set_target_entity);
-	godot::ClassDB::bind_method(D_METHOD("set_name", "name"), &GFEntityBuilder::set_name);
-	godot::ClassDB::bind_method(D_METHOD("set_parent", "parent"), &GFEntityBuilder::set_parent);
+	REGISTER_ENTITY_BUILDER_SELF_METHODS(GFEntityBuilder);
 
+	godot::ClassDB::bind_static_method(GFEntityBuilder::get_class_static(), D_METHOD("new_in_world", "world"), &GFEntityBuilder::new_in_world);
+
+	godot::ClassDB::bind_method(D_METHOD("build"), &GFEntityBuilder::build);
+	godot::ClassDB::bind_method(D_METHOD("build_id"), &GFEntityBuilder::build_id);
+	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntityBuilder::get_world);
 }
 
 // **********************************************
