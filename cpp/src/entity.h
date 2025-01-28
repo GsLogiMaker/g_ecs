@@ -101,40 +101,40 @@ namespace godot {
 
 		Ref<GFEntity> add_child(Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> add_componentv(Variant, Array);
+		Ref<GFEntity> add_componentv(const Variant, const Array);
 		Ref<GFEntity> set_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> set_componentv(Variant, Array);
+		Ref<GFEntity> set_componentv(const Variant, const Array);
 
 		Ref<GFEntity> add_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> add_pairv(Variant, Variant, Array);
+		Ref<GFEntity> add_pairv(const Variant, const Variant, const Array);
 		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
-		Ref<GFEntity> set_pairv(Variant, Variant, Array);
+		Ref<GFEntity> set_pairv(const Variant, const Variant, const Array);
 
-		Ref<GFEntity> add_tag(Variant);
-		Ref<GFEntity> emit(Variant, Array, Array);
-		Ref<GFEntity> set_name(String);
-		Ref<GFEntity> set_parent(Variant entity);
+		Ref<GFEntity> add_tag(const Variant);
+		Ref<GFEntity> emit(const Variant, const Array, const Array);
+		Ref<GFEntity> set_name(const String);
+		Ref<GFEntity> set_parent(const Variant entity);
 
 		void delete_() const;
 
-		Ref<GFEntity> get_child(String) const;
-		Ref<GFComponent> get_component(Variant) const;
+		Ref<GFEntity> get_child(const String) const;
+		Ref<GFComponent> get_component(const Variant) const;
 		ecs_entity_t get_id() const;
 		String get_name() const;
-		Ref<GFComponent> get_pair(Variant, Variant) const;
+		Ref<GFComponent> get_pair(const Variant, const Variant) const;
 		Ref<GFEntity> get_parent() const;
 		String get_path() const;
 		GFWorld* get_world() const;
 
-		bool has_entity(Variant) const;
-		bool has_pair(Variant, Variant) const;
-		bool has_child(String) const;
+		bool has_entity(const Variant) const;
+		bool has_pair(const Variant, const Variant) const;
+		bool has_child(const String) const;
 
 		bool is_alive() const;
 		bool is_pair() const;
 
-		Ref<GFPair> pair(Variant second) const;
-		ecs_entity_t pair_id(ecs_entity_t second_id) const;
+		Ref<GFPair> pair(const Variant second) const;
+		ecs_entity_t pair_id(const ecs_entity_t second_id) const;
 
 		String _to_string() const;
 
@@ -158,7 +158,7 @@ namespace godot {
 		}
 
 		template<typename T>
-		static Ref<T> setup_template(Ref<T> e) {
+		static Ref<T> setup_template(const Ref<T> e) {
 			e->update_script();
 
 			if (!e->is_alive()) {
@@ -172,7 +172,7 @@ namespace godot {
 		}
 
 
-		void set_id(ecs_entity_t);
+		void set_id(const ecs_entity_t);
 		void set_world(const GFWorld*);
 
 	protected:
