@@ -10,6 +10,61 @@
 		<link title="More on Flecs Pairs">https://www.flecs.dev/flecs/md_docs_2Relationships</link>
 	</tutorials>
 	<methods>
+		<method name="add" qualifiers="const vararg">
+			<return type="GFPair" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add].
+			</description>
+		</method>
+		<method name="add_child">
+			<return type="GFPair" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_child].
+			</description>
+		</method>
+		<method name="add_pair" qualifiers="const vararg">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_pair].
+			</description>
+		</method>
+		<method name="add_pairv">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<param index="2" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_pairv].
+			</description>
+		</method>
+		<method name="add_tag">
+			<return type="GFPair" />
+			<param index="0" name="tag" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_tag].
+			</description>
+		</method>
+		<method name="addv">
+			<return type="GFPair" />
+			<param index="0" name="component" type="Variant" />
+			<param index="1" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.addv].
+			</description>
+		</method>
+		<method name="emit">
+			<return type="GFPair" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="components" type="Array" />
+			<param index="2" name="event_members" type="Array" />
+			<description>
+				Overrides [method GFEntity.emit].
+			</description>
+		</method>
 		<method name="first">
 			<return type="GFEntity" />
 			<description>
@@ -93,6 +148,52 @@
 				var IsAPrefab:= world.pair("flecs/core/IsA", "flecs/core/Prefab")
 				IsAPrefab.second_id() == world.coerce_id("flecs/core/Prefab") # true
 				[/codeblock]
+			</description>
+		</method>
+		<method name="set" qualifiers="const vararg">
+			<return type="GFPair" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set].
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFPair" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Overrides [method GFEntity.set_name].
+			</description>
+		</method>
+		<method name="set_pair" qualifiers="const vararg">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_pair].
+			</description>
+		</method>
+		<method name="set_pairv">
+			<return type="GFPair" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<param index="2" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_pairv].
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFPair" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntity.set_parent].
+			</description>
+		</method>
+		<method name="setv">
+			<return type="GFPair" />
+			<param index="0" name="component" type="Variant" />
+			<param index="1" name="members" type="Variant" />
+			<description>
+				Overrides [method GFEntity.setv].
 			</description>
 		</method>
 	</methods>

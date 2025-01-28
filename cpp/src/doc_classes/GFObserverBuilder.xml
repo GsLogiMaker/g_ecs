@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for observers.
 	</brief_description>
@@ -29,6 +30,35 @@
 		<link title="More on Flecs Observers">https://www.flecs.dev/flecs/md_docs_2ObserversManual</link>
 	</tutorials>
 	<methods>
+		<method name="add_entity">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.add_entity].
+			</description>
+		</method>
+		<method name="add_pair">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.add_pair].
+			</description>
+		</method>
+		<method name="cascade">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.cascade].
+			</description>
+		</method>
+		<method name="descend">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.descend].
+			</description>
+		</method>
 		<method name="for_each">
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
@@ -36,11 +66,25 @@
 				Builds the observer with a callback for iterating over each result.
 			</description>
 		</method>
+		<method name="maybe_with">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.maybe_with].
+			</description>
+		</method>
 		<method name="new_in_world" qualifiers="static">
 			<return type="GFObserverBuilder" />
 			<param index="0" name="world" type="GFWorld" />
 			<description>
 				Returns a new builder in [param world].
+			</description>
+		</method>
+		<method name="or_with">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.or_with].
 			</description>
 		</method>
 		<method name="set_event">
@@ -55,6 +99,48 @@
 			<return type="GFObserverBuilder" />
 			<description>
 				Sets all events this observer listens for.
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="name" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.set_name].
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="entity" type="Variant" default="0" />
+			<description>
+				Overrides [method GFEntityBuilder.set_parent].
+			</description>
+		</method>
+		<method name="set_target_entity">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.set_target_entity].
+			</description>
+		</method>
+		<method name="up">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.up].
+			</description>
+		</method>
+		<method name="with">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.with].
+			</description>
+		</method>
+		<method name="without">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="component" type="Variant" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.without].
 			</description>
 		</method>
 	</methods>

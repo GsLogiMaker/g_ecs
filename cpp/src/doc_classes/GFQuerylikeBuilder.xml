@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQuerylikeBuilder" inherits="RefCounted"
+<class name="GFQuerylikeBuilder" inherits="GFEntityBuilder"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		The abstract base class for different query-like builders.
@@ -49,6 +49,18 @@
 				Marks the last added term write only.
 			</description>
 		</method>
+		<method name="cascade">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="descend">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+			</description>
+		</method>
 		<method name="is_built">
 			<return type="bool" />
 			<description>
@@ -69,6 +81,14 @@
 			<description>
 				Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
 				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="up">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Modifies a term to match in a parent.
+				TODO: Add code examples.
 			</description>
 		</method>
 		<method name="with">
