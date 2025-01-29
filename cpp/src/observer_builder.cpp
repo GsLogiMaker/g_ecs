@@ -11,11 +11,11 @@ using namespace godot;
 GFObserverBuilder::~GFObserverBuilder() {
 }
 
-Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(GFWorld* world) {
+Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(const GFWorld* world) {
 	return memnew(GFObserverBuilder(world));
 }
 
-void GFObserverBuilder::for_each(Callable callable) {
+void GFObserverBuilder::for_each(const Callable callable) {
 	ecs_entity_t obs_id = GFEntityBuilder::build_id();
 	// Prevent creating new entity if builder is rebuilt
 	set_target_entity(obs_id);
@@ -32,7 +32,7 @@ void GFObserverBuilder::for_each(Callable callable) {
 	}
 }
 
-Ref<GFObserverBuilder> GFObserverBuilder::set_event(int index, Variant event) {
+Ref<GFObserverBuilder> GFObserverBuilder::set_event(int index, const Variant event) {
 	events[index] = get_world()->coerce_id(event);
 	return Ref(this);
 }

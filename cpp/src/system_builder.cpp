@@ -5,7 +5,6 @@
 #include "godot_cpp/variant/variant.hpp"
 #include "querylike_builder.h"
 #include "world.h"
-#include "utils.h"
 
 #include <stdlib.h>
 #include <flecs.h>
@@ -15,11 +14,11 @@ using namespace godot;
 GFSystemBuilder::~GFSystemBuilder() {
 }
 
-Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(GFWorld* world) {
+Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(const GFWorld* world) {
 	return memnew(GFSystemBuilder(world));
 }
 
-void GFSystemBuilder::for_each(Callable callable) {
+void GFSystemBuilder::for_each(const Callable callable) {
 	ecs_entity_t sys_id = GFEntityBuilder::build_id();
 	// Prevent creating new entity if builder is rebuilt
 	set_target_entity(sys_id);
