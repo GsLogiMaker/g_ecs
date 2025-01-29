@@ -16,13 +16,14 @@ using namespace godot;
 GFModule::~GFModule() {
 }
 
-Ref<GFModule> GFModule::new_in_world(GFWorld* world) {
+Ref<GFModule> GFModule::new_in_world(const GFWorld* world) {
 	return memnew(GFModule(world));
 }
 
-Ref<GFModule> GFModule::new_named_in_world(String name, GFWorld* world_) {
-	CharString name_utf8 = name.utf8();
+Ref<GFModule> GFModule::new_named_in_world(const String name, GFWorld* world_) {
 	GFWorld* world = GFWorld::world_or_singleton(world_);
+
+	CharString name_utf8 = name.utf8();
 	ecs_component_desc_t comp_desc = {0};
 	ecs_entity_t module_id = ecs_module_init(
 		world->raw(),
@@ -33,14 +34,16 @@ Ref<GFModule> GFModule::new_named_in_world(String name, GFWorld* world_) {
 	return from_id(module_id, world);
 }
 
-Ref<GFModule> GFModule::from(Variant module, GFWorld* world_) {
+Ref<GFModule> GFModule::from(const Variant module, GFWorld* world_) {
 	GFWorld* world = GFWorld::world_or_singleton(world_);
+
 	ecs_entity_t module_id = world->coerce_id(module);
 	return from_id(module_id, world);
 }
 
 Ref<GFModule> GFModule::from_id(ecs_entity_t module_id, GFWorld* world_) {
 	GFWorld* world = GFWorld::world_or_singleton(world_);
+
 	if (!ecs_has_id(world->raw(), module_id, EcsModule)) {
 		ERR(nullptr,
 			"Could not instantiate module from ID\n",
