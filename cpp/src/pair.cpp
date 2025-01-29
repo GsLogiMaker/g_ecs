@@ -15,7 +15,7 @@ using namespace godot;
 GFPair::~GFPair() {
 }
 
-Ref<GFPair> GFPair::from(Variant first, Variant second, GFWorld* world) {
+Ref<GFPair> GFPair::from(const Variant first, const Variant second, GFWorld* world) {
 	ecs_entity_t first_id = world->coerce_id(first);
 	ecs_entity_t second_id = world->coerce_id(second);
 	return from_ids(first_id, second_id, world);
@@ -46,16 +46,16 @@ Ref<GFPair> GFPair::from_ids(ecs_entity_t first_id, ecs_entity_t second_id, GFWo
 	return from_id(world->pair_ids(first_id, second_id), world);
 }
 
-Ref<GFEntity> GFPair::first() {
+Ref<GFEntity> GFPair::first() const {
 	return GFEntity::from(first_id(), get_world());
 }
-ecs_entity_t GFPair::first_id() {
+ecs_entity_t GFPair::first_id() const {
 	return ECS_PAIR_FIRST(get_id());
 }
-Ref<GFEntity> GFPair::second() {
+Ref<GFEntity> GFPair::second() const {
 	return GFEntity::from(second_id(), get_world());
 }
-ecs_entity_t GFPair::second_id() {
+ecs_entity_t GFPair::second_id() const {
 	return ECS_PAIR_SECOND(get_id());
 }
 
