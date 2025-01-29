@@ -32,7 +32,7 @@ namespace godot {
 
 		GFWorld* get_world() const;
 
-		Ref<GFQueryIterator> iterate() const;
+		Ref<GFQueryIterator> iterate();
 
 		// --------------------------------------
 		// --- Unexposed

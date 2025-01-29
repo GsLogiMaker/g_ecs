@@ -17,7 +17,7 @@ GFWorld* GFQuery::get_world() const { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
 
-Ref<GFQueryIterator> GFQuery::iterate() const {
+Ref<GFQueryIterator> GFQuery::iterate() {
 	return Ref(memnew(GFQueryIterator(
 		Ref(this),
 		ecs_query_iter(get_world()->raw(), this->query)
