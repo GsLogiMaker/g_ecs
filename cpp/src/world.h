@@ -35,23 +35,23 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
-		ecs_entity_t coerce_id(Variant);
+		ecs_entity_t coerce_id(const Variant);
 
-		Ref<GFEntity> lookup(String) const;
+		Ref<GFEntity> lookup(const String) const;
 
-		Ref<GFPair> pair(Variant, Variant);
+		Ref<GFPair> pair(const Variant, Variant);
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t) const;
 		void progress(double delta) const;
 
-		Ref<GFRegisterableEntity> register_script(Ref<Script>);
-		ecs_entity_t register_script_id(Ref<Script>);
-		ecs_entity_t register_new_script_id(Ref<Script> script);
-		Ref<GFRegisterableEntity> register_script_id_no_user_call(Ref<Script> script);
+		Ref<GFRegisterableEntity> register_script(const Ref<Script>);
+		ecs_entity_t register_script_id(const Ref<Script>);
+		ecs_entity_t register_new_script_id(const Ref<Script> script);
+		Ref<GFRegisterableEntity> register_script_id_no_user_call(const Ref<Script> script);
 
 		void _register_modules_from_scripts(int);
 
 		void start_rest_api() const;
-		static ecs_entity_t variant_type_to_id(Variant::Type);
+		static ecs_entity_t variant_type_to_id(const Variant::Type);
 
 		bool id_has_child(ecs_entity_t parent, const char* child_name) const;
 
@@ -113,7 +113,7 @@ namespace godot {
 		ecs_entity_t get_main_id(ecs_entity_t) const;
 		/// Returns the ID which was registered with the given Script.
 		/// Returns 0 if the entity has no registered script.
-		ecs_entity_t get_registered_id(Ref<Script> script) const;
+		ecs_entity_t get_registered_id(const Ref<Script> script) const;
 		/// Returns the script which was registered with the given ID.
 		/// Returns null if the entity has no registered script.
 		Ref<Script> get_registered_script(ecs_entity_t id) const;
@@ -127,7 +127,7 @@ namespace godot {
 
 		static GFWorld* world_or_singleton(GFWorld* world);
 		static GFWorld* singleton();
-		bool is_id_alive(ecs_entity_t id) const;
+		bool is_id_alive(const ecs_entity_t id) const;
 		ecs_world_t* raw() const;
 
 	protected:
@@ -195,7 +195,7 @@ namespace godot {
 		template<typename T>
 		void define_gd_component(
 			const char* name,
-			ecs_entity_t* static_id
+			const ecs_entity_t* static_id
 		) {
 			ecs_component_desc_t desc = {
 				.entity = *static_id,

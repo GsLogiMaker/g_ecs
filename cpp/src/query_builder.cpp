@@ -4,7 +4,6 @@
 #include "godot_cpp/variant/callable.hpp"
 #include "world.h"
 #include "query.h"
-#include "utils.h"
 
 #include <stdlib.h>
 #include <flecs.h>
@@ -14,7 +13,7 @@ using namespace godot;
 GFQueryBuilder::~GFQueryBuilder() {
 }
 
-Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(GFWorld* world) {
+Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(const GFWorld* world) {
 	return memnew(GFQueryBuilder(world));
 }
 

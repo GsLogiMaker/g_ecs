@@ -27,11 +27,11 @@ GFQuerylikeBuilder::~GFQuerylikeBuilder() {
 // *** Exposed ***
 // **************************************
 
-int GFQuerylikeBuilder::get_term_count() {
+int GFQuerylikeBuilder::get_term_count() const {
 	return term_count;
 }
 
-bool GFQuerylikeBuilder::is_built() {
+bool GFQuerylikeBuilder::is_built() const {
 	return built;
 }
 
@@ -78,13 +78,13 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
 	return Ref(this);
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(Variant term_v, Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(Variant term_v, Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsOptional);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant term_v, Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(const Variant term_v, const Variant second) {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to add `or` term to query\n"
 	);
@@ -98,21 +98,22 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(Variant term_v, Variant seco
 
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(Variant term_v, Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::without(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsNot);
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::up(Variant entity) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::up(const Variant entity) {
+	GFWorld* w = get_world();
 	ecs_entity_t entity_id = 0;
 	if (!entity) {
 		// Passed variant is null, use the default ChildOf tag
-		entity_id = ecs_lookup(world->raw(), "flecs.core.ChildOf");
+		entity_id = ecs_lookup(w->raw(), "flecs.core.ChildOf");
 	} else {
 		// Passed variant is not null, coerce it to an entity ID
-		entity_id = world->coerce_id(entity);
+		entity_id = w->coerce_id(entity);
 	}
 
-	CHECK_ENTITY_ALIVE(entity_id, world,
+	CHECK_ENTITY_ALIVE(entity_id, w,
 		Ref(this),
 		"Failed to add `up` traversal to query\n"
 	);
@@ -122,10 +123,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::up(Variant entity) {
 
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::descend(Variant entity) {
-	ecs_entity_t entity_id = world->coerce_id(entity);
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::descend(const Variant entity) {
+	GFWorld* w = get_world();
+	ecs_entity_t entity_id = w->coerce_id(entity);
 
-	CHECK_ENTITY_ALIVE(entity_id, world,
+	CHECK_ENTITY_ALIVE(entity_id, w,
 		Ref(this),
 		"Failed to add `descend` traversal to query\n"
 	);
@@ -135,10 +137,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::descend(Variant entity) {
 
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(Variant entity) {
-	ecs_entity_t entity_id = world->coerce_id(entity);
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(const Variant entity) {
+	GFWorld* w = get_world();
+	ecs_entity_t entity_id = w->coerce_id(entity);
 
-	CHECK_ENTITY_ALIVE(entity_id, world,
+	CHECK_ENTITY_ALIVE(entity_id, w,
 		Ref(this),
 		"Failed to add `cascade` traversal to query\n"
 	);
@@ -153,7 +156,11 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(Variant entity) {
 // *** Unexposed ***
 // **************************************
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant second, ecs_oper_kind_t oper) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
+	const Variant term_v,
+	const Variant second,
+	ecs_oper_kind_t oper
+) {
 	const char* oper_name = "";
 	switch (oper) {
 		case EcsAnd: oper_name = "and"; break;
@@ -165,24 +172,25 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant se
 		case EcsNotFrom: oper_name = "not_from"; break;
 	}
 
-	ecs_entity_t term_id = world->coerce_id(term_v);
-	CHECK_ENTITY_ALIVE(term_id, world,
+	GFWorld* w = get_world();
+	ecs_entity_t term_id = w->coerce_id(term_v);
+	CHECK_ENTITY_ALIVE(term_id, w,
 		nullptr,
 		"Failed to add term in `", oper_name, "` term to query\n"
 	);
 
 	if (second.booleanize()) {
-		CHECK_NOT_PAIR(term_id, world,
+		CHECK_NOT_PAIR(term_id, w,
 			nullptr,
 			"Failed to add term as first of pair in `", oper_name, "` term to query\n"
 		);
 
-		ecs_entity_t second_id = world->coerce_id(second);
-		CHECK_ENTITY_ALIVE(second_id, world,
+		ecs_entity_t second_id = w->coerce_id(second);
+		CHECK_ENTITY_ALIVE(second_id, w,
 			nullptr,
 			"Failed to add second in `", oper_name, "` term to query\n"
 		);
-		CHECK_NOT_PAIR(term_id, world,
+		CHECK_NOT_PAIR(term_id, w,
 			nullptr,
 			"Failed to add second of pair in `", oper_name, "` term to query\n"
 		);
@@ -204,7 +212,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(Variant term_v, Variant se
 // *** PROTECTED ***
 // **********************************************
 
-QueryIterationContext* GFQuerylikeBuilder::setup_ctx(Callable callable) {
+QueryIterationContext* GFQuerylikeBuilder::setup_ctx(const Callable callable) {
 	QueryIterationContext* ctx =  new QueryIterationContext(
 		Ref(this),
 		callable
@@ -245,7 +253,7 @@ void GFQuerylikeBuilder::_bind_methods() {
 // *** QueryIterationContext PUBLIC ***
 // **********************************************
 
-ecs_entity_t get_compmonent_of_term(ecs_term_t* term) {
+ecs_entity_t get_compmonent_of_term(const ecs_term_t* term) {
 	if (term->id == 0) {
 		ERR(0,
 			"Could not get component of term\n",
@@ -256,8 +264,8 @@ ecs_entity_t get_compmonent_of_term(ecs_term_t* term) {
 }
 
 QueryIterationContext::QueryIterationContext(
-	Ref<GFQuerylikeBuilder> query_b,
-	Callable callable_
+	const Ref<GFQuerylikeBuilder> query_b,
+	const Callable callable_
 ) {
 	callable = callable_;
 	world = query_b->get_world();
@@ -302,14 +310,14 @@ QueryIterationContext::QueryIterationContext(
 }
 QueryIterationContext::~QueryIterationContext() {}
 
-Callable QueryIterationContext::get_callable() {
+Callable QueryIterationContext::get_callable() const {
 	return callable;
 }
-GFWorld* QueryIterationContext::get_world() {
+GFWorld* QueryIterationContext::get_world() const {
 	return world;
 }
 
-void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity_index) {
+void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity_index) const {
 	for (int comp_i=0; comp_i != comp_ref_args.size(); comp_i++) {
 		int term_i = comp_ref_term_ids[comp_i];
 

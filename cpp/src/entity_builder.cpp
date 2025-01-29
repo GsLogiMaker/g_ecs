@@ -18,13 +18,14 @@ using namespace godot;
 // *** Exposed ***
 // **************************************
 
-Ref<GFEntityBuilder> GFEntityBuilder::new_in_world(GFWorld* world) {
+Ref<GFEntityBuilder> GFEntityBuilder::new_in_world(const GFWorld* world) {
 	return Ref(memnew(GFEntityBuilder(world)));
 }
 
-Ref<GFEntityBuilder> GFEntityBuilder::add_entity(Variant entity) {
-	ecs_entity_t id = world->coerce_id(entity);
-	CHECK_ENTITY_ALIVE(id, world, this,
+Ref<GFEntityBuilder> GFEntityBuilder::add_entity(const Variant entity) {
+	GFWorld* w = get_world();
+	ecs_entity_t id = w->coerce_id(entity);
+	CHECK_ENTITY_ALIVE(id, w, this,
 		"Failed to entity in builder\n"
 	);
 	ids.append(id);
@@ -32,13 +33,14 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_entity(Variant entity) {
 	return this;
 }
 
-Ref<GFEntityBuilder> GFEntityBuilder::add_pair(Variant first, Variant second) {
-	ecs_entity_t first_id = world->coerce_id(first);
-	CHECK_ENTITY_ALIVE(first_id, world, this,
+Ref<GFEntityBuilder> GFEntityBuilder::add_pair(const Variant first, const Variant second) {
+	GFWorld* w = get_world();
+	ecs_entity_t first_id = w->coerce_id(first);
+	CHECK_ENTITY_ALIVE(first_id, w, this,
 		"Failed to add first of pair in builder\n"
 	);
-	ecs_entity_t second_id = world->coerce_id(second);
-	CHECK_ENTITY_ALIVE(second_id, world, this,
+	ecs_entity_t second_id = w->coerce_id(second);
+	CHECK_ENTITY_ALIVE(second_id, w, this,
 		"Failed to add second of pair in builder\n"
 	);
 
@@ -48,10 +50,12 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_pair(Variant first, Variant second) {
 }
 
 Ref<GFEntity> GFEntityBuilder::build() {
-	return GFEntity::from_id(build_id(), world);
+	GFWorld* w = get_world();
+	return GFEntity::from_id(build_id(), w);
 }
 
 ecs_entity_t GFEntityBuilder::build_id() {
+	GFWorld* w = get_world();
 	CharString name_utf8 = name.utf8();
 	desc.name = name_utf8.get_data();
 
@@ -59,7 +63,7 @@ ecs_entity_t GFEntityBuilder::build_id() {
 	desc.add = reinterpret_cast<const ecs_id_t*>(ids.ptr());
 
 	ecs_entity_t id = ecs_entity_init(
-		world->raw(),
+		w->raw(),
 		&desc
 	);
 
@@ -73,14 +77,15 @@ ecs_entity_t GFEntityBuilder::build_id() {
 	return id;
 }
 
-GFWorld* GFEntityBuilder::get_world() {
-	return world;
-}
+GFWorld* GFEntityBuilder::get_world() const { return Object::cast_to<GFWorld>(
+	UtilityFunctions::instance_from_id(world_instance_id)
+); }
 
-Ref<GFEntityBuilder> GFEntityBuilder::set_target_entity(Variant entity) {
-	ecs_entity_t id = world->coerce_id(entity);
+Ref<GFEntityBuilder> GFEntityBuilder::set_target_entity(const Variant entity) {
+	GFWorld* w = get_world();
+	ecs_entity_t id = w->coerce_id(entity);
 
-	CHECK_ENTITY_ALIVE(id, world, this,
+	CHECK_ENTITY_ALIVE(id, w, this,
 		"Failed to set entity in builder\n"
 	);
 
@@ -88,14 +93,15 @@ Ref<GFEntityBuilder> GFEntityBuilder::set_target_entity(Variant entity) {
 	return this;
 }
 
-Ref<GFEntityBuilder> GFEntityBuilder::set_name(String name_) {
+Ref<GFEntityBuilder> GFEntityBuilder::set_name(const String name_) {
 	name = name_;
 	return this;
 }
 
-Ref<GFEntityBuilder> GFEntityBuilder::set_parent(Variant parent) {
-	ecs_entity_t parent_id = world->coerce_id(parent);
-	CHECK_ENTITY_ALIVE(parent_id, world, this,
+Ref<GFEntityBuilder> GFEntityBuilder::set_parent(const Variant parent) {
+	GFWorld* w = get_world();
+	ecs_entity_t parent_id = w->coerce_id(parent);
+	CHECK_ENTITY_ALIVE(parent_id, w, this,
 		"Failed to set parent in builder\n"
 	);
 	desc.parent = parent_id;
@@ -106,8 +112,8 @@ Ref<GFEntityBuilder> GFEntityBuilder::set_parent(Variant parent) {
 // *** Unexposed ***
 // **************************************
 
-void GFEntityBuilder::set_world(GFWorld* world_) {
-	world = world_;
+void GFEntityBuilder::set_world(const GFWorld* world_) {
+	world_instance_id = world_->get_instance_id();
 }
 
 // **********************************************

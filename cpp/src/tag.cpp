@@ -14,11 +14,12 @@ using namespace godot;
 GFTag::~GFTag() {
 }
 
-Ref<GFTag> GFTag::new_in_world(GFWorld* world) {
+Ref<GFTag> GFTag::new_in_world(const GFWorld* world) {
 	return memnew(GFTag(world));
 }
 
-Ref<GFTag> GFTag::from(Variant tag, GFWorld* world) {
+Ref<GFTag> GFTag::from(const Variant tag, GFWorld* world_) {
+	GFWorld* world = GFWorld::world_or_singleton(world_);
 	ecs_entity_t tag_id = world->coerce_id(tag);
 	return from_id(tag_id, world);
 }

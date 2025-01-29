@@ -16,18 +16,28 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 // --- Exposed ---
 // --------------------------------------------------------
 
-Ref<GFRegisterableEntity> GFRegisterableEntity::new_in_world(GFWorld* world) {
+Ref<GFRegisterableEntity> GFRegisterableEntity::new_in_world(
+	const GFWorld* world
+) {
 	ERR(nullptr,
 		"Couldn't instantiate entity\n",
 		get_class_static(), " cannot be instantiated. Use \"from\" instead"
 	);
 }
 
-Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(ecs_entity_t id, GFWorld* world_) {
-	return setup_template<GFRegisterableEntity>(memnew(GFRegisterableEntity(id, world_)));
+Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(
+	ecs_entity_t id,
+	const GFWorld* world_
+) {
+	return setup_template<GFRegisterableEntity>(memnew(
+		GFRegisterableEntity(id, world_))
+	);
 }
 
-Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, const GFWorld* world) {
+Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(
+	const Ref<Script> script,
+	const GFWorld* world
+) {
 	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
 		script->get_instance_base_type()
 	);
@@ -37,7 +47,9 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, 
 
 	if (!e->is_alive()) {
 		ERR(nullptr,
-			"Could not instantiate", script->get_instance_base_type(), " from ID\n",
+			"Could not instantiate",
+			script->get_instance_base_type(),
+			" from ID\n",
 			"World/ID is not valid/alive"
 		);
 	}
@@ -49,9 +61,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(Ref<Script> script, 
 // --- Unexposed ---
 // --------------------------------------------------------
 
-void GFRegisterableEntity::register_in_world(
-	GFWorld* world
-) {
+void GFRegisterableEntity::register_in_world() {
 	call_internal_register();
 	call_user_register();
 }

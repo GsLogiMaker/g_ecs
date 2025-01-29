@@ -3,6 +3,7 @@
 #define COMPONENT_Builder_H
 
 #include "entity_builder.h"
+#include "gdextension_interface.h"
 #include "world.h"
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -17,7 +18,7 @@ namespace godot {
 		GDCLASS(GFComponentBuilder, GFEntityBuilder)
 
 	public:
-		GFComponentBuilder(GFWorld* world):
+		GFComponentBuilder(const GFWorld* world):
 			GFEntityBuilder(world),
 			component_desc({0}),
 			struct_desc({0}),
@@ -34,12 +35,12 @@ namespace godot {
 
 		OVERRIDE_ENTITY_BUILDER_SELF_METHODS(GFComponentBuilder);
 
-		Ref<GFComponentBuilder> add_member(String, Variant::Type);
-		int get_member_count();
-		bool is_built();
+		Ref<GFComponentBuilder> add_member(const String, Variant::Type);
+		int get_member_count() const;
+		bool is_built() const;
 
 		// Overriding
-		static Ref<GFComponentBuilder> new_in_world(GFWorld*);
+		static Ref<GFComponentBuilder> new_in_world(const GFWorld*);
 		Ref<GFEntity> build();
 
 	protected:
@@ -61,10 +62,14 @@ namespace godot {
 
 	class HooksBindingContext {
 	public:
-		GFWorld* world;
+		GDObjectInstanceID world_instance_id;
 
-		HooksBindingContext(GFWorld* world);
-		~HooksBindingContext();
+		HooksBindingContext(const GFWorld* world):
+			world_instance_id(world->get_instance_id()
+		) {};
+		~HooksBindingContext() {};
+
+		GFWorld* get_world() const;
 	};
 
 }

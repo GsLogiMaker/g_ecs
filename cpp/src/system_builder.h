@@ -18,7 +18,7 @@ namespace godot {
 		GDCLASS(GFSystemBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFSystemBuilder(GFWorld* world):
+		GFSystemBuilder(const GFWorld* world):
 			GFQuerylikeBuilder(world),
 			callable(Callable())
 		{}
@@ -33,8 +33,8 @@ namespace godot {
 
 		OVERRIDE_QUERYLIKE_SELF_METHODS(GFSystemBuilder);
 
-		static Ref<GFSystemBuilder> new_in_world(GFWorld*);
-		void for_each(Callable callable);
+		static Ref<GFSystemBuilder> new_in_world(const GFWorld*);
+		void for_each(const Callable callable);
 
 		// **************************************
 		// *** Unexposed ***

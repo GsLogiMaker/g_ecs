@@ -1,6 +1,5 @@
 
 #include "entity.h"
-#include "godot_cpp/classes/global_constants.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/array.hpp"
@@ -35,16 +34,14 @@ Ref<GFEntity> GFEntity::new_in_world(const GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
-	if (world == nullptr) {
-		world = GFWorld::singleton();
-	}
+	world = GFWorld::world_or_singleton(world);
 	return from_id(world->coerce_id(entity), world);
 }
 Ref<GFEntity> GFEntity::from_id(const ecs_entity_t id, const GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 
-Ref<GFEntity> GFEntity::add_child(Variant entity) {
+Ref<GFEntity> GFEntity::add_child(const Variant entity) {
 	ecs_entity_t id = get_world()->coerce_id(entity);
 	if (!get_world()->id_set_parent(id, get_id())) {
 		return nullptr;
@@ -76,7 +73,7 @@ Ref<GFEntity> GFEntity::add_component(
 	return Ref(this);
 }
 
-Ref<GFEntity> GFEntity::add_componentv(Variant component, Array members) {
+Ref<GFEntity> GFEntity::add_componentv(const Variant component, const Array members) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t c_id = w->coerce_id(component);
@@ -117,7 +114,11 @@ Ref<GFEntity> GFEntity::add_pair(
 
 	return Ref(this);
 }
-Ref<GFEntity> GFEntity::add_pairv(Variant first, Variant second, Array members) {
+Ref<GFEntity> GFEntity::add_pairv(
+	const Variant first,
+	const Variant second,
+	const Array members
+) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t first_id = w->coerce_id(first);
@@ -137,7 +138,7 @@ Ref<GFEntity> GFEntity::add_pairv(Variant first, Variant second, Array members) 
 	return Ref(this);
 }
 
-Ref<GFEntity> GFEntity::add_tag(Variant tag) {
+Ref<GFEntity> GFEntity::add_tag(const Variant tag) {
 	GFWorld* w = get_world();
 
 	ecs_entity_t tag_id = w->coerce_id(tag);
@@ -156,9 +157,9 @@ Ref<GFEntity> GFEntity::add_tag(Variant tag) {
 }
 
 Ref<GFEntity> GFEntity::emit(
-	Variant target_entity,
-	Array components,
-	Array event_members
+	const Variant target_entity,
+	const Array components,
+	const Array event_members
 ) {
 	ecs_entity_t componet_id = 0;
 	const EcsComponent* comp_data = nullptr;
@@ -211,7 +212,7 @@ Ref<GFEntity> GFEntity::emit(
 	return Ref(this);
 }
 
-Ref<GFComponent> GFEntity::get_component(Variant component) const {
+Ref<GFComponent> GFEntity::get_component(const Variant component) const {
 	Ref<GFComponent> c = GFComponent::from_id(
 		get_world()->coerce_id(component),
 		get_id(),
@@ -232,24 +233,27 @@ Ref<GFComponent> GFEntity::get_component(Variant component) const {
 	return c;
 }
 
-Ref<GFComponent> GFEntity::get_pair(Variant first, Variant second) const {
+Ref<GFComponent> GFEntity::get_pair(
+	const Variant first,
+	const Variant second
+) const {
 	ecs_entity_t first_id = get_world()->coerce_id(first);
 	ecs_entity_t second_id = get_world()->coerce_id(second);
 	return get_component(ecs_pair(first_id, second_id));
 }
 
-bool GFEntity::has_entity(Variant entity) const {
+bool GFEntity::has_entity(const Variant entity) const {
 	return ecs_has_id(get_world()->raw(), get_id(), get_world()->coerce_id(entity));
 }
 
-bool GFEntity::has_pair(Variant first, Variant second) const {
+bool GFEntity::has_pair(const Variant first, const Variant second) const {
 	return ecs_has_id(get_world()->raw(), get_id(), get_world()->pair_ids(
 		get_world()->coerce_id(first),
 		get_world()->coerce_id(second)
 	));
 }
 
-bool GFEntity::has_child(String path) const {
+bool GFEntity::has_child(const String path) const {
 	return ecs_lookup_path_w_sep(
 		get_world()->raw(),
 		get_id(),
@@ -283,8 +287,8 @@ Ref<GFEntity> GFEntity::set_component(
 }
 
 Ref<GFEntity> GFEntity::set_componentv(
-	Variant component,
-	Array members
+	const Variant component,
+	const Array members
 ) {
 	GFWorld* w = get_world();
 
@@ -355,10 +359,10 @@ Ref<GFEntity> GFEntity::set_pair(
 	return set_pairv(first, sec, members);
 }
 
-Ref<GFEntity> GFEntity::set_pairv(
-	Variant first,
-	Variant second,
-	Array members
+Ref<GFEntity> GFEntity::set_pairv (
+	const Variant first,
+	const Variant second,
+	const Array members
 ) {
 	ecs_entity_t first_id = get_world()->coerce_id(first);
 	ecs_entity_t second_id = get_world()->coerce_id(second);
@@ -399,7 +403,7 @@ bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
 
-Ref<GFEntity> GFEntity::get_child(String name) const {
+Ref<GFEntity> GFEntity::get_child(const String name) const {
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		get_world()->raw(),
 		get_id(),
@@ -431,7 +435,7 @@ Ref<GFEntity> GFEntity::get_parent() const {
 	return GFEntity::from_id(parent, get_world());
 }
 
-Ref<GFEntity> GFEntity::set_name(String name_) {
+Ref<GFEntity> GFEntity::set_name(const String name_) {
 	ecs_entity_t parent = ecs_get_parent(
 		get_world()->raw(),
 		get_id()
@@ -475,7 +479,7 @@ Ref<GFEntity> GFEntity::set_name(String name_) {
 	return Ref(this);
 }
 
-Ref<GFEntity> GFEntity::set_parent(Variant entity) {
+Ref<GFEntity> GFEntity::set_parent(const Variant entity) {
 	ecs_entity_t id = get_world()->coerce_id(entity);
 	if (!get_world()->id_set_parent(get_id(), id)) {
 		return nullptr;
@@ -483,10 +487,10 @@ Ref<GFEntity> GFEntity::set_parent(Variant entity) {
 	return Ref(this);
 }
 
-Ref<GFPair> GFEntity::pair(Variant second) const {
+Ref<GFPair> GFEntity::pair(const Variant second) const {
 	return GFPair::from_id(pair_id(get_world()->coerce_id(second)), get_world());
 }
-ecs_entity_t GFEntity::pair_id(ecs_entity_t second) const {
+ecs_entity_t GFEntity::pair_id(const ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
@@ -498,7 +502,7 @@ String GFEntity::_to_string() const {
 // --- Unexposed ---
 // ----------------------------------------------
 
-void GFEntity::set_id(ecs_entity_t value) { id = value; }
+void GFEntity::set_id(const ecs_entity_t value) { id = value; }
 void GFEntity::set_world(const GFWorld* value) { world_instance_id = value->get_instance_id(); }
 
 void GFEntity::_bind_methods() {
