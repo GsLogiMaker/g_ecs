@@ -123,6 +123,10 @@ namespace godot {
 			const Ref<GFQuerylikeBuilder> query_b,
 			const Callable callable
 		);
+		QueryIterationContext(GFWorld* world):
+			callable(Callable()),
+			world(world)
+		{};
 		~QueryIterationContext();
 
 		Callable get_callable() const;

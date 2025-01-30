@@ -1,6 +1,6 @@
 
 #include "query.h"
-#include "query_iterator.h"
+#include  "query_iterator.h"
 
 #include <stdint.h>
 #include <flecs.h>
@@ -17,10 +17,10 @@ GFWorld* GFQuery::get_world() const { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
 
-Ref<GFQueryIterator> GFQuery::iterate() {
+Ref<GFQueryIterator> GFQuery::iter() {
+	ecs_iter_t iter = ecs_query_iter(get_world()->raw(), this->query);
 	return Ref(memnew(GFQueryIterator(
-		Ref(this),
-		ecs_query_iter(get_world()->raw(), this->query)
+		iter
 	)));
 }
 
@@ -30,5 +30,5 @@ Ref<GFQueryIterator> GFQuery::iterate() {
 
 void GFQuery::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFQuery::get_world);
-	godot::ClassDB::bind_method(D_METHOD("iterate"), &GFQuery::iterate);
+	godot::ClassDB::bind_method(D_METHOD("iter"), &GFQuery::iter);
 }

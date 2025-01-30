@@ -1,7 +1,6 @@
 
 #include "registerable_entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
-#include "module.h"
 #include "world.h"
 
 #include <flecs.h>
