@@ -26,20 +26,20 @@
 ;
 
 #define REGISTER_QUERYLIKE_SELF_METHODS(Self)	\
-	REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)                                               	\
-	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &Self::with);            	\
-	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &Self::or_with);      	\
-	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &Self::without);      	\
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &Self::maybe_with);	\
-	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &Self::up, 0);                  	\
-	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &Self::descend, 0);        	\
-	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &Self::cascade, 0);        	\
-	godot::ClassDB::bind_method(D_METHOD("access_default"), &Self::access_default);          	\
-	godot::ClassDB::bind_method(D_METHOD("access_filter"), &Self::access_filter);            	\
-	godot::ClassDB::bind_method(D_METHOD("access_in"), &Self::access_in);                    	\
-	godot::ClassDB::bind_method(D_METHOD("access_inout"), &Self::access_inout);              	\
-	godot::ClassDB::bind_method(D_METHOD("access_none"), &Self::access_none);                	\
-	godot::ClassDB::bind_method(D_METHOD("access_out"), &Self::access_out);                  	\
+	REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)                                                        	\
+	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &Self::with, nullptr);            	\
+	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &Self::or_with, nullptr);      	\
+	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &Self::without, nullptr);      	\
+	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &Self::maybe_with, nullptr);	\
+	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &Self::up, 0);                           	\
+	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &Self::descend, 0);                 	\
+	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &Self::cascade, 0);                 	\
+	godot::ClassDB::bind_method(D_METHOD("access_default"), &Self::access_default);                   	\
+	godot::ClassDB::bind_method(D_METHOD("access_filter"), &Self::access_filter);                     	\
+	godot::ClassDB::bind_method(D_METHOD("access_in"), &Self::access_in);                             	\
+	godot::ClassDB::bind_method(D_METHOD("access_inout"), &Self::access_inout);                       	\
+	godot::ClassDB::bind_method(D_METHOD("access_none"), &Self::access_none);                         	\
+	godot::ClassDB::bind_method(D_METHOD("access_out"), &Self::access_out);                           	\
 ;
 
 namespace godot {
