@@ -519,7 +519,7 @@ ecs_entity_t GFWorld::coerce_id(const Variant value) {
 				);
 			}
 			if (obj->is_class(GFEntity::get_class_static())) {
-				return (static_cast<GFEntity*>(obj)->get_id());
+				return Object::cast_to<GFEntity>(obj)->get_id();
 			}
 			if (obj->is_class(Script::get_class_static())) {
 				Ref<Script> script = value;
@@ -577,7 +577,7 @@ ecs_entity_t GFWorld::coerce_id(const Variant value) {
 	);
 }
 
-Ref<GFEntity> GFWorld::lookup(const String path) const {
+Ref<GFEntity> GFWorld::lookup(const String path) {
 	const char* path_ptr = path.utf8().get_data();
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		raw(),

@@ -16,7 +16,7 @@ namespace godot {
 		GDCLASS(GFObserverBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFObserverBuilder(const GFWorld* world):
+		GFObserverBuilder(GFWorld* world):
 			GFQuerylikeBuilder(world)
 		{}
 		GFObserverBuilder():
@@ -30,7 +30,7 @@ namespace godot {
 
 		OVERRIDE_QUERYLIKE_SELF_METHODS(GFObserverBuilder);
 
-		static Ref<GFObserverBuilder> new_in_world(const GFWorld*);
+		static Ref<GFObserverBuilder> new_in_world(GFWorld*);
 
 		void for_each(const Callable callable);
 		Ref<GFObserverBuilder> set_events_varargs(

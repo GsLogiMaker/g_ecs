@@ -14,7 +14,7 @@ using namespace godot;
 GFTag::~GFTag() {
 }
 
-Ref<GFTag> GFTag::new_in_world(const GFWorld* world) {
+Ref<GFTag> GFTag::new_in_world(GFWorld* world) {
 	return memnew(GFTag(world));
 }
 

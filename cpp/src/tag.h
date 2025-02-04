@@ -16,7 +16,7 @@ namespace godot {
 
 	public:
 		/// Create a new named module
-		GFTag(const GFWorld* world):
+		GFTag(GFWorld* world):
 			GFRegisterableEntity(
 				ecs_new(
 					world->raw()
@@ -25,7 +25,7 @@ namespace godot {
 			)
 		{}
 		/// Create from existing ID
-		GFTag(ecs_entity_t id, const GFWorld* world):
+		GFTag(ecs_entity_t id, GFWorld* world):
 			GFRegisterableEntity(
 				id,
 				world
@@ -42,7 +42,7 @@ namespace godot {
 		// --------------------------------------
 		OVERRIDE_ENTITY_SELF_METHODS(GFTag);
 
-		static Ref<GFTag> new_in_world(const GFWorld* world);
+		static Ref<GFTag> new_in_world(GFWorld* world);
 		static Ref<GFTag> from(const Variant module, GFWorld*);
 		static Ref<GFTag> from_id(ecs_entity_t, GFWorld*);
 

@@ -18,7 +18,7 @@ namespace godot {
 		GDCLASS(GFComponentBuilder, GFEntityBuilder)
 
 	public:
-		GFComponentBuilder(const GFWorld* world):
+		GFComponentBuilder(GFWorld* world):
 			GFEntityBuilder(world),
 			component_desc({0}),
 			struct_desc({0}),
@@ -40,7 +40,7 @@ namespace godot {
 		bool is_built() const;
 
 		// Overriding
-		static Ref<GFComponentBuilder> new_in_world(const GFWorld*);
+		static Ref<GFComponentBuilder> new_in_world(GFWorld*);
 		Ref<GFEntity> build();
 
 	protected:

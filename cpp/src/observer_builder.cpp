@@ -11,7 +11,7 @@ using namespace godot;
 GFObserverBuilder::~GFObserverBuilder() {
 }
 
-Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(const GFWorld* world) {
+Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFObserverBuilder(world));
 }
 

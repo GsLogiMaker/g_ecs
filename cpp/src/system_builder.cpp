@@ -14,7 +14,7 @@ using namespace godot;
 GFSystemBuilder::~GFSystemBuilder() {
 }
 
-Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(const GFWorld* world) {
+Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFSystemBuilder(world));
 }
 

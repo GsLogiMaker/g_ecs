@@ -37,7 +37,7 @@ namespace godot {
 
 		ecs_entity_t coerce_id(const Variant);
 
-		Ref<GFEntity> lookup(const String) const;
+		Ref<GFEntity> lookup(const String);
 
 		Ref<GFPair> pair(const Variant, Variant);
 		ecs_entity_t pair_ids(ecs_entity_t, ecs_entity_t) const;

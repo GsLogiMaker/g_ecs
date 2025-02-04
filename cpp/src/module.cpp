@@ -16,7 +16,7 @@ using namespace godot;
 GFModule::~GFModule() {
 }
 
-Ref<GFModule> GFModule::new_in_world(const GFWorld* world) {
+Ref<GFModule> GFModule::new_in_world(GFWorld* world) {
 	return memnew(GFModule(world));
 }
 

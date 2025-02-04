@@ -15,7 +15,7 @@ using namespace godot;
 GFComponentBuilder::~GFComponentBuilder() {
 }
 
-Ref<GFComponentBuilder> GFComponentBuilder::new_in_world(const GFWorld* world) {
+Ref<GFComponentBuilder> GFComponentBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFComponentBuilder(world));
 }
 

@@ -18,11 +18,11 @@ namespace godot {
 		GDCLASS(GFComponent, GFRegisterableEntity)
 
 	public:
-		GFComponent(ecs_entity_t component, const GFWorld* world):
+		GFComponent(ecs_entity_t component, GFWorld* world):
 			GFRegisterableEntity(component, world),
 			source_entity_id(0)
 		{}
-		GFComponent(ecs_entity_t entity, ecs_entity_t component, const GFWorld* world):
+		GFComponent(ecs_entity_t entity, ecs_entity_t component, GFWorld* world):
 			source_entity_id(entity),
 			GFRegisterableEntity(component, world)
 		{}

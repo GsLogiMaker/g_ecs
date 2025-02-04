@@ -17,7 +17,7 @@ namespace godot {
 
 	public:
 		/// Create a new named module
-		GFModule(const char* name, const GFWorld* world):
+		GFModule(const char* name, GFWorld* world):
 			GFRegisterableEntity(
 				ecs_module_init(
 					world->raw(),
@@ -32,14 +32,14 @@ namespace godot {
 			GFRegisterableEntity(GFWorld::singleton())
 		{}
 		/// Create new unnamed module
-		GFModule(const GFWorld* world): GFModule("", world)
+		GFModule(GFWorld* world): GFModule("", world)
 		{}
 		/// Create new unnamed module in default world
 		GFModule(): GFModule("")
 		{}
 
 		/// Reference an existing module
-		GFModule(ecs_entity_t module_id, const GFWorld* world):
+		GFModule(ecs_entity_t module_id, GFWorld* world):
 			GFRegisterableEntity(module_id, world)
 		{}
 
@@ -51,7 +51,7 @@ namespace godot {
 
 		OVERRIDE_ENTITY_SELF_METHODS(GFModule);
 
-		static Ref<GFModule> new_in_world(const GFWorld* world);
+		static Ref<GFModule> new_in_world(GFWorld* world);
 		static Ref<GFModule> new_named_in_world(const String name, GFWorld*);
 		static Ref<GFModule> from(const Variant module, GFWorld*);
 		static Ref<GFModule> from_id(ecs_entity_t, GFWorld*);

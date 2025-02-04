@@ -16,7 +16,7 @@ GFRegisterableEntity::~GFRegisterableEntity() {
 // --------------------------------------------------------
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::new_in_world(
-	const GFWorld* world
+	GFWorld* world
 ) {
 	ERR(nullptr,
 		"Couldn't instantiate entity\n",
@@ -26,7 +26,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::new_in_world(
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(
 	ecs_entity_t id,
-	const GFWorld* world_
+	GFWorld* world_
 ) {
 	return setup_template<GFRegisterableEntity>(memnew(
 		GFRegisterableEntity(id, world_))
@@ -35,7 +35,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_id(
 
 Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(
 	const Ref<Script> script,
-	const GFWorld* world
+	GFWorld* world
 ) {
 	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
 		script->get_instance_base_type()
