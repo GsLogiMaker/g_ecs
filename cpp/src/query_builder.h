@@ -18,11 +18,11 @@ namespace godot {
 		GDCLASS(GFQueryBuilder, GFQuerylikeBuilder)
 
 	public:
-		GFQueryBuilder(const GFWorld* world):
-			GFQuerylikeBuilder(world)
-		{}
 		GFQueryBuilder():
 			GFQueryBuilder(GFWorld::singleton())
+		{}
+		GFQueryBuilder(GFWorld* world):
+			GFQuerylikeBuilder(world)
 		{}
 		~GFQueryBuilder();
 
@@ -32,7 +32,7 @@ namespace godot {
 
 		OVERRIDE_QUERYLIKE_SELF_METHODS(GFQueryBuilder);
 
-		static Ref<GFQueryBuilder> new_in_world(const GFWorld*);
+		static Ref<GFQueryBuilder> new_in_world(GFWorld*);
 		Ref<GFQuery> build();
 
 		// **************************************

@@ -57,7 +57,7 @@ func test_basic_query():
 		.with(eats.pair(grass)) \
 		.build() as GFQuery
 	var grass_eater_count:= 0
-	for _x in grass_eater_iter.iterate():
+	for _x in grass_eater_iter.iter():
 		grass_eater_count += 1
 	assert_eq(grass_eater_count, 1)
 
@@ -66,7 +66,7 @@ func test_basic_query():
 		.with(eats.pair("flecs/core/*")) \
 		.build() as GFQuery
 	var eater_count:= 0
-	for _x in eater_iter.iterate():
+	for _x in eater_iter.iter():
 		eater_count += 1
 	assert_eq(eater_count, 2)
 

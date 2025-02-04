@@ -18,26 +18,13 @@
 
 using namespace godot;
 
-GFEntity::GFEntity() {
-	GFWorld* world = GFWorld::singleton();
-	id = ecs_new(world->raw());
-	world_instance_id = world->get_instance_id();
-}
-GFEntity::GFEntity(const GFWorld* world) {
-	id = ecs_new(world->raw());
-	world_instance_id = world->get_instance_id();
-}
-GFEntity::~GFEntity() {
-}
-
-Ref<GFEntity> GFEntity::new_in_world(const GFWorld* world) {
+Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
-	world = GFWorld::world_or_singleton(world);
-	return from_id(world->coerce_id(entity), world);
+	return memnew(GFEntity(world->coerce_id(entity), world));
 }
-Ref<GFEntity> GFEntity::from_id(const ecs_entity_t id, const GFWorld* world) {
+Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 

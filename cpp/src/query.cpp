@@ -20,7 +20,8 @@ GFWorld* GFQuery::get_world() const { return Object::cast_to<GFWorld>(
 Ref<GFQueryIterator> GFQuery::iter() {
 	ecs_iter_t iter = ecs_query_iter(get_world()->raw(), this->query);
 	return Ref(memnew(GFQueryIterator(
-		iter
+		iter,
+		get_world()
 	)));
 }
 

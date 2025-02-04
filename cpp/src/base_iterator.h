@@ -10,9 +10,9 @@
 		);	\
 	}                             	\
 	if (index == iterator.count) {	\
-		index = 0;                    	\
-		set_done(ECS_NEXT(&iterator));	\
-		if (is_done()) {              	\
+		index = 0;                     	\
+		set_done(!ECS_NEXT(&iterator));	\
+		if (is_done()) {               	\
 			return false;	\
 		}           	\
 		PER_TABLE();	\
@@ -58,6 +58,8 @@ namespace godot {
 		// --------------------------------------
 		// --- Unexposed
 		// --------------------------------------
+
+		QueryIterationContext* get_context();
 
 		bool progress_iterator();
 

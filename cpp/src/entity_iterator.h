@@ -27,6 +27,7 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		bool _iter_init(Variant arg);
 		bool _iter_next(Variant arg);
 
 		// --------------------------------------

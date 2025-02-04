@@ -55,12 +55,9 @@ namespace godot {
 
 	public:
 		GFQuerylikeBuilder():
-			GFEntityBuilder(),
-			query_desc( {0} ),
-			built(false),
-			term_count(0)
+			GFQuerylikeBuilder(nullptr)
 		{}
-		GFQuerylikeBuilder(const GFWorld* world):
+		GFQuerylikeBuilder(GFWorld* world):
 			GFEntityBuilder(world),
 			query_desc( {0} ),
 			built(false),

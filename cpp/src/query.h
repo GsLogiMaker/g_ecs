@@ -15,8 +15,10 @@ namespace godot {
 		GDCLASS(GFQuery, RefCounted)
 
 	public:
-		GFQuery(const GFWorld* world, ecs_query_t* query):
-			world_instance_id(world->get_instance_id()),
+		GFQuery(GFWorld* world, ecs_query_t* query):
+			world_instance_id(
+				GFWorld::world_or_singleton(world)->get_instance_id()
+			),
 			query(query)
 		{}
 		GFQuery():

@@ -33,9 +33,11 @@ namespace godot {
 		GDCLASS(GFEntityBuilder, RefCounted)
 
 	public:
-		GFEntityBuilder(): GFEntityBuilder(GFWorld::singleton()) {}
-		GFEntityBuilder(const GFWorld* world):
-			world_instance_id(world->get_instance_id()),
+		GFEntityBuilder(): GFEntityBuilder(nullptr) {}
+		GFEntityBuilder(GFWorld* world):
+			world_instance_id(
+				GFWorld::world_or_singleton(world)->get_instance_id()
+			),
 			ids(PackedInt64Array()),
 			desc({
 				.sep="/",
@@ -50,7 +52,7 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
-		static Ref<GFEntityBuilder> new_in_world(const GFWorld*);
+		static Ref<GFEntityBuilder> new_in_world(GFWorld*);
 
 		Ref<GFEntityBuilder> add_entity(const Variant entity);
 		Ref<GFEntityBuilder> add_pair(const Variant first, const Variant second);

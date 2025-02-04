@@ -78,26 +78,31 @@ namespace godot {
 
 	public:
 		// New entity in global world
-		GFEntity();
+		GFEntity(): GFEntity(nullptr) {};
 		// New entity in specific world
-		GFEntity(const GFWorld* world) ;
+		GFEntity(GFWorld* world) {
+			GFWorld* w = GFWorld::world_or_singleton(world);
+			id = ecs_new(w->raw());
+			world_instance_id = w->get_instance_id();
+		};
 		// Reference an entity
-		GFEntity(const ecs_entity_t id_, const GFWorld* world_):
+		GFEntity(ecs_entity_t id_, GFWorld* world):
 			id(id_)
 		{
-			world_instance_id = world_->get_instance_id();
+			GFWorld* w = GFWorld::world_or_singleton(world);
+			world_instance_id = w->get_instance_id();
 		}
 		// Copy an entity reference
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
-		~GFEntity();
+		~GFEntity() {};
 
 		// --------------------------------------
 		// --- Exposed ---
 		// --------------------------------------
 
-		static Ref<GFEntity> new_in_world(const GFWorld*);
+		static Ref<GFEntity> new_in_world(GFWorld*);
 		static Ref<GFEntity> from(const Variant, GFWorld*);
-		static Ref<GFEntity> from_id(const ecs_entity_t, const GFWorld*);
+		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
 		Ref<GFEntity> add_child(const Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);

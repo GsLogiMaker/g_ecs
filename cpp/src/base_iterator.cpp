@@ -62,6 +62,13 @@ void GFBaseIterator::set_started(bool value) {
 // --- Unexposed
 // --------------------------------------
 
+QueryIterationContext* GFBaseIterator::get_context() {
+	return static_cast<QueryIterationContext*>(
+		iterator.query->binding_ctx
+	);
+}
+
+
 bool GFBaseIterator::next() {
 	NEXT(
 		ecs_iter_next,

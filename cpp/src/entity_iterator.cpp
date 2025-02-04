@@ -13,6 +13,10 @@ using namespace godot;
 // --- Exposed ---
 // --------------------------------------
 
+bool GFEntityIterator::_iter_init(Variant arg) {
+	return _iter_next(arg);
+}
+
 bool GFEntityIterator::_iter_next(Variant arg) {
 	return GFEntityIterator::next();
 }
@@ -34,5 +38,6 @@ bool GFEntityIterator::next() {
 // --------------------------------------
 
 void GFEntityIterator::_bind_methods() {
+	godot::ClassDB::bind_method(D_METHOD("_iter_init", "arg"), &GFEntityIterator::_iter_init);
 	godot::ClassDB::bind_method(D_METHOD("_iter_next", "arg"), &GFEntityIterator::_iter_next);
 }

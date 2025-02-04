@@ -100,7 +100,7 @@ func test_builder():
 		.build()
 
 	var i:= 0
-	for _x in query.iterate():
+	for _x in query.iter():
 		i += 1
 
 	assert_eq(i, 1, "Expected query to find the built entity")

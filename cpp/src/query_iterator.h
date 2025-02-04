@@ -3,6 +3,7 @@
 #define QUERY_ITERATOR_H
 
 #include "base_iterator.h"
+#include "godot_cpp/variant/variant.hpp"
 #include "query.h"
 #include "world.h"
 #include <flecs.h>
@@ -23,13 +24,19 @@ namespace godot {
 		GFQueryIterator(ecs_iter_t iterator, GFWorld* world):
 			GFBaseIterator(iterator, world)
 		{}
-		~GFQueryIterator();
+		~GFQueryIterator() {
+			if (!is_done()) {
+				ecs_iter_fini(&iterator);
+			}
+		};
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
+		bool _iter_init(Variant arg);
 		bool _iter_next(Variant arg);
+		Variant _iter_get(Variant arg);
 
 		// --------------------------------------
 		// --- Unexposed

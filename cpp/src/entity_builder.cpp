@@ -1,6 +1,7 @@
 
 
 #include "entity_builder.h"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "querylike_builder.h"
 #include <godot_cpp/core/class_db.hpp>
 #include "godot_cpp/variant/callable.hpp"
@@ -18,7 +19,7 @@ using namespace godot;
 // *** Exposed ***
 // **************************************
 
-Ref<GFEntityBuilder> GFEntityBuilder::new_in_world(const GFWorld* world) {
+Ref<GFEntityBuilder> GFEntityBuilder::new_in_world(GFWorld* world) {
 	return Ref(memnew(GFEntityBuilder(world)));
 }
 

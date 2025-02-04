@@ -2,6 +2,7 @@
 
 #include "query_builder.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "world.h"
 #include "query.h"
 
@@ -13,7 +14,7 @@ using namespace godot;
 GFQueryBuilder::~GFQueryBuilder() {
 }
 
-Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(const GFWorld* world) {
+Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFQueryBuilder(world));
 }
 
