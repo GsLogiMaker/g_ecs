@@ -51,7 +51,7 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="lookup" qualifiers="const">
+		<method name="lookup">
 			<return type="GFEntity" />
 			<param index="0" name="path" type="String" />
 			<description>

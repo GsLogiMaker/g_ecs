@@ -44,7 +44,7 @@
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="first" type="Variant" />
 			<param index="1" name="second" type="Variant" />
-			<param index="2" name="members" type="Variant" />
+			<param index="2" name="members" type="Variant" default="[]" />
 			<description>
 			</description>
 		</method>
@@ -57,7 +57,7 @@
 		<method name="addv">
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="component" type="Variant" />
-			<param index="1" name="members" type="Variant" />
+			<param index="1" name="members" type="Variant" default="[]" />
 			<description>
 			</description>
 		</method>
@@ -65,7 +65,7 @@
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="entity" type="Variant" />
 			<param index="1" name="components" type="Array" />
-			<param index="2" name="event_members" type="Array" />
+			<param index="2" name="event_members" type="Array" default="[]" />
 			<description>
 			</description>
 		</method>

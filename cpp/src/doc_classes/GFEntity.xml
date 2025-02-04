@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -65,7 +64,7 @@
 			<return type="GFEntity" />
 			<param index="0" name="first" type="Variant" />
 			<param index="1" name="second" type="Variant" />
-			<param index="2" name="members" type="Array" />
+			<param index="2" name="members" type="Array" default="[]" />
 			<description>
 				Adds component data to the pair of [param first] and [param second] to this entity. If the pair contains data, the members of the data are set using [param members].
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
@@ -93,7 +92,7 @@
 		<method name="addv">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />
-			<param index="1" name="members" type="Array" />
+			<param index="1" name="members" type="Array" default="[]" />
 			<description>
 				Adds component data of type [param component] to this entity. The members of the component data are set using [param members].
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
@@ -121,7 +120,7 @@
 			<return type="GFEntity" />
 			<param index="0" name="entity" type="Variant" />
 			<param index="1" name="components" type="Array" />
-			<param index="2" name="event_members" type="Array" />
+			<param index="2" name="event_members" type="Array" default="[]" />
 			<description>
 				Triggers this entity to emit as an event to be cought by observers.
 				TODO: Add code example.
@@ -316,6 +315,11 @@
 				var entity:= GFEntity.from_id(world.pair_ids(1, 2), world)
 				entity.is_pair() # true
 				[/codeblock]
+			</description>
+		</method>
+		<method name="iter_children" qualifiers="const">
+			<return type="GFEntityIterator" />
+			<description>
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">

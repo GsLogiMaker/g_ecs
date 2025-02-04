@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GFEntityIterator" inherits="GFBaseIterator"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Iterates over entities a collection of entities.
+	</brief_description>
+	<description>
+		The most common use of the iterator is to iterate over the children of an entity.
+		[codeblock]
+		var children_iter = entity.iter_children()
+		for child in children_iter:
+		    print(child)
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

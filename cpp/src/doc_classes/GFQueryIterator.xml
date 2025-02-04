@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQueryIterator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQueryIterator" inherits="GFBaseIterator"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		An iterator over queried entities.
+		Iterates over queried entities.
 	</brief_description>
 	<description>
 		The example below shows iteration of a query over entities with the Vector2 component:
@@ -10,7 +11,7 @@
 		    .with("glecs/meta/Vector2") \
 		    .build()
 
-		for terms:Array[GFComponent] in query.iterate():
+		for terms:Array[GFComponent] in query.iter():
 		    var vec2_c:= terms[0]
 		    print("X: %s, Y %s" % [vec2_c.getm("x"), vec2_c.getm("y")])
 		[/codeblock]
@@ -18,24 +19,4 @@
 	<tutorials>
 		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>
 	</tutorials>
-	<methods>
-		<method name="get_world">
-			<return type="GFWorld" />
-			<description>
-				Returns the world queried from.
-			</description>
-		</method>
-		<method name="is_done">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if this iterator has been exhausted.
-			</description>
-		</method>
-		<method name="is_started">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if this iterator has started iterating.
-			</description>
-		</method>
-	</methods>
 </class>
