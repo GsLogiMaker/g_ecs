@@ -2,7 +2,6 @@
 
 #include "query_builder.h"
 #include "godot_cpp/variant/callable.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "world.h"
 #include "query.h"
 

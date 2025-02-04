@@ -2,6 +2,7 @@
 #ifndef GL_ENTITY_H
 #define GL_ENTITY_H
 
+#include "entity_iterator.h"
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
@@ -137,6 +138,7 @@ namespace godot {
 
 		bool is_alive() const;
 		bool is_pair() const;
+		Ref<GFEntityIterator> iter_children() const;
 
 		Ref<GFPair> pair(const Variant second) const;
 		ecs_entity_t pair_id(const ecs_entity_t second_id) const;
@@ -169,7 +171,7 @@ namespace godot {
 			if (!e->is_alive()) {
 				ERR(nullptr,
 					"Could not instantiate ", T::get_class_static(), " from ID\n",
-					"ID ", e->to_string(), " is not valid in world ", e->get_world()
+					"	ID ", e->get_id(), " is not alive in world ", e->get_world()
 				);
 			}
 

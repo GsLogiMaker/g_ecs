@@ -144,6 +144,33 @@ func test_has_child():
 		"Expected to `flecs` module to have a grandchild named `core/OnAdd`"
 	)
 
+
+func test_iter_children():
+	var parent:= GFEntity.new_in_world(world) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("George")
+		) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("Riley")
+		)
+	
+	var child_count:= 0
+	var has_george:= false
+	var has_riley:= false
+	prints(1)
+	for child in parent.iter_children():
+		prints(2, child)
+		has_george = has_george or child.get_name() == "George"
+		prints(2.1)
+		has_riley = has_riley or child.get_name() == "Riley"
+		prints(2.2)
+		child_count += 1
+	prints(3)
+	
+	assert_eq(child_count, 2, "Expected to iterate over 2 children")
+	assert_true(has_george, "Expected to iterate over the entity named George")
+	assert_true(has_riley, "Expected to iterate over the entity named Riley")
+
 #endregion
 
 #region Classes

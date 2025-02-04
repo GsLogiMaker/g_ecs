@@ -1,6 +1,6 @@
 
 #include "query.h"
-#include  "query_iterator.h"
+#include "query_iterator.h"
 
 #include <stdint.h>
 #include <flecs.h>

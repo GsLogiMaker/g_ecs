@@ -2,6 +2,12 @@
 #ifndef BASE_ITERATOR_H
 #define BASE_ITERATOR_H
 
+#include "world.h"
+#include "utils.h"
+
+#include <flecs.h>
+#include <godot_cpp/classes/ref_counted.hpp>
+
 #define NEXT(ECS_NEXT, PER_TABLE, PER_ENTITY)	\
 	if (is_done()) {	\
 		ERR(false,	\
@@ -23,11 +29,9 @@
 	return !is_done();	\
 ;
 
-#include "querylike_builder.h"
-#include <flecs.h>
-#include <godot_cpp/classes/ref_counted.hpp>
-
 namespace godot {
+
+	class QueryIterationContext;
 
 	class GFBaseIterator : public RefCounted {
 		GDCLASS(GFBaseIterator, RefCounted)

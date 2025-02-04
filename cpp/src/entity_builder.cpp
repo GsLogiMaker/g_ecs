@@ -1,6 +1,7 @@
 
 
 #include "entity_builder.h"
+#include "entity.h"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "querylike_builder.h"
 #include <godot_cpp/core/class_db.hpp>

@@ -1,5 +1,6 @@
 
 #include "base_iterator.h"
+#include "entity.h"
 #include "godot_cpp/variant/array.hpp"
 #include "querylike_builder.h"
 #include "world.h"
@@ -31,7 +32,7 @@ bool GFBaseIterator::_iter_next(Variant arg) {
 
 Variant GFBaseIterator::_iter_get(Variant arg) {
 	GFWorld* w = get_world();
-	return GFEntity::from_id(iterator.entities[index], w);
+	return GFEntity::from_id(iterator.entities[index-1], w);
 }
 
 GFWorld* GFBaseIterator::get_world() const {

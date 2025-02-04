@@ -1,5 +1,6 @@
 
 #include "query_iterator.h"
+#include "query_iteration_context.h"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "querylike_builder.h"

@@ -2,6 +2,7 @@
 
 #include "observer_builder.h"
 #include "querylike_builder.h"
+#include "query_iteration_context.h"
 #include "world.h"
 #include "utils.h"
 #include <flecs.h>

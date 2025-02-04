@@ -1,5 +1,6 @@
 
 #include "entity.h"
+#include "entity_iterator.h"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/array.hpp"
@@ -390,6 +391,12 @@ bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
 
+Ref<GFEntityIterator> GFEntity::iter_children() const {
+	GFWorld* w = get_world();
+	ecs_iter_t iter = ecs_children(w->raw(), get_id());
+	return Ref(memnew(GFEntityIterator(iter, w)));
+}
+
 Ref<GFEntity> GFEntity::get_child(const String name) const {
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		get_world()->raw(),
@@ -406,6 +413,9 @@ Ref<GFEntity> GFEntity::get_child(const String name) const {
 }
 
 String GFEntity::get_name() const {
+	CHECK_ENTITY_ALIVE(get_id(), get_world(), "",
+		"Failed to get name of entity\n"
+	);
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
 
@@ -517,6 +527,7 @@ void GFEntity::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
+	godot::ClassDB::bind_method(D_METHOD("iter_children"), &GFEntity::iter_children);
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);

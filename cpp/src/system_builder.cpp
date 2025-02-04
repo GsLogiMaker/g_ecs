@@ -1,6 +1,7 @@
 
 
 #include "system_builder.h"
+#include "query_iteration_context.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "querylike_builder.h"

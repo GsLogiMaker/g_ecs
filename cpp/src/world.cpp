@@ -1,6 +1,7 @@
 
 #include "world.h"
 #include "entity.h"
+#include "component.h"
 #include "component_builder.h"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
@@ -747,6 +748,9 @@ ecs_entity_t GFWorld::variant_type_to_id(Variant::Type type) {
 }
 
 String GFWorld::id_to_text(ecs_entity_t id) const {
+	CHECK_ENTITY_ALIVE(id, this, "",
+		"Failed to convert ID to text\n"
+	);
 	if (ecs_id_is_pair(id)) {
 		return String("(")
 			+ id_to_text(ECS_PAIR_FIRST(id)) + ", "
