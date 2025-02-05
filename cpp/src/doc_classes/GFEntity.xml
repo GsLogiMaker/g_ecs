@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -281,6 +282,13 @@
 			<param index="0" name="entity" type="Variant" />
 			<param index="1" name="second" type="Variant" default="null" />
 			<description>
+				Returns [code]true[/code] if this entity has [param entity] attached.
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				[codeblock]
+				var entity = GFEntity.new()
+				entity.add(GFPosition2D)
+				entity.has(GFPosition2D) # true
+				[/codeblock]
 			</description>
 		</method>
 		<method name="has_child" qualifiers="const">
