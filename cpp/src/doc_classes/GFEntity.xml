@@ -383,6 +383,25 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="remove">
+			<return type="GFEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Removes [param entity] from this entity.
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				[codeblock]
+				var enemy = GFEntity.new()
+				var robot:= GFEntity.new() \
+				    .add_tag(enemy)
+
+				robot.has_entity(enemy) # true
+				robot.remove(enemy)
+				robot.has_entity(enemy) # false
+				[/codeblock]
+				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
 		<method name="set" qualifiers="const vararg">
 			<return type="GFEntity" />
 			<param index="0" name="component" type="Variant" />

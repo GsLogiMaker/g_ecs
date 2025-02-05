@@ -186,6 +186,18 @@ func test_get_children():
 	assert_true(has_george, "Expected to array to have the entity named George")
 	assert_true(has_riley, "Expected to array to have the entity named Riley")
 
+func test_remove():
+	var e:= GFEntity.new_in_world(world) \
+		.add(Foo, 2.24)
+	
+	assert_almost_eq(e.get(Foo).getm("value"), 2.24, 0.01)
+	assert_true(e.has_entity(Foo))
+	
+	e.remove(Foo)
+	
+	assert_false(e.has_entity(Foo))
+	
+
 #endregion
 
 #region Classes

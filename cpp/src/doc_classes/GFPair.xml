@@ -127,6 +127,14 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="remove">
+			<return type="GFPair" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFEntity.remove].
+			</description>
+		</method>
 		<method name="second" qualifiers="const">
 			<return type="GFEntity" />
 			<description>
