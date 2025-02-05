@@ -498,6 +498,34 @@ ecs_entity_t GFEntity::pair_id(const ecs_entity_t second) const {
 	return get_world()->pair_ids(get_id(), second);
 }
 
+Ref<GFEntity> GFEntity::remove_component(const Variant entity, const Variant second) {
+	GFWorld* w = get_world();
+
+	ecs_entity_t id = w->coerce_id(entity);
+	CHECK_ENTITY_ALIVE(id, w, nullptr,
+		"Failed to remove component\n"
+	);
+
+	if (second != Variant()) {
+		ecs_entity_t second_id = w->coerce_id(second);
+		CHECK_ENTITY_ALIVE(second_id, w, nullptr,
+			"Failed to remove component\n"
+		);
+		id = ecs_pair(id, second_id);
+	}
+
+	if (!ecs_has_id(w->raw(), get_id(), id)) {
+		ERR(nullptr,
+			"Failed to remove component\n",
+			"	Component ID ", id, " is not attached to entity"
+		);
+	}
+
+	ecs_remove_id(get_world()->raw(), get_id(), id);
+
+	return Ref(this);
+}
+
 String GFEntity::_to_string() const {
 	return get_world()->id_to_text(get_id());
 }

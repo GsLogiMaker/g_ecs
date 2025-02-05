@@ -77,6 +77,13 @@
 				Overrides [method GFEntity.new_in_world] to throw an error
 			</description>
 		</method>
+		<method name="remove">
+			<return type="GFRegisterableEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
 		<method name="set" qualifiers="const vararg">
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="component" type="Variant" />

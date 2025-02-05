@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFTag" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFTag" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity with no data.
 	</brief_description>
@@ -99,6 +100,14 @@
 				var world:= GFWorld.new()
 				var entity:= GFEntity.new_in_world(world)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="remove">
+			<return type="GFTag" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFEntity.remove].
 			</description>
 		</method>
 		<method name="set" qualifiers="const vararg">

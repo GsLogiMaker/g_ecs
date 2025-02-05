@@ -156,6 +156,14 @@
 				Overrides [method GFEntity.is_alive].
 			</description>
 		</method>
+		<method name="remove">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFEntity.remove].
+			</description>
+		</method>
 		<method name="set" qualifiers="const vararg">
 			<return type="GFComponent" />
 			<param index="0" name="component" type="Variant" />
