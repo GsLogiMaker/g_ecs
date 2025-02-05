@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFBaseIterator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFBaseIterator" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Abstract base class for all Glecs iterators.
 	</brief_description>
@@ -17,6 +18,7 @@
 		<method name="into_array">
 			<return type="Array" />
 			<description>
+				Exhausts the iterator, and stores the results into an array and returns it.
 			</description>
 		</method>
 		<method name="is_done" qualifiers="const">
