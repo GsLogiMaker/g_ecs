@@ -197,6 +197,17 @@ func test_remove():
 	
 	assert_false(e.has_entity(Foo))
 	
+func test_add_sibling():
+	var par:= GFEntity.new_in_world(world)
+	var bill:= GFEntity.new_in_world(world) \
+		.set_name("Bill") \
+		.set_parent(par) \
+		.add_sibling(GFEntity.new_in_world(world)
+			.set_name("Bob")
+		)
+	
+	assert_true(par.has_child("Bill"), "Expected parent to have have child named Bill")
+	assert_true(par.has_child("Bob"), "Expected parent to have have child named Bob")
 
 #endregion
 

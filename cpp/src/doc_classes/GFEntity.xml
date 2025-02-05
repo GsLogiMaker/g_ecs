@@ -77,6 +77,16 @@
 				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
+		<method name="add_sibling">
+			<return type="GFEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Adds an entity as a child to this one's parent.
+				Equivalent to calling [code]get_parent().add_child(entity)[/code].
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				This codeblock returns [code]self[/code] for chaining.
+			</description>
+		</method>
 		<method name="add_tag">
 			<return type="GFEntity" />
 			<param index="0" name="tag" type="Variant" />

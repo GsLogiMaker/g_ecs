@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFModule" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFModule" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -36,6 +37,13 @@
 			<param index="2" name="members" type="Variant" default="[]" />
 			<description>
 				Overrides [method GFEntity.add_pairv].
+			</description>
+		</method>
+		<method name="add_sibling">
+			<return type="GFModule" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [GFEntity.add_sibling].
 			</description>
 		</method>
 		<method name="add_tag">

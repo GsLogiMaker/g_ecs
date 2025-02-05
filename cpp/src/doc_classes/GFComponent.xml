@@ -54,6 +54,13 @@
 				Overrides [method GFEntity.add_pairv].
 			</description>
 		</method>
+		<method name="add_sibling">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntity.add_sibling].
+			</description>
+		</method>
 		<method name="add_tag">
 			<return type="GFComponent" />
 			<param index="0" name="tag" type="Variant" />
