@@ -132,16 +132,14 @@ namespace godot {
 
 		Ref<GFEntity> get_child(const String) const;
 		TypedArray<GFEntity> get_children() const;
-		Ref<GFComponent> get_component(const Variant) const;
+		Ref<GFComponent> get_component(const Variant, const Variant) const;
 		ecs_entity_t get_id() const;
 		String get_name() const;
-		Ref<GFComponent> get_pair(const Variant, const Variant) const;
 		Ref<GFEntity> get_parent() const;
 		String get_path() const;
 		GFWorld* get_world() const;
 
-		bool has_entity(const Variant) const;
-		bool has_pair(const Variant, const Variant) const;
+		bool has_entity(const Variant, const Variant) const;
 		bool has_child(const String) const;
 
 		bool is_alive() const;
