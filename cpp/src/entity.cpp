@@ -412,6 +412,13 @@ Ref<GFEntity> GFEntity::get_child(const String name) const {
 	return GFEntity::from_id(id, get_world());
 }
 
+TypedArray<GFEntity> GFEntity::get_children() const {
+	// Entity iterator should only ever iterate over
+	// entities, so we can safely cast it to a typed array.
+	Array arr = iter_children()->into_array();
+	return arr;
+}
+
 String GFEntity::get_name() const {
 	CHECK_ENTITY_ALIVE(get_id(), get_world(), "",
 		"Failed to get name of entity\n"
@@ -515,6 +522,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
 	godot::ClassDB::bind_method(D_METHOD("get_child", "path"), &GFEntity::get_child);
+	godot::ClassDB::bind_method(D_METHOD("get_children"), &GFEntity::get_children);
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
 	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
 	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);

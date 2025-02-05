@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -176,7 +177,22 @@
 				        GFEntity.new().set_name("Child")
 				    )
 				par.get_child("Child") != null # true
-				[/codeblock&gt;
+				[/codeblock]
+			</description>
+		</method>
+		<method name="get_children" qualifiers="const">
+			<return type="GFEntity[]" />
+			<description>
+				Returns an array of this entity's children.
+				This method creates a new array each time it is called. If you just need to iterate over the children, use [method GFEntity.iter_children] instead.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				par.get_children()[0].get_name() == "Child" # true
+				[/codeblock]
 			</description>
 		</method>
 		<method name="get_id" qualifiers="const">
@@ -320,6 +336,16 @@
 		<method name="iter_children" qualifiers="const">
 			<return type="GFEntityIterator" />
 			<description>
+				Returns an iterator over this entity's children.
+				[codeblock]
+				var par = GFEntity.new() \
+				    .set_name("Parent") \
+				    .add_child(
+				        GFEntity.new().set_name("Child")
+				    )
+				for child in par.iter_children():
+				    print(child)
+				[/codeblock]
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">

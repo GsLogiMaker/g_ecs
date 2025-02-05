@@ -47,17 +47,14 @@ bool GFBaseIterator::is_started() const {
 	return (iter_flags & 1 << 1) != 0;
 }
 
-void GFBaseIterator::set_done(bool value) {
-	uint8_t new_value = ((uint8_t) value) << 0;
-	uint8_t other_flags = iter_flags & ~new_value;
-	iter_flags = other_flags | new_value;
+Array GFBaseIterator::into_array() {
+	Array arr = Array();
+	while (_iter_next({})) {
+		arr.append(_iter_get({}));
+	}
+	return arr;
 }
 
-void GFBaseIterator::set_started(bool value) {
-	uint8_t new_value = ((uint8_t) value) << 1;
-	uint8_t other_flags = iter_flags & ~new_value;
-	iter_flags = other_flags | new_value;
-}
 
 // --------------------------------------
 // --- Unexposed
@@ -77,6 +74,17 @@ bool GFBaseIterator::next() {
 		[]{}
 	);
 }
+void GFBaseIterator::set_done(bool value) {
+	uint8_t new_value = ((uint8_t) value) << 0;
+	uint8_t other_flags = iter_flags & ~new_value;
+	iter_flags = other_flags | new_value;
+}
+
+void GFBaseIterator::set_started(bool value) {
+	uint8_t new_value = ((uint8_t) value) << 1;
+	uint8_t other_flags = iter_flags & ~new_value;
+	iter_flags = other_flags | new_value;
+}
 
 // --------------------------------------
 // --- Protected ---
@@ -89,4 +97,5 @@ void GFBaseIterator::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFBaseIterator::get_world);
 	godot::ClassDB::bind_method(D_METHOD("is_done"), &GFBaseIterator::is_done);
 	godot::ClassDB::bind_method(D_METHOD("is_started"), &GFBaseIterator::is_started);
+	godot::ClassDB::bind_method(D_METHOD("into_array"), &GFBaseIterator::into_array);
 }

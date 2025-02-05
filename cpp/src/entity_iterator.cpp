@@ -14,7 +14,7 @@ using namespace godot;
 // --------------------------------------
 
 bool GFEntityIterator::_iter_init(Variant arg) {
-	return _iter_next(arg);
+	return GFEntityIterator::_iter_next(arg);
 }
 
 bool GFEntityIterator::_iter_next(Variant arg) {

@@ -53,11 +53,13 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
-		bool _iter_init(Variant arg);
-		bool _iter_next(Variant arg);
-		Variant _iter_get(Variant arg);
+		virtual bool _iter_init(Variant arg);
+		virtual bool _iter_next(Variant arg);
+		virtual Variant _iter_get(Variant arg);
 
 		GFWorld* get_world() const;
+
+		Array into_array();
 
 		// --------------------------------------
 		// --- Unexposed

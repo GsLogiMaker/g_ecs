@@ -17,7 +17,7 @@ using namespace godot;
 // --------------------------------------
 
 bool GFQueryIterator::_iter_init(Variant arg) {
-	return _iter_next(arg);
+	return GFQueryIterator::_iter_next(arg);
 }
 
 bool GFQueryIterator::_iter_next(Variant arg) {

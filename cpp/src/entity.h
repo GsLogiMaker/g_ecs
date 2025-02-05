@@ -4,6 +4,7 @@
 
 #include "entity_iterator.h"
 #include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -124,6 +125,7 @@ namespace godot {
 		void delete_() const;
 
 		Ref<GFEntity> get_child(const String) const;
+		TypedArray<GFEntity> get_children() const;
 		Ref<GFComponent> get_component(const Variant) const;
 		ecs_entity_t get_id() const;
 		String get_name() const;
