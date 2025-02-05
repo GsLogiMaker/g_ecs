@@ -100,7 +100,7 @@ func test_builder():
 		.build()
 
 	var i:= 0
-	for _x in query.iterate():
+	for _x in query.iter():
 		i += 1
 
 	assert_eq(i, 1, "Expected query to find the built entity")
@@ -137,12 +137,54 @@ func test_has_child():
 	var flecs:= GFEntity.from("flecs", world)
 	assert_true(
 		flecs.has_child("core"),
-		"Expected to `flecs` module to have a child named `core`"
+		"Expected `flecs` module to have a child named `core`"
 	)
 	assert_true(
 		flecs.has_child("core/OnAdd"),
-		"Expected to `flecs` module to have a grandchild named `core/OnAdd`"
+		"Expected `flecs` module to have a grandchild named `core/OnAdd`"
 	)
+
+
+func test_iter_children():
+	var parent:= GFEntity.new_in_world(world) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("George")
+		) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("Riley")
+		)
+
+	var child_count:= 0
+	var has_george:= false
+	var has_riley:= false
+	for child in parent.iter_children():
+		has_george = has_george or child.get_name() == "George"
+		has_riley = has_riley or child.get_name() == "Riley"
+		child_count += 1
+
+	assert_eq(child_count, 2, "Expected to iterate over 2 children")
+	assert_true(has_george, "Expected to iterate over the entity named George")
+	assert_true(has_riley, "Expected to iterate over the entity named Riley")
+
+func test_get_children():
+	var parent:= GFEntity.new_in_world(world) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("George")
+		) \
+		.add_child(GFEntity.new_in_world(world)
+			.set_name("Riley")
+		)
+
+	var children = parent.get_children()
+	var has_george:= false
+	var has_riley:= false
+	for child in children:
+		has_george = has_george or child.get_name() == "George"
+		has_riley = has_riley or child.get_name() == "Riley"
+
+	assert_eq(children.size(), 2, "Expected to array to have 2 children")
+	assert_true(has_george, "Expected to array to have the entity named George")
+	assert_true(has_riley, "Expected to array to have the entity named Riley")
 
 #endregion
 

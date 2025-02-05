@@ -25,8 +25,9 @@ func test_pairs_are_alive():
 	assert_eq(second.is_alive(), true)
 
 	var pair:= w.pair(first, second)
-	var p:= GFEntity.from(w.pair(first, second), w)
-	assert_eq(p.is_alive(), true)
+	assert_eq(pair.is_alive(), true, "Expected pair to be alive. First: " + str(first) + ", Second: " + str(second) + ", Pair: " + str(pair))
+	var p:= GFEntity.from(pair, w)
+	assert_eq(p.is_alive(), true, "Expected pair to be alive. First: " + str(first) + ", Second: " + str(second) + ", Pair: " + str(p))
 
 
 func test_world_deletion():

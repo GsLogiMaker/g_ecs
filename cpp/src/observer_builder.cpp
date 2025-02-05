@@ -2,6 +2,7 @@
 
 #include "observer_builder.h"
 #include "querylike_builder.h"
+#include "query_iteration_context.h"
 #include "world.h"
 #include "utils.h"
 #include <flecs.h>
@@ -11,7 +12,7 @@ using namespace godot;
 GFObserverBuilder::~GFObserverBuilder() {
 }
 
-Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(const GFWorld* world) {
+Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFObserverBuilder(world));
 }
 

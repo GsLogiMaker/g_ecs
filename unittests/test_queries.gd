@@ -95,7 +95,7 @@ func test_up_traversal():
 		.build()
 
 	var i:= 0
-	for desc in parent_descriptions.iterate():
+	for desc in parent_descriptions.iter():
 		assert_true(desc[0].get_source_id() == par.get_id(), "Expecteded 1st item to be the parent")
 		assert_true(desc[1].get_source_id() == child.get_id(), "Expecteded 2nd item to be the child")
 		i += 1
@@ -126,11 +126,10 @@ func test_with_pair():
 		.build()
 
 	var count:= 0
-	for _x in query.iterate():
+	for _x in query.iter():
 		count += 1
 
 	assert_eq(count, 1, "Expected query to find 1 entity")
-
 
 #endregion
 

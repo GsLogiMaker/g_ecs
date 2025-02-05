@@ -1,6 +1,7 @@
 
 
 #include "system_builder.h"
+#include "query_iteration_context.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "querylike_builder.h"
@@ -14,7 +15,7 @@ using namespace godot;
 GFSystemBuilder::~GFSystemBuilder() {
 }
 
-Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(const GFWorld* world) {
+Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFSystemBuilder(world));
 }
 

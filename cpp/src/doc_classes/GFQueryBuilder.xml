@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQueryBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for queries.
 	</brief_description>
@@ -54,7 +53,8 @@
 		</method>
 		<method name="maybe_with">
 			<return type="GFQueryBuilder" />
-			<param index="0" name="component" type="Variant" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Overrides [method GFQuerylikeBuilder.maybe_with].
 			</description>
@@ -68,7 +68,8 @@
 		</method>
 		<method name="or_with">
 			<return type="GFQueryBuilder" />
-			<param index="0" name="component" type="Variant" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Overrides [method GFQuerylikeBuilder.or_with].
 			</description>
@@ -103,14 +104,16 @@
 		</method>
 		<method name="with">
 			<return type="GFQueryBuilder" />
-			<param index="0" name="component" type="Variant" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Overrides [method GFQuerylikeBuilder.with].
 			</description>
 		</method>
 		<method name="without">
 			<return type="GFQueryBuilder" />
-			<param index="0" name="component" type="Variant" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Overrides [method GFQuerylikeBuilder.without].
 			</description>

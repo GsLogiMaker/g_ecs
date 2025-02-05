@@ -13,7 +13,7 @@ using namespace godot;
 GFQueryBuilder::~GFQueryBuilder() {
 }
 
-Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(const GFWorld* world) {
+Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(GFWorld* world) {
 	return memnew(GFQueryBuilder(world));
 }
 

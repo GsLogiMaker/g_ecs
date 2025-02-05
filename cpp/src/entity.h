@@ -2,7 +2,9 @@
 #ifndef GL_ENTITY_H
 #define GL_ENTITY_H
 
+#include "entity_iterator.h"
 #include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -78,26 +80,31 @@ namespace godot {
 
 	public:
 		// New entity in global world
-		GFEntity();
+		GFEntity(): GFEntity(nullptr) {};
 		// New entity in specific world
-		GFEntity(const GFWorld* world) ;
+		GFEntity(GFWorld* world) {
+			GFWorld* w = GFWorld::world_or_singleton(world);
+			id = ecs_new(w->raw());
+			world_instance_id = w->get_instance_id();
+		};
 		// Reference an entity
-		GFEntity(const ecs_entity_t id_, const GFWorld* world_):
+		GFEntity(ecs_entity_t id_, GFWorld* world):
 			id(id_)
 		{
-			world_instance_id = world_->get_instance_id();
+			GFWorld* w = GFWorld::world_or_singleton(world);
+			world_instance_id = w->get_instance_id();
 		}
 		// Copy an entity reference
 		GFEntity(GFEntity& ett): GFEntity(ett.get_id(), ett.get_world()) {}
-		~GFEntity();
+		~GFEntity() {};
 
 		// --------------------------------------
 		// --- Exposed ---
 		// --------------------------------------
 
-		static Ref<GFEntity> new_in_world(const GFWorld*);
+		static Ref<GFEntity> new_in_world(GFWorld*);
 		static Ref<GFEntity> from(const Variant, GFWorld*);
-		static Ref<GFEntity> from_id(const ecs_entity_t, const GFWorld*);
+		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
 		Ref<GFEntity> add_child(const Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
@@ -118,6 +125,7 @@ namespace godot {
 		void delete_() const;
 
 		Ref<GFEntity> get_child(const String) const;
+		TypedArray<GFEntity> get_children() const;
 		Ref<GFComponent> get_component(const Variant) const;
 		ecs_entity_t get_id() const;
 		String get_name() const;
@@ -132,6 +140,7 @@ namespace godot {
 
 		bool is_alive() const;
 		bool is_pair() const;
+		Ref<GFEntityIterator> iter_children() const;
 
 		Ref<GFPair> pair(const Variant second) const;
 		ecs_entity_t pair_id(const ecs_entity_t second_id) const;
@@ -164,7 +173,7 @@ namespace godot {
 			if (!e->is_alive()) {
 				ERR(nullptr,
 					"Could not instantiate ", T::get_class_static(), " from ID\n",
-					"ID ", e->to_string(), " is not valid in world ", e->get_world()
+					"	ID ", e->get_id(), " is not alive in world ", e->get_world()
 				);
 			}
 

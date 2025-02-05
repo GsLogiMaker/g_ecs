@@ -1,34 +1,27 @@
 
-#ifndef QUERY_ITERATOR_H
-#define QUERY_ITERATOR_H
+#ifndef ENTITY_ITERATOR_H
+#define ENTITY_ITERATOR_H
 
 #include "base_iterator.h"
-#include "godot_cpp/variant/variant.hpp"
-#include "query.h"
-#include "world.h"
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
 
 namespace godot {
 
-	class GFQueryIterator : public GFBaseIterator {
-		GDCLASS(GFQueryIterator, GFBaseIterator)
+	class GFEntityIterator : public GFBaseIterator {
+		GDCLASS(GFEntityIterator, GFBaseIterator)
 
 	public:
-		GFQueryIterator():
-			GFBaseIterator({0})
+		GFEntityIterator():
+			GFBaseIterator()
 		{}
-		GFQueryIterator(ecs_iter_t iterator):
+		GFEntityIterator(ecs_iter_t iterator):
 			GFBaseIterator(iterator)
 		{}
-		GFQueryIterator(ecs_iter_t iterator, GFWorld* world):
+		GFEntityIterator(ecs_iter_t iterator, GFWorld* world):
 			GFBaseIterator(iterator, world)
 		{}
-		~GFQueryIterator() {
-			if (!is_done()) {
-				ecs_iter_fini(&iterator);
-			}
-		};
+		~GFEntityIterator() {};
 
 		// --------------------------------------
 		// --- Exposed
@@ -36,7 +29,6 @@ namespace godot {
 
 		bool _iter_init(Variant arg);
 		bool _iter_next(Variant arg);
-		Variant _iter_get(Variant arg);
 
 		// --------------------------------------
 		// --- Unexposed

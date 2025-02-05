@@ -17,7 +17,7 @@
 	if (!gf_world->is_id_alive(entity)) { \
 		ERR(return_value, \
 			__VA_ARGS__, \
-			"	Entity ", gf_world->id_to_text(entity), " is not alive" \
+			"	ID ", entity, " is not alive" \
 		); \
 	}
 

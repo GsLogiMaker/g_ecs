@@ -1,5 +1,6 @@
 
 #include "entity.h"
+#include "entity_iterator.h"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/array.hpp"
@@ -18,26 +19,13 @@
 
 using namespace godot;
 
-GFEntity::GFEntity() {
-	GFWorld* world = GFWorld::singleton();
-	id = ecs_new(world->raw());
-	world_instance_id = world->get_instance_id();
-}
-GFEntity::GFEntity(const GFWorld* world) {
-	id = ecs_new(world->raw());
-	world_instance_id = world->get_instance_id();
-}
-GFEntity::~GFEntity() {
-}
-
-Ref<GFEntity> GFEntity::new_in_world(const GFWorld* world) {
+Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
-	world = GFWorld::world_or_singleton(world);
-	return from_id(world->coerce_id(entity), world);
+	return memnew(GFEntity(world->coerce_id(entity), world));
 }
-Ref<GFEntity> GFEntity::from_id(const ecs_entity_t id, const GFWorld* world) {
+Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
 }
 
@@ -403,6 +391,12 @@ bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
 
+Ref<GFEntityIterator> GFEntity::iter_children() const {
+	GFWorld* w = get_world();
+	ecs_iter_t iter = ecs_children(w->raw(), get_id());
+	return Ref(memnew(GFEntityIterator(iter, w)));
+}
+
 Ref<GFEntity> GFEntity::get_child(const String name) const {
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		get_world()->raw(),
@@ -418,7 +412,17 @@ Ref<GFEntity> GFEntity::get_child(const String name) const {
 	return GFEntity::from_id(id, get_world());
 }
 
+TypedArray<GFEntity> GFEntity::get_children() const {
+	// Entity iterator should only ever iterate over
+	// entities, so we can safely cast it to a typed array.
+	Array arr = iter_children()->into_array();
+	return arr;
+}
+
 String GFEntity::get_name() const {
+	CHECK_ENTITY_ALIVE(get_id(), get_world(), "",
+		"Failed to get name of entity\n"
+	);
 	return String(ecs_get_name(get_world()->raw(), get_id()));
 }
 
@@ -518,6 +522,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);
 
 	godot::ClassDB::bind_method(D_METHOD("get_child", "path"), &GFEntity::get_child);
+	godot::ClassDB::bind_method(D_METHOD("get_children"), &GFEntity::get_children);
 	godot::ClassDB::bind_method(D_METHOD("get_id"), &GFEntity::get_id);
 	godot::ClassDB::bind_method(D_METHOD("get_name"), &GFEntity::get_name);
 	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);
@@ -530,6 +535,7 @@ void GFEntity::_bind_methods() {
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
+	godot::ClassDB::bind_method(D_METHOD("iter_children"), &GFEntity::iter_children);
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);
 	godot::ClassDB::bind_method(D_METHOD("pair_id", "second_id"), &GFEntity::pair_id);
