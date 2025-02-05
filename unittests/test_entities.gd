@@ -188,14 +188,20 @@ func test_get_children():
 
 func test_remove():
 	var e:= GFEntity.new_in_world(world) \
-		.add(Foo, 2.24)
+		.set_name("RemovingFrom") \
+		.add(Foo, 2.24) \
+		.add_pair(Foo, Stringy, 234.1)
 	
+	assert_true(e.has(Foo), "Expected RemovingFrom to have (Foo, Stringy)")
 	assert_almost_eq(e.get(Foo).getm("value"), 2.24, 0.01)
-	assert_true(e.has_entity(Foo))
+	assert_true(e.has(Foo, Stringy), "Expected RemovingFrom to have (Foo, Stringy)")
+	assert_almost_eq(e.get(Foo, Stringy).getm("value"), 234.1, 0.01)
 	
 	e.remove(Foo)
+	e.remove(Foo, Stringy)
 	
-	assert_false(e.has_entity(Foo))
+	assert_false(e.has(Foo))
+	assert_false(e.has(Foo, Stringy))
 	
 func test_add_sibling():
 	var par:= GFEntity.new_in_world(world)

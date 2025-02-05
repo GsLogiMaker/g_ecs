@@ -28,12 +28,12 @@ func test_add_and_set_pairs() -> void:
 	e.add_pair(GFRotation2D, eats, 1.1)
 
 	assert_almost_eq(
-		e.get_pair(eats, GFRotation2D).get_angle(),
+		e.get(eats, GFRotation2D).get_angle(),
 		1.5,
 		0.01,
 	)
 	assert_almost_eq(
-		e.get_pair(GFRotation2D, eats).get_angle(),
+		e.get(GFRotation2D, eats).get_angle(),
 		1.1,
 		0.01,
 	)

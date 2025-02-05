@@ -16,7 +16,7 @@ func _test_tag_creation():
 	var robot:=GFEntity.new_in_world(world) \
 		.add(enemy)
 	
-	assert_true(robot.has_entity(enemy), "Expected `robot` to have the `enemy` tag")
+	assert_true(robot.has(enemy), "Expected `robot` to have the `enemy` tag")
 
 #endregion
 
