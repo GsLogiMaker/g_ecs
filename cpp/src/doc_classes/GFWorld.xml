@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFWorld" inherits="Object"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		An entity component system world.
 	</brief_description>
@@ -49,6 +50,21 @@
 				    world.register_script(Health)
 				    world.coerce_id(Health) # The ID of the Health component
 				[/codeblock]
+			</description>
+		</method>
+		<method name="get_raw" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the raw pointer to the underlying Flecs world ([code]ecs_world_t *[/code]).
+				Below is an example of how to use this method in a C++ [GDExtension]:
+				[codeblock lang=cpp]
+				Object *gf_world = ...;
+				uint64_t raw_i = gf_world->call("get_raw");
+				ecs_world_t *raw = reinterpret_cast&lt;ecs_world_t*&gt;(raw_i);
+
+				ecs_new(raw); // Create a new entity
+				[/codeblock]
+				WARNING: Do not call finish, or otherwise destruct the `ecs_world_t`. The world object is managed by [GFWorld] and freeing it separate from the [GFWorld] will cause undefined behavior or crashes.
 			</description>
 		</method>
 		<method name="lookup">
