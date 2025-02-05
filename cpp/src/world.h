@@ -7,6 +7,7 @@
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
+#include <sys/types.h>
 
 namespace godot {
 
@@ -36,6 +37,8 @@ namespace godot {
 		// **************************************
 
 		ecs_entity_t coerce_id(const Variant);
+
+		int64_t get_raw() const;
 
 		Ref<GFEntity> lookup(const String);
 

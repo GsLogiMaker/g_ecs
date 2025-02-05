@@ -578,6 +578,11 @@ ecs_entity_t GFWorld::coerce_id(const Variant value) {
 	);
 }
 
+int64_t GFWorld::get_raw() const {
+	assert(sizeof(int64_t) == sizeof(ecs_world_t*));
+	return reinterpret_cast<int64_t>(raw());
+}
+
 Ref<GFEntity> GFWorld::lookup(const String path) {
 	const char* path_ptr = path.utf8().get_data();
 	ecs_entity_t id = ecs_lookup_path_w_sep(
@@ -1100,7 +1105,9 @@ ecs_world_t * GFWorld::raw() const {
 
 void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
+
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
+	godot::ClassDB::bind_method(D_METHOD("get_raw"), &GFWorld::get_raw);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
 	godot::ClassDB::bind_method(D_METHOD("lookup", "path"), &GFWorld::lookup);
 	godot::ClassDB::bind_method(D_METHOD("pair", "first", "second"), &GFWorld::pair);
