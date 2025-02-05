@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFWorld" inherits="Object"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		An entity component system world.
 	</brief_description>
@@ -59,7 +58,7 @@
 				Below is an example of how to use this method in a C++ [GDExtension]:
 				[codeblock lang=cpp]
 				Object *gf_world = ...;
-				uint64_t raw_i = gf_world->call("get_raw");
+				uint64_t raw_i = gf_world-&gt;call("get_raw");
 				ecs_world_t *raw = reinterpret_cast&lt;ecs_world_t*&gt;(raw_i);
 
 				ecs_new(raw); // Create a new entity

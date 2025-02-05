@@ -16,6 +16,7 @@
 
 #define OVERRIDE_ENTITY_SELF_METHODS(Self)	\
 	Ref<Self> add_child(const Variant v0)	{ return GFEntity::add_child(v0); }	\
+	Ref<Self> add_sibling(const Variant v0)	{ return GFEntity::add_sibling(v0); }	\
 	Ref<Self> add_componentv(const Variant v0, const Variant v1)	{ return GFEntity::add_componentv(v0, v1); }	\
 	Ref<Self> set_componentv(const Variant v0, const Variant v1)	{ return GFEntity::set_componentv(v0, v1); }	\
 	Ref<Self> set_pairv(const Variant v0, const Variant v1, const Variant v2)	{ return GFEntity::set_pairv(v0, v1, v2); }	\
@@ -33,6 +34,7 @@
 
 #define REGISTER_ENTITY_SELF_METHODS(Self)	\
 	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"),	&Self::add_child);	\
+	godot::ClassDB::bind_method(D_METHOD("add_sibling", "entity"),	&Self::add_sibling);	\
 	godot::ClassDB::bind_method(D_METHOD("addv", "component", "members"),	&Self::add_componentv, Array());	\
 	godot::ClassDB::bind_method(D_METHOD("setv", "component", "members"),	&Self::set_componentv);	\
 	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"),	&Self::add_pairv, Array());	\
@@ -118,6 +120,8 @@ namespace godot {
 		Ref<GFEntity> add_pairv(const Variant, const Variant, const Array);
 		Ref<GFEntity> set_pair(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> set_pairv(const Variant, const Variant, const Array);
+
+		Ref<GFEntity> add_sibling(const Variant);
 
 		Ref<GFEntity> add_tag(const Variant);
 		Ref<GFEntity> emit(const Variant, const Array, const Array);

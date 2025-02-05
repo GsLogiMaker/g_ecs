@@ -126,6 +126,24 @@ Ref<GFEntity> GFEntity::add_pairv(
 	return Ref(this);
 }
 
+Ref<GFEntity> GFEntity::add_sibling(const Variant sib) {
+	GFWorld* w = get_world();
+
+	ecs_entity_t sib_id = get_world()->coerce_id(sib);
+	CHECK_ENTITY_ALIVE(sib_id, w, nullptr,
+		"Failed to add sibling\n"
+	);
+
+	ecs_entity_t parent = ecs_get_parent(
+		w->raw(),
+		get_id()
+	);
+	ecs_add_pair(w->raw(), sib_id, EcsChildOf, parent);
+
+	return this;
+}
+
+
 Ref<GFEntity> GFEntity::add_tag(const Variant tag) {
 	GFWorld* w = get_world();
 

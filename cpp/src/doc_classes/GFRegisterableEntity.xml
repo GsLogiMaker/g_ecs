@@ -48,6 +48,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="add_sibling">
+			<return type="GFRegisterableEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+			</description>
+		</method>
 		<method name="add_tag">
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="tag" type="Variant" />
