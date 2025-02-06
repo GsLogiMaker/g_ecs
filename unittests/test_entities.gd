@@ -215,6 +215,72 @@ func test_add_sibling():
 	assert_true(par.has_child("Bill"), "Expected parent to have have child named Bill")
 	assert_true(par.has_child("Bob"), "Expected parent to have have child named Bob")
 
+func test_inheritance():
+	var ship_pfb:= GFEntityBuilder.new_in_world(world) \
+		.add_entity("flecs/core/Prefab") \
+		.add_entity(GFPosition2D) \
+		.build() \
+		.set(GFPosition2D, Vector2(2, 3))
+	
+	assert_true(
+		ship_pfb.has(GFPosition2D),
+		"Expected `ship_pfb` to have position"
+	)
+	assert_almost_eq(
+		ship_pfb.get(GFPosition2D).get_vec(),
+		Vector2(2, 3),
+		Vector2(0.01, 0.01),
+		"Expected position in `ship_pfb` to have been set",
+	)
+	
+	var e:= GFEntity.new_in_world(world)
+	assert_false(
+		e.is_inheriting(ship_pfb),
+		"Expected `e` to NOT inheret `ship_pfb` yet",
+	)
+	assert_false(
+		e.has(GFPosition2D),
+		"Expected `e` to NOT have position yet",
+	)
+	
+	e.inherit(ship_pfb)
+
+	assert_true(
+		e.is_inheriting(ship_pfb),
+		"Expected `e` to have inherited `ship_pfb`",
+	)
+	assert_true(
+		e.has(GFPosition2D),
+		"Expected `e` to have inherited position from `ship_pfb`",
+	)
+	
+	e.set(GFPosition2D, Vector2(5, 4))
+	
+	assert_almost_eq(
+		e.get(GFPosition2D).get_vec(),
+		Vector2(5, 4),
+		Vector2(0.01, 0.01),
+		"Expected position in `e` to have been set",
+	)
+	assert_almost_ne(
+		e.get(GFPosition2D).get_vec(),
+		ship_pfb.get(GFPosition2D).get_vec(),
+		Vector2(0.01, 0.01),
+		"Expected position in `e` to differ from position in `ship_pfb`",
+	)
+
+func test_inheritance_doc_example():
+	var health = GFEntity.new()
+	var spaceship = GFEntity.new()
+	spaceship.add("flecs/core/Prefab")
+	spaceship.add(health)
+
+	var enterprise = GFEntity.new()
+	enterprise.inherit(spaceship)
+
+	assert_true(enterprise.is_inheriting(spaceship)) # true
+	assert_true(enterprise.has(health)) # true
+
 #endregion
 
 #region Classes

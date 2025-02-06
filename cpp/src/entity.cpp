@@ -67,9 +67,9 @@ Ref<GFEntity> GFEntity::add_componentv(const Variant component, const Array memb
 	ecs_entity_t c_id = w->coerce_id(component);
 
 	if (ecs_has_id(w->raw(), get_id(), c_id)) {
-		ERR(Ref(this),
+		ERR(nullptr,
 			"Can't add component to entity\n",
-			"ID coerced from ", component, " is already added to ", get_id()
+			"	ID coerced from ", component, " is already added to ", get_id()
 		)
 	}
 
@@ -146,7 +146,7 @@ Ref<GFEntity> GFEntity::add_tag(const Variant tag) {
 	ecs_entity_t tag_id = w->coerce_id(tag);
 
 	if (ecs_has(w->raw(), tag_id, EcsComponent)) {
-		ERR(Ref(this),
+		ERR(nullptr,
 			"Failed to add tag to entity\n",
 			"	ID, ", tag_id, " is a component, not a tag\n"
 			"	(Tags are any entity with no data)"
@@ -325,18 +325,22 @@ Ref<GFEntity> GFEntity::set_componentv(
 				// ID is not a component, error
 				ERR(nullptr,
 					"Failed to set data in pair\n",
-					"Neither ID ", first_id,
-					" nor ", second_id, "are components"
+					"	Neither ", w->id_to_text(first_id),
+					" nor ", w->id_to_text(second_id), "are components"
 				);
 			}
 
 		} else if (!ecs_has_id(w->raw(), c_id, ecs_id(EcsComponent))) {
-			// Error, passed variant is not a real component
-			ERR(nullptr,
-				"Failed to add component to entity\n",
-				"ID coerced from ", component, " is not a component"
-			);
+			// Passed ID is not a component, handle
+			if (members.size() != 0) {
+				ERR(nullptr, "Failed to set data in component\n",
+					"	Entity ", w->id_to_text(c_id), " is not a component"
+				);
+			}
 
+			// Add as tag and return
+			ecs_add_id(w->raw(), get_id(), c_id);
+			return this;
 		}
 
 		ecs_add_id(w->raw(), get_id(), c_id);
@@ -406,6 +410,10 @@ GFWorld* GFEntity::get_world() const { return Object::cast_to<GFWorld>(
 	UtilityFunctions::instance_from_id(world_instance_id)
 ); }
 
+Ref<GFEntity> GFEntity::inherit(Variant entity) {
+	return add_pairv(EcsIsA, entity, {});
+}
+
 bool GFEntity::is_alive() const {
 	if (get_world() == nullptr) {
 		return false;
@@ -416,6 +424,16 @@ bool GFEntity::is_alive() const {
 
 	return get_world()->is_id_alive(get_id());
 }
+
+bool GFEntity::is_inheriting(Variant entity) const {
+	GFWorld* w = get_world();
+	ecs_entity_t id = w->coerce_id(entity);
+	CHECK_ENTITY_ALIVE(id, w, false,
+		"Failed to check inheritance\n"
+	);
+	return has_entity(EcsIsA, id);
+}
+
 bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
