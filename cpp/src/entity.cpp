@@ -65,15 +65,17 @@ Ref<GFEntity> GFEntity::add_componentv(const Variant component, const Array memb
 	GFWorld* w = get_world();
 
 	ecs_entity_t c_id = w->coerce_id(component);
+	CHECK_ENTITY_ALIVE(c_id, w, nullptr,
+		"Failed to add to component\n"
+	);
 
-	if (ecs_has_id(w->raw(), get_id(), c_id)) {
-		ERR(nullptr,
-			"Can't add component to entity\n",
-			"	ID coerced from ", component, " is already added to ", get_id()
-		)
+	ecs_add_id(w->raw(), get_id(), c_id);
+
+	if (members.size() != 0) {
+		return set_componentv(c_id, members);
 	}
 
-	return set_componentv(c_id, members);
+	return Ref(this);
 }
 
 Ref<GFEntity> GFEntity::add_pair(
