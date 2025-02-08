@@ -53,7 +53,7 @@ Ref<GFEntityBuilder> GFEntityBuilder::add_pair(const Variant first, const Varian
 
 Ref<GFEntity> GFEntityBuilder::build() {
 	GFWorld* w = get_world();
-	return GFEntity::from_id(build_id(), w);
+	return GFEntity::from_id(GFEntityBuilder::build_id(), w);
 }
 
 ecs_entity_t GFEntityBuilder::build_id() {

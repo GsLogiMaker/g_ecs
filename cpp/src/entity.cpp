@@ -436,6 +436,15 @@ bool GFEntity::is_inheriting(Variant entity) const {
 	return has_entity(EcsIsA, id);
 }
 
+bool GFEntity::is_owner_of(const Variant entity) const {
+	GFWorld* w = get_world();
+	ecs_entity_t id = w->coerce_id(entity);
+	CHECK_ENTITY_ALIVE(id, w, false,
+		"Failed to check ownership\n"
+	);
+	return ecs_owns_id(w->raw(), get_id(), id);
+}
+
 bool GFEntity::is_pair() const {
 	return ecs_id_is_pair(get_id());
 }
@@ -486,6 +495,28 @@ Ref<GFEntity> GFEntity::get_parent() const {
 	}
 
 	return GFEntity::from_id(parent, get_world());
+}
+
+/// Returns the target for a pair added to an entity.
+Ref<GFEntity> GFEntity::get_target_for(const Variant rel, int index) const {
+	GFWorld* w = get_world();
+
+	ecs_entity_t rel_id = w->coerce_id(rel);
+	CHECK_ENTITY_ALIVE(rel_id, w, nullptr,
+		"Failed to get target for added relationship\n"
+	);
+
+	ecs_entity_t target_id = ecs_get_target(
+		get_world()->raw(),
+		get_id(),
+		rel_id,
+		index
+	);
+	CHECK_ENTITY_ALIVE(target_id, w, nullptr,
+		"Failed to get target for added relationship\n"
+	);
+
+	return GFEntity::from_id(target_id, w);
 }
 
 Ref<GFEntity> GFEntity::set_name(const String name_) {
@@ -604,11 +635,13 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_parent"), &GFEntity::get_parent);
 	godot::ClassDB::bind_method(D_METHOD("get_path"), &GFEntity::get_path);
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFEntity::get_world);
+	godot::ClassDB::bind_method(D_METHOD("get_target_for", "relationship", "index"), &GFEntity::get_target_for, 0);
 
 	godot::ClassDB::bind_method(D_METHOD("has", "entity", "second"), &GFEntity::has_entity, nullptr);
 	godot::ClassDB::bind_method(D_METHOD("has_child", "path"), &GFEntity::has_child);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
+	godot::ClassDB::bind_method(D_METHOD("is_owner_of"), &GFEntity::is_owner_of);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
 	godot::ClassDB::bind_method(D_METHOD("iter_children"), &GFEntity::iter_children);
 

@@ -139,16 +139,20 @@ namespace godot {
 		String get_name() const;
 		Ref<GFEntity> get_parent() const;
 		String get_path() const;
+		Ref<GFEntity> get_target_for(const Variant, int) const;
 		GFWorld* get_world() const;
 
 		bool has_entity(const Variant, const Variant) const;
 		bool has_child(const String) const;
 
 		Ref<GFEntity> inherit(Variant);
-		bool is_inheriting(Variant) const;
+
 		bool is_alive() const;
+		bool is_inheriting(const Variant) const;
+		bool is_owner_of(const Variant) const;
 		bool is_pair() const;
 		Ref<GFEntityIterator> iter_children() const;
+
 
 		Ref<GFPair> pair(const Variant second) const;
 		ecs_entity_t pair_id(const ecs_entity_t second_id) const;
