@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -43,7 +42,7 @@
 				par.has_child("Child") # true
 				[/codeblock]
 				[b]Note:[/b] If [param entity] already has a parent then it will be removed from the old parent and added to this entity.
-				This codeblock returns [code]self[/code] for chaining.
+				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
 		<method name="add_pair" qualifiers="const vararg">
@@ -84,7 +83,7 @@
 				Adds an entity as a child to this one's parent.
 				Equivalent to calling [code]get_parent().add_child(entity)[/code].
 				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				This codeblock returns [code]self[/code] for chaining.
+				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
 		<method name="add_tag">
@@ -164,7 +163,8 @@
 		</method>
 		<method name="get" qualifiers="const">
 			<return type="GFComponent" />
-			<param index="0" name="component" type="Variant" />
+			<param index="0" name="entity" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Returns a reference to this entity's component's data of type [param component].
 				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
@@ -223,21 +223,6 @@
 				var entity:= GFEntity.new()
 				entity.set_name("Entity")
 				entity.get_name() == "Entity" # true
-				[/codeblock]
-			</description>
-		</method>
-		<method name="get_pair" qualifiers="const">
-			<return type="GFComponent" />
-			<param index="0" name="first" type="Variant" />
-			<param index="1" name="second" type="Variant" />
-			<description>
-				Returns a reference to this entity's component's data in the pair
-				of [param first] and [param second].
-				Returns [code]null[/code] if the entity does not have the [param component] attached or if [param component] is not a component. The component is identified by an ID coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-				[codeblock]
-				var entity:= GFEntity.new()
-				entity.add("glecs/meta/Array")
-				entity.get("glecs/meta/Array") != null # true
 				[/codeblock]
 			</description>
 		</method>
@@ -306,6 +291,28 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="inherit">
+			<return type="GFEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Inherits entities and components from [param entity].
+				The component's type ID is coerced from a [Variant]. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+				Returns [code]self[/code] for chaining.
+				Example:
+				[codeblock]
+				var health = GFEntity.new()
+				var spaceship = GFEntity.new()
+				spaceship.add("flecs/core/Prefab")
+				spaceship.add(health)
+
+				var enterprise = GFEntity.new()
+				enterprise.inherit(spaceship)
+
+				enterprise.is_inheriting(spaceship) # true
+				enterprise.has(health) # true
+				[/codeblock]
+			</description>
+		</method>
 		<method name="is_alive" qualifiers="const">
 			<return type="bool" />
 			<description>
@@ -316,6 +323,14 @@
 				entity.delete()
 				entity.is_alive() # false
 				[/codeblock]
+			</description>
+		</method>
+		<method name="is_inheriting" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Returns [code]true[/code] if this entity is inheriting from [param entity].
+				See [method inherit].
 			</description>
 		</method>
 		<method name="is_pair" qualifiers="const">
@@ -485,7 +500,7 @@
 				    .set_parent(par)
 				par.has_child("Child") # true
 				[/codeblock]
-				This codeblock returns [code]self[/code] for chaining.
+				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
 		<method name="setv">

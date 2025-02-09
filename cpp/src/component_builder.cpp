@@ -59,6 +59,8 @@ bool GFComponentBuilder::is_built() const {
 }
 
 Ref<GFEntity> GFComponentBuilder::build() {
+	GFWorld* w = get_world();
+
 	if (is_built()) {
 		ERR(nullptr,
 			"Failed to build component \"" + name + "\".\n",
@@ -72,27 +74,30 @@ Ref<GFEntity> GFComponentBuilder::build() {
 		);
 	}
 
+	// Create component entity
 	Ref<GFEntity> entity = GFEntityBuilder::build();
+	component_desc.entity = entity->get_id();
+	struct_desc.entity = entity->get_id();
 
-	// Set names to temporary pointers
+	// Set name to temporary pointers
 	CharString name_utf8 = name.utf8();
-	CharString member_names_utf8[ECS_MEMBER_DESC_CACHE_SIZE] = {0};
 	component_desc.type.name = name_utf8.ptr();
+	CharString member_names_utf8[ECS_MEMBER_DESC_CACHE_SIZE] = {0};
+
+	// Setup temporary member names
 	for (int i=0; i != get_member_count(); i++) {
 		member_names_utf8[i] = String(member_names[i]).utf8();
 		struct_desc.members[i].name = member_names_utf8[i].ptr();
 	}
 
-	GFWorld* w = get_world();
-	ecs_world_t* raw = w->raw();
+	ecs_struct_init(w->raw(), &struct_desc);
 
-	// Create component entity
-	component_desc.entity = entity->get_id();
-	struct_desc.entity = entity->get_id();
-
-	ecs_struct_init(raw, &struct_desc);
-
-	assert(ecs_has_id(raw, entity->get_id(), ecs_id(Component)));
+	if (!entity->has_entity(ecs_id(EcsComponent), nullptr)) {
+		ERR(nullptr,
+			"Failed to build component with ID: ", entity->get_id(), "\n",
+			"	Component entity was not created."
+		);
+	}
 
 	ecs_type_hooks_t hooks = {
 		.ctor = GFComponentBuilder::ctor,
@@ -104,7 +109,7 @@ Ref<GFEntity> GFComponentBuilder::build() {
 			HooksBindingContext* ctx = static_cast<HooksBindingContext*>(ptr);
 			delete ctx;
 		}
-	}; ecs_set_hooks_id(raw, entity->get_id(), &hooks);
+	}; ecs_set_hooks_id(w->raw(), entity->get_id(), &hooks);
 
 	return entity;
 }
