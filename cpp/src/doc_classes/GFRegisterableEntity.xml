@@ -67,6 +67,11 @@
 			<description>
 			</description>
 		</method>
+		<method name="clear">
+			<return type="GFRegisterableEntity" />
+			<description>
+			</description>
+		</method>
 		<method name="emit">
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="entity" type="Variant" />

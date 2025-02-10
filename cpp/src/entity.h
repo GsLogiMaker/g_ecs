@@ -18,6 +18,7 @@
 	Ref<Self> add_child(const Variant v0)	{ return GFEntity::add_child(v0); }	\
 	Ref<Self> add_sibling(const Variant v0)	{ return GFEntity::add_sibling(v0); }	\
 	Ref<Self> add_componentv(const Variant v0, const Variant v1)	{ return GFEntity::add_componentv(v0, v1); }	\
+	Ref<Self> clear()	{ return GFEntity::clear(); }	\
 	Ref<Self> set_componentv(const Variant v0, const Variant v1)	{ return GFEntity::set_componentv(v0, v1); }	\
 	Ref<Self> set_pairv(const Variant v0, const Variant v1, const Variant v2)	{ return GFEntity::set_pairv(v0, v1, v2); }	\
 	Ref<Self> add_pairv(const Variant v0, const Variant v1, const Variant v2)	{ return GFEntity::add_pairv(v0, v1, v2); }	\
@@ -36,6 +37,7 @@
 	godot::ClassDB::bind_method(D_METHOD("add_child", "entity"),	&Self::add_child);	\
 	godot::ClassDB::bind_method(D_METHOD("add_sibling", "entity"),	&Self::add_sibling);	\
 	godot::ClassDB::bind_method(D_METHOD("addv", "component", "members"),	&Self::add_componentv, Array());	\
+	godot::ClassDB::bind_method(D_METHOD("clear"),	&Self::clear);	\
 	godot::ClassDB::bind_method(D_METHOD("setv", "component", "members"),	&Self::set_componentv);	\
 	godot::ClassDB::bind_method(D_METHOD("add_pairv", "first", "second", "members"),	&Self::add_pairv, Array());	\
 	godot::ClassDB::bind_method(D_METHOD("set_pairv", "first", "second", "members"),	&Self::set_pairv);	\
@@ -130,6 +132,7 @@ namespace godot {
 		Ref<GFEntity> set_name(const String);
 		Ref<GFEntity> set_parent(const Variant entity);
 
+		Ref<GFEntity> clear();
 		void delete_() const;
 
 		Ref<GFEntity> get_child(const String) const;
