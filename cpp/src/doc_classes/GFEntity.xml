@@ -130,6 +130,7 @@
 				apple.clear()
 				apple.has(fruit) or apple.has(edible) # false
 				[/codeblock]
+				This method returns [code]self[/code] for chaining.
 			</description>
 		</method>
 		<method name="delete" qualifiers="const">
