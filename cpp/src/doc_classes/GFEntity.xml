@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntity" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity from a [GFWorld].
 	</brief_description>
@@ -112,6 +113,23 @@
 				entity.get(GFPosition2D).get_vec() == Vector2(10, 10) # true
 				[/codeblock]
 				This method returns [code]self[/code] for chaining.
+			</description>
+		</method>
+		<method name="clear">
+			<return type="GFEntity" />
+			<description>
+				Removes all added entities, pairs, and components.
+				[codeblock]
+				var fruit:= GFEntity.new()
+				var edible:= GFEntity.new()
+				var apple:= GFEntity.new()
+				apple.add(fruit)
+				apple.add(edible)
+
+				apple.has(fruit) and apple.has(edible) # true
+				apple.clear()
+				apple.has(fruit) or apple.has(edible) # false
+				[/codeblock]
 			</description>
 		</method>
 		<method name="delete" qualifiers="const">
@@ -251,6 +269,13 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="get_target_for" qualifiers="const">
+			<return type="GFEntity" />
+			<param index="0" name="relationship" type="Variant" />
+			<param index="1" name="index" type="int" default="0" />
+			<description>
+			</description>
+		</method>
 		<method name="get_world" qualifiers="const">
 			<return type="GFWorld" />
 			<description>
@@ -331,6 +356,12 @@
 			<description>
 				Returns [code]true[/code] if this entity is inheriting from [param entity].
 				See [method inherit].
+			</description>
+		</method>
+		<method name="is_owner_of" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="_unnamed_arg0" type="Variant" />
+			<description>
 			</description>
 		</method>
 		<method name="is_pair" qualifiers="const">

@@ -394,6 +394,11 @@ Ref<GFEntity> GFEntity::set_pairv (
 	return Ref(this);
 }
 
+Ref<GFEntity> GFEntity::clear() {
+	ecs_clear(get_world()->raw(), get_id());
+	return this;
+}
+
 void GFEntity::delete_() const {
 	ecs_delete(get_world()->raw(), get_id());
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFTag" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFTag" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity with no data.
 	</brief_description>
@@ -61,6 +62,12 @@
 			<param index="1" name="members" type="Variant" default="[]" />
 			<description>
 				Overrides [method GFEntity.addv].
+			</description>
+		</method>
+		<method name="clear">
+			<return type="GFTag" />
+			<description>
+				Overrides [method GFEntity.clear].
 			</description>
 		</method>
 		<method name="emit">

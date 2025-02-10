@@ -364,6 +364,19 @@ func test_is_owner_of():
 	assert_true(voyager.has(pos), "Expected voyager to have pos")
 	assert_true(voyager.has(rot), "Expected voyager to have rot")
 
+func test_clear():
+	var tag:= GFEntity.new_in_world(world).set_name("tag")
+	
+	var e:= GFEntity.new_in_world(world) \
+		.set_name("Entity") \
+		.add(tag)
+	
+	assert_true(e.has(tag))
+	
+	e.clear()
+
+	assert_false(e.has(tag))
+
 #endregion
 
 #region Classes
