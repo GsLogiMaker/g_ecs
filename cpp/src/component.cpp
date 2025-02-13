@@ -19,13 +19,21 @@
 
 using namespace godot;
 
-GFComponent::~GFComponent() {
-}
-
-Ref<GFComponent> GFComponent::from(Variant comp, Variant entity, GFWorld* world) {
+Ref<GFComponent> GFComponent::from(
+	const Variant comp,
+	const Variant entity,
+	GFWorld* world
+) {
+	world = GFWorld::world_or_singleton(world);
 	return from_id(world->coerce_id(comp), world->coerce_id(entity), world);
 }
-Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GFWorld* world) {
+Ref<GFComponent> GFComponent::from_id(
+	ecs_entity_t comp,
+	ecs_entity_t entity,
+	GFWorld* world
+) {
+	world = GFWorld::world_or_singleton(world);
+
 	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
 	if (comp_data == nullptr) {
 		ERR(nullptr,
@@ -37,7 +45,12 @@ Ref<GFComponent> GFComponent::from_id(ecs_entity_t comp, ecs_entity_t entity, GF
 	return setup_template<GFComponent>(comp_ref);
 }
 
-Ref<GFComponent> GFComponent::from_id_no_source(ecs_entity_t comp, GFWorld* world) {
+Ref<GFComponent> GFComponent::from_id_no_source(
+	ecs_entity_t comp,
+	GFWorld* world
+) {
+	world = GFWorld::world_or_singleton(world);
+
 	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
 	if (comp_data == nullptr) {
 		ERR(nullptr,
@@ -65,7 +78,7 @@ void GFComponent::_register_internal() {
 	GFRegisterableEntity::_register_internal();
 }
 
-void GFComponent::setm(String member, Variant value) const {
+void GFComponent::setm(const String member, const Variant value) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -88,7 +101,7 @@ void GFComponent::setm(String member, Variant value) const {
 	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
 }
 
-Variant GFComponent::getm(String member) const {
+Variant GFComponent::getm(const String member) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
@@ -117,7 +130,7 @@ void* GFComponent::get_member_ptr_mut_at(int offset) const {
 	return static_cast<void*>(&bytes[offset]);
 }
 
-const EcsMember* GFComponent::get_member_data(String member) const {
+const EcsMember* GFComponent::get_member_data(const String member) const {
 	ecs_world_t* raw = get_world()->raw();
 	const char* c_str = member.utf8().get_data();
 
@@ -143,34 +156,34 @@ const EcsMember* GFComponent::get_member_data(String member) const {
 }
 
 Variant GFComponent::member_value_as_primitive(
-	void* ptr,
+	const void* ptr,
 	ecs_primitive_kind_t primitive
 ) const {
 	switch (primitive) {
-		case ecs_primitive_kind_t::EcsBool: return *static_cast<bool*>(ptr);
-		case ecs_primitive_kind_t::EcsChar: return *static_cast<char*>(ptr);
-		case ecs_primitive_kind_t::EcsByte: return *static_cast<uint8_t*>(ptr);
-		case ecs_primitive_kind_t::EcsU8: return *static_cast<uint8_t*>(ptr);
-		case ecs_primitive_kind_t::EcsU16: return *static_cast<uint16_t*>(ptr);
-		case ecs_primitive_kind_t::EcsU32: return *static_cast<uint32_t*>(ptr);
-		case ecs_primitive_kind_t::EcsU64: return *static_cast<uint64_t*>(ptr);
-		case ecs_primitive_kind_t::EcsI8: return *static_cast<int8_t*>(ptr);
-		case ecs_primitive_kind_t::EcsI16: return *static_cast<int16_t*>(ptr);
-		case ecs_primitive_kind_t::EcsI32: return *static_cast<int32_t*>(ptr);
-		case ecs_primitive_kind_t::EcsI64: return *static_cast<int64_t*>(ptr);
-		case ecs_primitive_kind_t::EcsF32: return *static_cast<float*>(ptr);
-		case ecs_primitive_kind_t::EcsF64: return *static_cast<double*>(ptr);
+		case ecs_primitive_kind_t::EcsBool: return *static_cast<const bool*>(ptr);
+		case ecs_primitive_kind_t::EcsChar: return *static_cast<const char*>(ptr);
+		case ecs_primitive_kind_t::EcsByte: return *static_cast<const uint8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU8: return *static_cast<const uint8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU16: return *static_cast<const uint16_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU32: return *static_cast<const uint32_t*>(ptr);
+		case ecs_primitive_kind_t::EcsU64: return *static_cast<const uint64_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI8: return *static_cast<const int8_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI16: return *static_cast<const int16_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI32: return *static_cast<const int32_t*>(ptr);
+		case ecs_primitive_kind_t::EcsI64: return *static_cast<const int64_t*>(ptr);
+		case ecs_primitive_kind_t::EcsF32: return *static_cast<const float*>(ptr);
+		case ecs_primitive_kind_t::EcsF64: return *static_cast<const double*>(ptr);
 		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\nCan't handle uptr");
 		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\nCan't handle iptr");
-		case ecs_primitive_kind_t::EcsString: return *static_cast<char**>(ptr);
-		case ecs_primitive_kind_t::EcsEntity: return *static_cast<ecs_entity_t*>(ptr);
-		case ecs_primitive_kind_t::EcsId: return *static_cast<ecs_entity_t*>(ptr);
+		case ecs_primitive_kind_t::EcsString: return *static_cast<char* const *>(ptr);
+		case ecs_primitive_kind_t::EcsEntity: return *static_cast<const ecs_entity_t*>(ptr);
+		case ecs_primitive_kind_t::EcsId: return *static_cast<const ecs_entity_t*>(ptr);
 		default: ERR(nullptr, "Can't get primitive\nUnknown primitive type");
 	}
 }
 
 Variant GFComponent::member_value_as_type(
-	void* ptr,
+	const void* ptr,
 	ecs_entity_t type
 ) const {
 	ecs_world_t* raw = get_world()->raw();
@@ -190,44 +203,44 @@ Variant GFComponent::member_value_as_type(
 			"Can't convert type ", get_world()->id_to_text(type), " to Variant"
 		);
 	}
-	case(Variant::Type::BOOL): return Variant( *static_cast<bool*>(ptr) );
-	case(Variant::Type::INT): return Variant( *static_cast<int64_t*>(ptr) );
-	case(Variant::Type::FLOAT): return Variant( *static_cast<double*>(ptr) );
-	case(Variant::Type::STRING): return Variant( *static_cast<String*>(ptr) );
-	case(Variant::Type::VECTOR2): return Variant( *static_cast<Vector2*>(ptr) );
-	case(Variant::Type::VECTOR2I): return Variant( *static_cast<Vector2i*>(ptr) );
-	case(Variant::Type::RECT2): return Variant( *static_cast<Rect2*>(ptr) );
-	case(Variant::Type::RECT2I): return Variant( *static_cast<Rect2i*>(ptr) );
-	case(Variant::Type::VECTOR3): return Variant( *static_cast<Vector3*>(ptr) );
-	case(Variant::Type::VECTOR3I): return Variant( *static_cast<Vector3i*>(ptr) );
-	case(Variant::Type::TRANSFORM2D): return Variant( *static_cast<Transform2D*>(ptr) );
-	case(Variant::Type::VECTOR4): return Variant( *static_cast<Vector4*>(ptr) );
-	case(Variant::Type::VECTOR4I): return Variant( *static_cast<Vector4i*>(ptr) );
-	case(Variant::Type::PLANE): return Variant( *static_cast<Plane*>(ptr) );
-	case(Variant::Type::QUATERNION): return Variant( *static_cast<Quaternion*>(ptr) );
-	case(Variant::Type::AABB): return Variant( *static_cast<AABB*>(ptr) );
-	case(Variant::Type::BASIS): return Variant( *static_cast<Basis*>(ptr) );
-	case(Variant::Type::TRANSFORM3D): return Variant( *static_cast<Transform3D*>(ptr) );
-	case(Variant::Type::PROJECTION): return Variant( *static_cast<Projection*>(ptr) );
-	case(Variant::Type::COLOR): return Variant( *static_cast<Color*>(ptr) );
-	case(Variant::Type::STRING_NAME): return Variant( *static_cast<StringName*>(ptr) );
-	case(Variant::Type::NODE_PATH): return Variant( *static_cast<NodePath*>(ptr) );
-	case(Variant::Type::RID): return Variant( *static_cast<RID*>(ptr) );
-	case(Variant::Type::OBJECT): return Variant( *static_cast<Variant*>(ptr) );
-	case(Variant::Type::CALLABLE): return Variant( *static_cast<Callable*>(ptr) );
-	case(Variant::Type::SIGNAL): return Variant( *static_cast<Signal*>(ptr) );
-	case(Variant::Type::DICTIONARY): return *static_cast<Dictionary*>(ptr);
-	case(Variant::Type::ARRAY): return *static_cast<Array*>(ptr);
-	case(Variant::Type::PACKED_BYTE_ARRAY): return Variant( *static_cast<PackedByteArray*>(ptr) );
-	case(Variant::Type::PACKED_INT32_ARRAY): return Variant( *static_cast<PackedInt32Array*>(ptr) );
-	case(Variant::Type::PACKED_INT64_ARRAY): return Variant( *static_cast<PackedInt64Array*>(ptr) );
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): return Variant( *static_cast<PackedFloat32Array*>(ptr) );
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): return Variant( *static_cast<PackedFloat64Array*>(ptr) );
-	case(Variant::Type::PACKED_STRING_ARRAY): return Variant( *static_cast<PackedStringArray*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *static_cast<PackedVector2Array*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *static_cast<PackedVector3Array*>(ptr) );
-	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *static_cast<PackedColorArray*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *static_cast<PackedVector4Array*>(ptr) );
+	case(Variant::Type::BOOL): return Variant( *static_cast<const bool*>(ptr) );
+	case(Variant::Type::INT): return Variant( *static_cast<const int64_t*>(ptr) );
+	case(Variant::Type::FLOAT): return Variant( *static_cast<const double*>(ptr) );
+	case(Variant::Type::STRING): return Variant( *static_cast<const String*>(ptr) );
+	case(Variant::Type::VECTOR2): return Variant( *static_cast<const Vector2*>(ptr) );
+	case(Variant::Type::VECTOR2I): return Variant( *static_cast<const Vector2i*>(ptr) );
+	case(Variant::Type::RECT2): return Variant( *static_cast<const Rect2*>(ptr) );
+	case(Variant::Type::RECT2I): return Variant( *static_cast<const Rect2i*>(ptr) );
+	case(Variant::Type::VECTOR3): return Variant( *static_cast<const Vector3*>(ptr) );
+	case(Variant::Type::VECTOR3I): return Variant( *static_cast<const Vector3i*>(ptr) );
+	case(Variant::Type::TRANSFORM2D): return Variant( *static_cast<const Transform2D*>(ptr) );
+	case(Variant::Type::VECTOR4): return Variant( *static_cast<const Vector4*>(ptr) );
+	case(Variant::Type::VECTOR4I): return Variant( *static_cast<const Vector4i*>(ptr) );
+	case(Variant::Type::PLANE): return Variant( *static_cast<const Plane*>(ptr) );
+	case(Variant::Type::QUATERNION): return Variant( *static_cast<const Quaternion*>(ptr) );
+	case(Variant::Type::AABB): return Variant( *static_cast<const AABB*>(ptr) );
+	case(Variant::Type::BASIS): return Variant( *static_cast<const Basis*>(ptr) );
+	case(Variant::Type::TRANSFORM3D): return Variant( *static_cast<const Transform3D*>(ptr) );
+	case(Variant::Type::PROJECTION): return Variant( *static_cast<const Projection*>(ptr) );
+	case(Variant::Type::COLOR): return Variant( *static_cast<const Color*>(ptr) );
+	case(Variant::Type::STRING_NAME): return Variant( *static_cast<const StringName*>(ptr) );
+	case(Variant::Type::NODE_PATH): return Variant( *static_cast<const NodePath*>(ptr) );
+	case(Variant::Type::RID): return Variant( *static_cast<const RID*>(ptr) );
+	case(Variant::Type::OBJECT): return Variant( *static_cast<const Variant*>(ptr) );
+	case(Variant::Type::CALLABLE): return Variant( *static_cast<const Callable*>(ptr) );
+	case(Variant::Type::SIGNAL): return Variant( *static_cast<const Signal*>(ptr) );
+	case(Variant::Type::DICTIONARY): return *static_cast<const Dictionary*>(ptr);
+	case(Variant::Type::ARRAY): return *static_cast<const Array*>(ptr);
+	case(Variant::Type::PACKED_BYTE_ARRAY): return Variant( *static_cast<const PackedByteArray*>(ptr) );
+	case(Variant::Type::PACKED_INT32_ARRAY): return Variant( *static_cast<const PackedInt32Array*>(ptr) );
+	case(Variant::Type::PACKED_INT64_ARRAY): return Variant( *static_cast<const PackedInt64Array*>(ptr) );
+	case(Variant::Type::PACKED_FLOAT32_ARRAY): return Variant( *static_cast<const PackedFloat32Array*>(ptr) );
+	case(Variant::Type::PACKED_FLOAT64_ARRAY): return Variant( *static_cast<const PackedFloat64Array*>(ptr) );
+	case(Variant::Type::PACKED_STRING_ARRAY): return Variant( *static_cast<const PackedStringArray*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *static_cast<const PackedVector2Array*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *static_cast<const PackedVector3Array*>(ptr) );
+	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *static_cast<const PackedColorArray*>(ptr) );
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *static_cast<const PackedVector4Array*>(ptr) );
 	case(Variant::Type::VARIANT_MAX): throw "Can't get type VARIANT_MAX";
 	}
 
@@ -317,19 +330,25 @@ void GFComponent::build_data_from_variant(
 	}
 }
 
-const EcsComponent* GFComponent::get_component_ptr(GFWorld* world, ecs_entity_t id) {
+const EcsComponent* GFComponent::get_component_ptr(
+	const GFWorld* world,
+	ecs_entity_t id
+) {
 	return ecs_get(world->raw(), world->get_main_id(id), EcsComponent);
 }
 
-const EcsStruct* GFComponent::get_struct_ptr(GFWorld* world, ecs_entity_t id) {
+const EcsStruct* GFComponent::get_struct_ptr(
+	const GFWorld* world,
+	ecs_entity_t id
+) {
 	return ecs_get(world->raw(), world->get_main_id(id), EcsStruct);
 }
 
 void GFComponent::build_data_from_members(
-	Array members,
+	const Array members,
 	void* output,
 	ecs_entity_t component_id,
-	GFWorld* world
+	const GFWorld* world
 ) {
 	ecs_world_t* w_raw = world->raw();
 
@@ -363,6 +382,8 @@ void GFComponent::set_source_id(ecs_entity_t id) {
 }
 
 void GFComponent::_bind_methods() {
+	REGISTER_ENTITY_SELF_METHODS(GFComponent);
+
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 

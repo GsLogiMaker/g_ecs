@@ -28,15 +28,17 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
+		OVERRIDE_QUERYLIKE_SELF_METHODS(GFObserverBuilder);
+
 		static Ref<GFObserverBuilder> new_in_world(GFWorld*);
 
-		void for_each(Callable callable);
+		void for_each(const Callable callable);
 		Ref<GFObserverBuilder> set_events_varargs(
 			const Variant** args,
 			GDExtensionInt arg_count,
 			GDExtensionCallError& error
 		);
-		Ref<GFObserverBuilder> set_event(int index, Variant event);
+		Ref<GFObserverBuilder> set_event(int index, const Variant event);
 
 		// **************************************
 		// *** Unexposed ***

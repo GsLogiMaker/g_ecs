@@ -9,22 +9,19 @@
 
 using namespace godot;
 
-GFQuery::~GFQuery() {
-	ecs_query_fini(query);
-}
-
 // --------------------------------------
 // --- Exposed
 // --------------------------------------
 
-GFWorld* GFQuery::get_world() {
-	return world;
-}
+GFWorld* GFQuery::get_world() const { return Object::cast_to<GFWorld>(
+	UtilityFunctions::instance_from_id(world_instance_id)
+); }
 
-Ref<GFQueryIterator> GFQuery::iterate() {
+Ref<GFQueryIterator> GFQuery::iter() {
+	ecs_iter_t iter = ecs_query_iter(get_world()->raw(), this->query);
 	return Ref(memnew(GFQueryIterator(
-		Ref(this),
-		ecs_query_iter(this->world->raw(), this->query)
+		iter,
+		get_world()
 	)));
 }
 
@@ -34,5 +31,5 @@ Ref<GFQueryIterator> GFQuery::iterate() {
 
 void GFQuery::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("get_world"), &GFQuery::get_world);
-	godot::ClassDB::bind_method(D_METHOD("iterate"), &GFQuery::iterate);
+	godot::ClassDB::bind_method(D_METHOD("iter"), &GFQuery::iter);
 }

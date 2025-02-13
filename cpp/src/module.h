@@ -49,9 +49,11 @@ namespace godot {
 		// --- Exposed
 		// --------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFModule);
+
 		static Ref<GFModule> new_in_world(GFWorld* world);
-		static Ref<GFModule> new_named_in_world(String name, GFWorld*);
-		static Ref<GFModule> from(Variant module, GFWorld*);
+		static Ref<GFModule> new_named_in_world(const String name, GFWorld*);
+		static Ref<GFModule> from(const Variant module, GFWorld*);
 		static Ref<GFModule> from_id(ecs_entity_t, GFWorld*);
 
 		// --------------------------------------
@@ -65,7 +67,7 @@ namespace godot {
 
 
 	private:
-		bool variant_is_registerable_script(Variant constant) {
+		bool variant_is_registerable_script(const Variant constant) const {
 			Ref<Script> const_script = constant;
 			if (const_script == nullptr) {
 				// Constant is not a script, skip it

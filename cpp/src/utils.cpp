@@ -1,7 +1,6 @@
 
 #include "utils.h"
 #include "godot_cpp/core/defs.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "world.h"
 

@@ -1,11 +1,13 @@
 
 #include "world.h"
 #include "entity.h"
+#include "component.h"
 #include "component_builder.h"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/packed_string_array.hpp"
+#include "godot_cpp/variant/string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "observer_builder.h"
 #include "pair.h"
@@ -499,7 +501,7 @@ void GFWorld::setup_glecs() {
 	_register_modules_from_scripts(0);
 }
 
-ecs_entity_t GFWorld::coerce_id(Variant value) {
+ecs_entity_t GFWorld::coerce_id(const Variant value) {
 	String string;
 	godot::CharString str;
 	Vector2i vec;
@@ -519,7 +521,7 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 				);
 			}
 			if (obj->is_class(GFEntity::get_class_static())) {
-				return (static_cast<GFEntity*>(obj)->get_id());
+				return Object::cast_to<GFEntity>(obj)->get_id();
 			}
 			if (obj->is_class(Script::get_class_static())) {
 				Ref<Script> script = value;
@@ -540,8 +542,8 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 					// TODO: implement option to turn off auto registering
 
 					// ERR(0,
-					// 	"Failed to coerce Script to ID\n",
-					// 	"The script ", script, " has not been registered with world ", this
+					//	"Failed to coerce Script to ID\n",
+					//	"The script ", script, " has not been registered with world ", this
 					// );
 				}
 				ecs_entity_t id = registered_entity_ids.get(obj, 0);
@@ -577,7 +579,12 @@ ecs_entity_t GFWorld::coerce_id(Variant value) {
 	);
 }
 
-Ref<GFEntity> GFWorld::lookup(String path) const {
+int64_t GFWorld::get_raw() const {
+	assert(sizeof(int64_t) == sizeof(ecs_world_t*));
+	return reinterpret_cast<int64_t>(raw());
+}
+
+Ref<GFEntity> GFWorld::lookup(const String path) {
 	const char* path_ptr = path.utf8().get_data();
 	ecs_entity_t id = ecs_lookup_path_w_sep(
 		raw(),
@@ -595,11 +602,14 @@ Ref<GFEntity> GFWorld::lookup(String path) const {
 	return GFEntity::from_id(id, this);
 }
 
-Ref<GFPair> GFWorld::pair(Variant first, Variant second) {
+Ref<GFPair> GFWorld::pair(const Variant first, const Variant second) {
 	return GFPair::from_ids(coerce_id(first), coerce_id(second), this);
 }
 
-ecs_entity_t GFWorld::pair_ids(ecs_entity_t first, ecs_entity_t second) const {
+ecs_entity_t GFWorld::pair_ids(
+	const ecs_entity_t first,
+	const ecs_entity_t second
+) const {
 	if (ECS_IS_PAIR(first)) {
 		ERR(0,
 			"Could not pair IDs\n",
@@ -619,7 +629,7 @@ void GFWorld::progress(double delta) const {
 	ecs_progress(raw(), delta);
 }
 
-Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
+Ref<GFRegisterableEntity> GFWorld::register_script(const Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
 	if (ett == nullptr) {
 		return nullptr;
@@ -628,13 +638,13 @@ Ref<GFRegisterableEntity> GFWorld::register_script(Ref<Script> script) {
 	return ett;
 }
 
-ecs_entity_t GFWorld::register_script_id(Ref<Script> script) {
+ecs_entity_t GFWorld::register_script_id(const Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
 	ett->call_user_register();
 	return ett->get_id();
 }
 
-Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(Ref<Script> script) {
+Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(const Ref<Script> script) {
 	if (*script == nullptr) {
 		ERR(nullptr,
 			"Could not register script\n",
@@ -744,6 +754,9 @@ ecs_entity_t GFWorld::variant_type_to_id(Variant::Type type) {
 }
 
 String GFWorld::id_to_text(ecs_entity_t id) const {
+	CHECK_ENTITY_ALIVE(id, this, "",
+		"Failed to convert ID to text\n"
+	);
 	if (ecs_id_is_pair(id)) {
 		return String("(")
 			+ id_to_text(ECS_PAIR_FIRST(id)) + ", "
@@ -767,6 +780,46 @@ Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
 }
 
 // ----------------------------------------------
+// --- Maybe expose later ---
+// ----------------------------------------------
+
+String GFWorld::entity_unique_name(ecs_entity_t parent, String name) const {
+	if (ecs_lookup_child(
+		raw(),
+		parent,
+		name.utf8()
+	) == 0) {
+		// No name conflicts, set name and return
+		return name;
+	}
+
+	// Find have many digits are at the end of the name
+	int trailing_digits = 0;
+	for (int i=0; i != name.length(); i++) {
+		char32_t digit = name[name.length()-i-1];
+		if (digit >= '0' && digit <= '9') {
+			trailing_digits++;
+		} else {
+			break;
+		}
+	}
+
+	int number = name.substr(name.length()-trailing_digits).to_int();
+	String base_name = name.substr(0, name.length()-trailing_digits);
+	String unique_name = String();
+	do {
+		number += 1;
+		unique_name = base_name + String::num_uint64(number);
+	} while (ecs_lookup_child(
+		raw(),
+		parent,
+		unique_name.utf8()
+	));
+
+	return unique_name;
+}
+
+// ----------------------------------------------
 // --- Unexposed ---
 // ----------------------------------------------
 
@@ -783,7 +836,7 @@ ecs_entity_t GFWorld::get_main_id(ecs_entity_t id) const {
 	return id;
 }
 
-ecs_entity_t GFWorld::get_registered_id(Ref<Script> script) const {
+ecs_entity_t GFWorld::get_registered_id(const Ref<Script> script) const {
 	return registered_entity_ids.get(script, 0);
 }
 
@@ -1051,23 +1104,32 @@ bool GFWorld::id_has_child(ecs_entity_t parent, const char* child_name) const {
 
 bool GFWorld::id_set_parent(ecs_entity_t id, ecs_entity_t parent) const {
 	CHECK_ENTITY_ALIVE(id, this, false,
-		"Failed to set parent\nChild is not alive\n"
+		"Failed to set parent\n	Child is not alive\n"
 	);
 	CHECK_ENTITY_ALIVE(parent, this, false,
-		"Failed to set parent\nParent is not alive\n"
+		"Failed to set parent\n	Parent is not alive\n"
 	);
 
 	// TODO: Handle name conflicts rather than throw error
-	CHECK_NOT_HAS_CHILD(parent, ecs_get_name(raw(), id), this, false,
-		"Failed to set parent\n"
-	);
+	String new_name = String();
+	if (id_has_child(parent, ecs_get_name(raw(), id))) {
+		// Entity needs new name in parent
+		new_name = entity_unique_name(parent, ecs_get_name(raw(), id));
+		ecs_set_name(raw(), id, nullptr); // Remove name till added to parent
+	}
 
 	ecs_add_id(raw(), id, ecs_childof(parent));
+
+	if (new_name != String()) {
+		// Set new name
+		CharString char_new_name = new_name.utf8();
+		ecs_set_name(raw(), id, char_new_name);
+	}
 
 	return true;
 }
 
-bool GFWorld::is_id_alive(const ecs_entity_t id) const {
+bool GFWorld::is_id_alive(ecs_entity_t id) const {
 	if (ECS_IS_PAIR(id)) {
 		if (!ecs_is_alive(raw(), ECS_PAIR_FIRST(id))) {
 			return false;
@@ -1093,7 +1155,9 @@ ecs_world_t * GFWorld::raw() const {
 
 void GFWorld::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
+
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);
+	godot::ClassDB::bind_method(D_METHOD("get_raw"), &GFWorld::get_raw);
 	godot::ClassDB::bind_method(D_METHOD("start_rest_api"), &GFWorld::start_rest_api);
 	godot::ClassDB::bind_method(D_METHOD("lookup", "path"), &GFWorld::lookup);
 	godot::ClassDB::bind_method(D_METHOD("pair", "first", "second"), &GFWorld::pair);

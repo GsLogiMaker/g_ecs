@@ -40,10 +40,10 @@ namespace godot {
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
+		OVERRIDE_ENTITY_SELF_METHODS(GFTag);
 
 		static Ref<GFTag> new_in_world(GFWorld* world);
-		static Ref<GFTag> new_named_in_world(String name, GFWorld*);
-		static Ref<GFTag> from(Variant module, GFWorld*);
+		static Ref<GFTag> from(const Variant module, GFWorld*);
 		static Ref<GFTag> from_id(ecs_entity_t, GFWorld*);
 
 		// --------------------------------------

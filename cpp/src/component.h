@@ -30,20 +30,22 @@ namespace godot {
 			source_entity_id(0),
 			GFRegisterableEntity(0, GFWorld::singleton())
 		{}
-		~GFComponent();
+		~GFComponent() {};
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFComponent);
+
 		GDVIRTUAL1(_build, Ref<GFComponentBuilder>)
 
-		static Ref<GFComponent> from(Variant c, Variant e, GFWorld*);
+		static Ref<GFComponent> from(const Variant c, const Variant e, GFWorld*);
 		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
 		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
-		Variant getm(String) const;
-		void setm(String, Variant) const;
+		Variant getm(const String) const;
+		void setm(const String, const Variant) const;
 
 		Ref<GFEntity> get_source_entity() const;
 		ecs_entity_t get_source_id() const;
@@ -59,10 +61,10 @@ namespace godot {
 
 		void _register_internal();
 
-		void build_data_from_variant(Variant, void* output) const;
-		static void build_data_from_members(Array, void*, ecs_entity_t, GFWorld*);
-		static const EcsComponent* get_component_ptr(GFWorld*, ecs_entity_t);
-		static const EcsStruct* get_struct_ptr(GFWorld*, ecs_entity_t);
+		void build_data_from_variant(const Variant, void* output) const;
+		static void build_data_from_members(const Array, void*, ecs_entity_t, const GFWorld*);
+		static const EcsComponent* get_component_ptr(const GFWorld*, ecs_entity_t);
+		static const EcsStruct* get_struct_ptr(const GFWorld*, ecs_entity_t);
 		void set_source_id(ecs_entity_t id);
 
 
@@ -70,10 +72,10 @@ namespace godot {
 		static void _bind_methods();
 
 		void* get_member_ptr_mut_at(int offset) const;
-		const EcsMember* get_member_data(String) const;
+		const EcsMember* get_member_data(const String) const;
 
-		Variant member_value_as_primitive(void*, ecs_primitive_kind_t) const;
-		Variant member_value_as_type(void*, ecs_entity_t) const;
+		Variant member_value_as_primitive(const void*, ecs_primitive_kind_t) const;
+		Variant member_value_as_type(const void*, ecs_entity_t) const;
 
 	private:
 		ecs_entity_t source_entity_id {0};

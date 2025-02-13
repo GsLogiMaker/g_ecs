@@ -4,6 +4,7 @@
 #include "doc_data.gen.h"
 #include "entity.h"
 #include "entity_builder.h"
+#include "entity_iterator.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/core/memory.hpp"
@@ -42,7 +43,10 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			godot::ClassDB::register_class<GFEntityBuilder>();
 			godot::ClassDB::register_class<GFComponentBuilder>();
 			godot::ClassDB::register_abstract_class<GFQuery>();
-			godot::ClassDB::register_abstract_class<GFQueryIterator>();
+
+			godot::ClassDB::register_abstract_class<GFBaseIterator>();
+			godot::ClassDB::register_class<GFEntityIterator>();
+			godot::ClassDB::register_class<GFQueryIterator>();
 
 			godot::ClassDB::register_abstract_class<GFQuerylikeBuilder>();
 			godot::ClassDB::register_class<GFObserverBuilder>();

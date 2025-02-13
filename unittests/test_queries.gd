@@ -89,13 +89,13 @@ func test_up_traversal():
 		.add(Bools) \
 		.add_pair("flecs/core/ChildOf", par)
 
-	var parent_descriptions:GFQuery = GFQueryBuilder.new_in_world(world) \
+	var parent_descriptions:= GFQueryBuilder.new_in_world(world) \
 		.with(Bools).up() \
 		.with(Bools) \
 		.build()
 
 	var i:= 0
-	for desc in parent_descriptions.iterate():
+	for desc in parent_descriptions.iter():
 		assert_true(desc[0].get_source_id() == par.get_id(), "Expecteded 1st item to be the parent")
 		assert_true(desc[1].get_source_id() == child.get_id(), "Expecteded 2nd item to be the child")
 		i += 1
@@ -116,21 +116,20 @@ func _test_cascade_traversal():
 func test_with_pair():
 	var w:= world
 	var data:= {ints_bools=0}
-	
+
 	GFEntityBuilder.new_in_world(world) \
 		.add_pair(Ints, Bools) \
 		.build()
-	
+
 	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
 		.with(Ints, Bools) \
 		.build()
 
 	var count:= 0
-	for _x in query.iterate():
+	for _x in query.iter():
 		count += 1
-	
-	assert_eq(count, 1, "Expected query to find 1 entity")
 
+	assert_eq(count, 1, "Expected query to find 1 entity")
 
 #endregion
 

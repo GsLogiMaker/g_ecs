@@ -16,10 +16,47 @@
 		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries.html</link>
 	</tutorials>
 	<methods>
+		<method name="add_entity">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.add_entity].
+			</description>
+		</method>
+		<method name="add_pair">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.add_pair].
+			</description>
+		</method>
 		<method name="build">
 			<return type="GFQuery" />
 			<description>
 				Builds and returns the new query.
+			</description>
+		</method>
+		<method name="cascade">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.cascade].
+			</description>
+		</method>
+		<method name="descend">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.descend].
+			</description>
+		</method>
+		<method name="maybe_with">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.maybe_with].
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">
@@ -27,6 +64,58 @@
 			<param index="0" name="world" type="GFWorld" />
 			<description>
 				Returns a new builder in [param world].
+			</description>
+		</method>
+		<method name="or_with">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.or_with].
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="name" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.set_name].
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="entity" type="Variant" default="0" />
+			<description>
+				Overrides [method GFEntityBuilder.set_parent].
+			</description>
+		</method>
+		<method name="set_target_entity">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFEntityBuilder.set_target_entity].
+			</description>
+		</method>
+		<method name="up">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="traversal" type="Variant" default="0" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.up].
+			</description>
+		</method>
+		<method name="with">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.with].
+			</description>
+		</method>
+		<method name="without">
+			<return type="GFQueryBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.without].
 			</description>
 		</method>
 	</methods>

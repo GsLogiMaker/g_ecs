@@ -30,17 +30,19 @@ namespace godot {
 		// --- Exposed ---
 		// --------------------------------------------------------
 
+		OVERRIDE_ENTITY_SELF_METHODS(GFRegisterableEntity);
+
 		GDVIRTUAL1(_register, GFWorld*)
 
 		static Ref<GFRegisterableEntity> new_in_world(GFWorld*);
 		static Ref<GFRegisterableEntity> from_id(ecs_entity_t id, GFWorld* world);
-		static Ref<GFRegisterableEntity> from_script(const Ref<Script>, const GFWorld*);
+		static Ref<GFRegisterableEntity> from_script(const Ref<Script>, GFWorld*);
 
 		// --------------------------------------------------------
 		// --- Unexposed ---
 		// --------------------------------------------------------
 
-		void register_in_world(GFWorld* world);
+		void register_in_world();
 		// Runs internal register setup code
 		void call_internal_register();
 		// Runs user register setup code

@@ -2,6 +2,7 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include "gdextension_interface.h"
 #include "world.h"
 #include <flecs.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -15,21 +16,25 @@ namespace godot {
 
 	public:
 		GFQuery(GFWorld* world, ecs_query_t* query):
-			world(world),
+			world_instance_id(
+				GFWorld::world_or_singleton(world)->get_instance_id()
+			),
 			query(query)
 		{}
 		GFQuery():
 			GFQuery(nullptr, nullptr)
 		{}
-		~GFQuery();
+		~GFQuery() {
+			ecs_query_fini(query);
+		};
 
 		// --------------------------------------
 		// --- Exposed
 		// --------------------------------------
 
-		GFWorld* get_world();
+		GFWorld* get_world() const;
 
-		Ref<GFQueryIterator> iterate();
+		Ref<GFQueryIterator> iter();
 
 		// --------------------------------------
 		// --- Unexposed
@@ -39,7 +44,7 @@ namespace godot {
 		static void _bind_methods();
 
 	private:
-		GFWorld* world;
+		GDObjectInstanceID world_instance_id;
 		ecs_query_t* query;
 	};
 
