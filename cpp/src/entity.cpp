@@ -524,16 +524,17 @@ Ref<GFEntity> GFEntity::get_target_for(const Variant rel, int index) const {
 	return GFEntity::from_id(target_id, w);
 }
 
-Ref<GFEntity> GFEntity::set_name(const String name_) {
+Ref<GFEntity> GFEntity::set_name(const String name) {
 	GFWorld* w = get_world();
 	ecs_entity_t parent = ecs_get_parent(
 		w->raw(),
 		get_id()
 	);
 
-	String name = w->entity_unique_name(parent, name_);
+	String unique_name = w->entity_unique_name(parent, name);
 
-	ecs_set_name(get_world()->raw(), get_id(), name.utf8());
+	CharString char_name = unique_name.utf8();
+	ecs_set_name(get_world()->raw(), get_id(), char_name);
 	return Ref(this);
 }
 

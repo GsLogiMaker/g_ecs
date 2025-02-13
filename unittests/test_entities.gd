@@ -384,8 +384,8 @@ func test_set_name():
 	var e2:= GFEntity.new_in_world(world).set_name("E1")
 	var e3:= GFEntity.new_in_world(world).set_name("E1")
 	assert_eq(e1.get_name(), "E1")
-	assert_eq(e1.get_name(), "E2")
-	assert_eq(e1.get_name(), "E3")
+	assert_eq(e2.get_name(), "E2")
+	assert_eq(e3.get_name(), "E3")
 	
 	# Entities should make get a unique name
 	# when moved to a parent.

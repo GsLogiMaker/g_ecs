@@ -783,20 +783,20 @@ Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
 // --- Maybe expose later ---
 // ----------------------------------------------
 
-String GFWorld::entity_unique_name(ecs_entity_t parent, String g_name) const {
+String GFWorld::entity_unique_name(ecs_entity_t parent, String name) const {
 	if (ecs_lookup_child(
 		raw(),
 		parent,
-		g_name.utf8()
+		name.utf8()
 	) == 0) {
 		// No name conflicts, set name and return
-		return g_name;
+		return name;
 	}
 
 	// Find have many digits are at the end of the name
 	int trailing_digits = 0;
-	for (int i=0; i != g_name.length(); i++) {
-		char32_t digit = g_name[g_name.length()-i-1];
+	for (int i=0; i != name.length(); i++) {
+		char32_t digit = name[name.length()-i-1];
 		if (digit >= '0' && digit <= '9') {
 			trailing_digits++;
 		} else {
@@ -804,21 +804,19 @@ String GFWorld::entity_unique_name(ecs_entity_t parent, String g_name) const {
 		}
 	}
 
-	String number = g_name.substr(g_name.length()-trailing_digits);
-	String base_name = g_name.substr(0, g_name.length()-trailing_digits);
-	String name = String();
+	int number = name.substr(name.length()-trailing_digits).to_int();
+	String base_name = name.substr(0, name.length()-trailing_digits);
+	String unique_name = String();
 	do {
-		int name_int = number.to_int();
-		name_int += 1;
-		number = String::num_uint64(name_int);
-		name = base_name + number;
+		number += 1;
+		unique_name = base_name + String::num_uint64(number);
 	} while (ecs_lookup_child(
 		raw(),
 		parent,
-		name.utf8()
+		unique_name.utf8()
 	));
 
-	return name;
+	return unique_name;
 }
 
 // ----------------------------------------------
@@ -1115,13 +1113,18 @@ bool GFWorld::id_set_parent(ecs_entity_t id, ecs_entity_t parent) const {
 	// TODO: Handle name conflicts rather than throw error
 	String new_name = String();
 	if (id_has_child(parent, ecs_get_name(raw(), id))) {
+		// Entity needs new name in parent
 		new_name = entity_unique_name(parent, ecs_get_name(raw(), id));
+		ecs_set_name(raw(), id, nullptr); // Remove name till added to parent
 	}
-	CHECK_NOT_HAS_CHILD(parent, ecs_get_name(raw(), id), this, false,
-		"Failed to set parent\n	"
-	);
 
 	ecs_add_id(raw(), id, ecs_childof(parent));
+
+	if (new_name != String()) {
+		// Set new name
+		CharString char_new_name = new_name.utf8();
+		ecs_set_name(raw(), id, char_new_name);
+	}
 
 	return true;
 }
