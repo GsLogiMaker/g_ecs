@@ -8,33 +8,35 @@
 #include <flecs.h>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#define ERR(return_value, ...) \
-	UtilityFunctions::printerr(__VA_ARGS__); \
-	UtilityFunctions::push_error(__VA_ARGS__); \
+#define WARN(...)	\
+	UtilityFunctions::print_rich("[color='INDIAN_RED']GLECS: ", __VA_ARGS__);	\
+	UtilityFunctions::push_error(__VA_ARGS__);
+#define ERR(return_value, ...)	\
+	WARN(__VA_ARGS__);	\
 	return return_value;
 
-#define CHECK_ENTITY_ALIVE(entity, gf_world, return_value, ...) \
-	if (!gf_world->is_id_alive(entity)) { \
-		ERR(return_value, \
-			__VA_ARGS__, \
-			"	ID ", entity, " is not alive" \
-		); \
+#define CHECK_ENTITY_ALIVE(entity, gf_world, return_value, ...)	\
+	if (!gf_world->is_id_alive(entity)) {	\
+		ERR(return_value,	\
+			__VA_ARGS__,	\
+			"	ID ", entity, " is not alive"	\
+		);	\
 	}
 
-#define CHECK_NOT_HAS_CHILD(entity, child_name, gf_world, return_value, err) \
-	if (gf_world->id_has_child(entity, child_name)) { \
-		ERR(return_value, \
-			err, \
-			"	", gf_world->id_to_text(entity) ," already has a child named \"", child_name, "\"" \
-		); \
+#define CHECK_NOT_HAS_CHILD(entity, child_name, gf_world, return_value, err)	\
+	if (gf_world->id_has_child(entity, child_name)) {	\
+		ERR(return_value,	\
+			err,	\
+			"	", gf_world->id_to_text(entity) ," already has a child named	\"", child_name, "\""	\
+		);	\
 	}
 
-#define CHECK_NOT_PAIR(entity, gf_world, return_value, ...) \
-	if (!gf_world->is_id_alive(entity)) { \
-		ERR(return_value, \
-			__VA_ARGS__, \
-			"	Entity ", gf_world->id_to_text(entity), " is a pair" \
-		); \
+#define CHECK_NOT_PAIR(entity, gf_world, return_value, ...)	\
+	if (!gf_world->is_id_alive(entity)) {	\
+		ERR(return_value,	\
+			__VA_ARGS__,	\
+			"	Entity ", gf_world->id_to_text(entity), " is a pair"	\
+		);	\
 	}
 
 template <typename T, typename E>
@@ -86,12 +88,6 @@ private:
     };
 };
 
-#define CHECK_VARIANT(VALUE, VARIANT_TYPE) \
-		if (value.get_type() != VARIANT_TYPE) { ERR(/**/, \
-			"Expected variant value, ", VALUE, ", to be of type ", \
-			Variant::get_type_name(VARIANT_TYPE), \
-			", but is of type ", Variant::get_type_name(VALUE.get_type()) \
-		); } \
 
 namespace godot {
 	typedef Result<ecs_entity_t, String> EntityResult;
