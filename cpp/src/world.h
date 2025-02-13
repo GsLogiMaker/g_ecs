@@ -64,6 +64,12 @@ namespace godot {
 		static Variant::Type id_to_variant_type(ecs_entity_t);
 
 		// **************************************
+		// *** Maybe expose later ***
+		// **************************************
+
+		String entity_unique_name(ecs_entity_t parent, String) const;
+
+		// **************************************
 		// *** Unexposed ***
 		// **************************************
 

@@ -377,6 +377,28 @@ func test_clear():
 
 	assert_false(e.has(tag))
 
+func test_set_name():
+	# Entities should get a unique name when
+	# their name is explicitely set.
+	var e1:= GFEntity.new_in_world(world).set_name("E1")
+	var e2:= GFEntity.new_in_world(world).set_name("E1")
+	var e3:= GFEntity.new_in_world(world).set_name("E1")
+	assert_eq(e1.get_name(), "E1")
+	assert_eq(e1.get_name(), "E2")
+	assert_eq(e1.get_name(), "E3")
+	
+	# Entities should make get a unique name
+	# when moved to a parent.
+	var parent:= GFEntity.new_in_world(world)
+	var child_1:= GFEntity.new_in_world(world) \
+		.set_name("Child") \
+		.set_parent(parent)
+	var child_2:= GFEntity.new_in_world(world) \
+		.set_name("Child") \
+		.set_parent(parent)
+	assert_eq(child_1.get_name(), "Child")
+	assert_eq(child_2.get_name(), "Child1")
+
 #endregion
 
 #region Classes

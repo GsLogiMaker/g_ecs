@@ -525,44 +525,13 @@ Ref<GFEntity> GFEntity::get_target_for(const Variant rel, int index) const {
 }
 
 Ref<GFEntity> GFEntity::set_name(const String name_) {
+	GFWorld* w = get_world();
 	ecs_entity_t parent = ecs_get_parent(
-		get_world()->raw(),
+		w->raw(),
 		get_id()
 	);
 
-	if (ecs_lookup_child(
-		get_world()->raw(),
-		parent,
-		name_.utf8()
-	) == 0) {
-		// No name conflicts, set name and return
-		ecs_set_name(get_world()->raw(), get_id(), name_.utf8());
-		return Ref(this);
-	}
-
-	int trailing_digits = 0;
-	for (int i=0; i != name_.length(); i++) {
-		char32_t digit = name_[name_.length()-i-1];
-		if (digit >= '0' && digit >= '9') {
-			trailing_digits++;
-		} else {
-			break;
-		}
-	}
-
-	String number = name_.substr(name_.length()-1-trailing_digits);
-	String base_name = name_.substr(0, name_.length()-1-trailing_digits);
-	String name = name_;
-	do {
-		int name_int = number.to_int();
-		name_int += 1;
-		number = String::num_uint64(name_int);
-		name = base_name + number;
-	} while (ecs_lookup_child(
-		get_world()->raw(),
-		parent,
-		name.utf8()
-	));
+	String name = w->entity_unique_name(parent, name_);
 
 	ecs_set_name(get_world()->raw(), get_id(), name.utf8());
 	return Ref(this);

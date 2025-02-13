@@ -7,6 +7,7 @@
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
 #include "godot_cpp/variant/packed_string_array.hpp"
+#include "godot_cpp/variant/string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "observer_builder.h"
 #include "pair.h"
@@ -779,6 +780,48 @@ Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
 }
 
 // ----------------------------------------------
+// --- Maybe expose later ---
+// ----------------------------------------------
+
+String GFWorld::entity_unique_name(ecs_entity_t parent, String g_name) const {
+	if (ecs_lookup_child(
+		raw(),
+		parent,
+		g_name.utf8()
+	) == 0) {
+		// No name conflicts, set name and return
+		return g_name;
+	}
+
+	// Find have many digits are at the end of the name
+	int trailing_digits = 0;
+	for (int i=0; i != g_name.length(); i++) {
+		char32_t digit = g_name[g_name.length()-i-1];
+		if (digit >= '0' && digit <= '9') {
+			trailing_digits++;
+		} else {
+			break;
+		}
+	}
+
+	String number = g_name.substr(g_name.length()-trailing_digits);
+	String base_name = g_name.substr(0, g_name.length()-trailing_digits);
+	String name = String();
+	do {
+		int name_int = number.to_int();
+		name_int += 1;
+		number = String::num_uint64(name_int);
+		name = base_name + number;
+	} while (ecs_lookup_child(
+		raw(),
+		parent,
+		name.utf8()
+	));
+
+	return name;
+}
+
+// ----------------------------------------------
 // --- Unexposed ---
 // ----------------------------------------------
 
@@ -1063,15 +1106,19 @@ bool GFWorld::id_has_child(ecs_entity_t parent, const char* child_name) const {
 
 bool GFWorld::id_set_parent(ecs_entity_t id, ecs_entity_t parent) const {
 	CHECK_ENTITY_ALIVE(id, this, false,
-		"Failed to set parent\nChild is not alive\n"
+		"Failed to set parent\n	Child is not alive\n"
 	);
 	CHECK_ENTITY_ALIVE(parent, this, false,
-		"Failed to set parent\nParent is not alive\n"
+		"Failed to set parent\n	Parent is not alive\n"
 	);
 
 	// TODO: Handle name conflicts rather than throw error
+	String new_name = String();
+	if (id_has_child(parent, ecs_get_name(raw(), id))) {
+		new_name = entity_unique_name(parent, ecs_get_name(raw(), id));
+	}
 	CHECK_NOT_HAS_CHILD(parent, ecs_get_name(raw(), id), this, false,
-		"Failed to set parent\n"
+		"Failed to set parent\n	"
 	);
 
 	ecs_add_id(raw(), id, ecs_childof(parent));
