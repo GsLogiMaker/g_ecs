@@ -1,13 +1,16 @@
 
 extends GutTest
 
-var world:GFWorld
+var world:GFWorld = null
+var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	# world.new_pipeline(&"test_pipeline")
+	_old_world = GFWorld.get_local_thread_singleton()
+	GFWorld.set_local_thread_singleton(world)
 
 func after_each():
+	GFWorld.set_local_thread_singleton(_old_world)
 	world.free()
 
 #region Tests
@@ -15,13 +18,13 @@ func after_each():
 func test_stuff():
 	pass
 	#world.system_builder(&"test_pipeline") \
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Bools) \
 		.for_each(func(boo:Bools):
 			boo.b = boo.a
 			)
 
-	var e:= GFEntity.new_in_world(world) \
+	var e:= GFEntity.new() \
 		.add(Bools) \
 		.set_name("Test")
 	world.register_script(Bools)
