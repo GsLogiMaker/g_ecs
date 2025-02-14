@@ -6,11 +6,11 @@ var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	_old_world = GFWorld.get_local_thread_singleton()
-	GFWorld.set_local_thread_singleton(world)
+	_old_world = GFWorld.get_contextual_singleton()
+	GFWorld.set_contextual_singleton(world)
 
 func after_each():
-	GFWorld.set_local_thread_singleton(_old_world)
+	GFWorld.set_contextual_singleton(_old_world)
 	world.free()
 
 
@@ -23,14 +23,18 @@ func test_add_entity():
 
 func test_world_deletion():
 	var w:= GFWorld.new()
+	
 	var e:= GFEntity.new_in_world(w) \
 		.add(Foo) \
 		.set_name("Test")
 	var foo:= e.get(Foo)
+	assert_eq(e.get_world(), w)
+	
 	var e2:= GFEntity.new_in_world(w) \
 		.add(Foo) \
 		.set_name("Test")
 	var foo2:= e2.get(Foo)
+	assert_eq(e2.get_world(), w)
 
 	foo.set_value(Vector2(24.3, 2.1))
 	foo2.set_value(Vector2(125.1, 3.3))

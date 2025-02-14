@@ -6,11 +6,11 @@ var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	_old_world = GFWorld.get_local_thread_singleton()
-	GFWorld.set_local_thread_singleton(world)
+	_old_world = GFWorld.get_contextual_singleton()
+	GFWorld.set_contextual_singleton(world)
 
 func after_each():
-	GFWorld.set_local_thread_singleton(_old_world)
+	GFWorld.set_contextual_singleton(_old_world)
 	world.free()
 
 #region Tests
@@ -79,12 +79,12 @@ func test_entity_created_in_singleton():
 	var e:= GFEntity.new()
 	assert_eq(e.is_alive(), true)
 
-	var e2:= GFEntity.new_in_world(GFWorld.singleton())
+	var e2:= GFEntity.new_in_world(GFWorld.get_singleton())
 	assert_eq(e2.is_alive(), true)
 
-	assert_ne(world, GFWorld.singleton(), "Expected world not to be the global one")
+	assert_ne(world, GFWorld.get_singleton(), "Expected world not to be the global one")
 	assert_eq(e.get_world(), world, "Expected e1 to be created in local thread world")
-	assert_eq(e2.get_world(), GFWorld.singleton(), "Expected e2 to be created in global world")
+	assert_eq(e2.get_world(), GFWorld.get_singleton(), "Expected e2 to be created in global world")
 
 	e.delete()
 	e2.delete()

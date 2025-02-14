@@ -6,11 +6,11 @@ var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	_old_world = GFWorld.get_local_thread_singleton()
-	GFWorld.set_local_thread_singleton(world)
+	_old_world = GFWorld.get_contextual_singleton()
+	GFWorld.set_contextual_singleton(world)
 
 func after_each():
-	GFWorld.set_local_thread_singleton(_old_world)
+	GFWorld.set_contextual_singleton(_old_world)
 	world.free()
 
 func test_add_entity():
@@ -91,7 +91,7 @@ func test_simple_system():
 func test_entity_created_in_local_thread_world():
 	var e:= GFEntity.new()
 	assert_eq(e.get_world(), world)
-	assert_eq(world, GFWorld.get_local_thread_singleton())
+	assert_eq(world, GFWorld.get_contextual_singleton())
 
 
 class Foo extends GFComponent:

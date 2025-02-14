@@ -886,12 +886,12 @@ GFWorld* GFWorld::world_or_singleton(GFWorld* world) {
 			world->get_instance_id()
 		)
 	) {
-		return GFWorld::get_local_thread_singleton();
+		return GFWorld::get_contextual_singleton();
 	}
 	return world;
 }
 
-GFWorld* GFWorld::singleton() {
+GFWorld* GFWorld::get_singleton() {
 	return GFWorld::get_global_thread_singleton();
 }
 
@@ -1171,10 +1171,10 @@ GFWorld* GFWorld::get_global_thread_singleton() {
 	);
 }
 
-GFWorld* GFWorld::get_local_thread_singleton() {
+GFWorld* GFWorld::get_contextual_singleton() {
 	if (!UtilityFunctions::is_instance_id_valid(local_thread_singleton)) {
 		GFWorld* global_world = get_global_thread_singleton();
-		set_local_thread_singleton(global_world);
+		set_contextual_singleton(global_world);
 		return global_world;
 	}
 	return Object::cast_to<GFWorld>(
@@ -1182,7 +1182,7 @@ GFWorld* GFWorld::get_local_thread_singleton() {
 	);
 }
 
-void GFWorld::set_local_thread_singleton(const GFWorld* world) {
+void GFWorld::set_contextual_singleton(const GFWorld* world) {
 	if (world == nullptr) {
 		local_thread_singleton = 0;
 	}
@@ -1190,9 +1190,9 @@ void GFWorld::set_local_thread_singleton(const GFWorld* world) {
 }
 
 void GFWorld::_bind_methods() {
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("get_local_thread_singleton"), &GFWorld::get_local_thread_singleton);
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("set_local_thread_singleton", "world"), &GFWorld::set_local_thread_singleton);
-	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("singleton"), &GFWorld::singleton);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("get_contextual_singleton"), &GFWorld::get_contextual_singleton);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("set_contextual_singleton", "world"), &GFWorld::set_contextual_singleton);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("get_singleton"), &GFWorld::get_singleton);
 
 	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
 
