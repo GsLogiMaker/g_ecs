@@ -35,12 +35,12 @@ Ref<GFComponent> GFComponent::from_id(
 	world = GFWorld::world_or_singleton(world);
 
 	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
-	if (comp_data == nullptr) {
-		ERR(nullptr,
-			"Could not instantiate ", get_class_static(), "\n",
-			"	Entity ", world->id_to_text(comp), " is not a component"
-		);
-	}
+	// if (comp_data == nullptr) {
+	// 	ERR(nullptr,
+	// 		"Could not instantiate ", get_class_static(), "\n",
+	// 		"	Entity ", world->id_to_text(comp), " is not a component"
+	// 	);
+	// }
 	Ref<GFComponent> comp_ref = memnew(GFComponent(entity, comp, world));
 	return setup_template<GFComponent>(comp_ref);
 }
@@ -51,13 +51,13 @@ Ref<GFComponent> GFComponent::from_id_no_source(
 ) {
 	world = GFWorld::world_or_singleton(world);
 
-	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
-	if (comp_data == nullptr) {
-		ERR(nullptr,
-			"Could not instantiate ", get_class_static(), "\n",
-			"	Entity ", world->id_to_text(comp), " is not a component"
-		);
-	}
+	// const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
+	// if (comp_data == nullptr) {
+	// 	ERR(nullptr,
+	// 		"Could not instantiate ", get_class_static(), "\n",
+	// 		"	Entity ", world->id_to_text(comp), " is not a component"
+	// 	);
+	// }
 	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent(0, comp, world)));
 	comp_ref->update_script();
 	return comp_ref;
@@ -103,6 +103,15 @@ void GFComponent::setm(const String member, const Variant value) const {
 
 Variant GFComponent::getm(const String member) const {
 	ecs_world_t* raw = get_world()->raw();
+
+	if (!ecs_has_id(raw, get_source_id(), get_id())) {
+		ERR(nullptr, "Failed to get member",
+			"\n	Entity ",
+			get_source_entity(),
+			" does not have component ",
+			get_world()->id_to_text(get_id())
+		);
+	}
 
 	// Get member data
 	const EcsMember* member_data = get_member_data(member);
@@ -261,10 +270,26 @@ ecs_entity_t GFComponent::get_source_id() const {
 }
 
 int GFComponent::get_data_size() const {
-	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->size;
+	const EcsComponent* component_data = ecs_get(
+		get_world()->raw(),
+		get_id(),
+		EcsComponent
+	);
+	if (component_data == nullptr) {
+		return 0;
+	}
+	return component_data->size;
 }
 int GFComponent::get_data_alignment() const {
-	return ecs_get(get_world()->raw(), get_id(), EcsComponent)->alignment;
+	const EcsComponent* component_data = ecs_get(
+		get_world()->raw(),
+		get_id(),
+		EcsComponent
+	);
+	if (component_data == nullptr) {
+		return 0;
+	}
+	return component_data->alignment;
 }
 
 bool GFComponent::is_alive() const {

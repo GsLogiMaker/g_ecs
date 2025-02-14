@@ -23,6 +23,7 @@ Ref<GFEntity> GFEntity::new_in_world(GFWorld* world) {
 	return memnew(GFEntity(world));
 }
 Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
+	world = GFWorld::world_or_singleton(world);
 	return memnew(GFEntity(world->coerce_id(entity), world));
 }
 Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
@@ -162,51 +163,40 @@ Ref<GFEntity> GFEntity::add_tag(const Variant tag) {
 
 Ref<GFEntity> GFEntity::emit(
 	const Variant target_entity,
-	const Array components,
 	const Array event_members
 ) {
-	ecs_entity_t componet_id = 0;
-	const EcsComponent* comp_data = nullptr;
-	ecs_type_t type = {0};
-	int8_t* event_data = nullptr;
-
-	// Setup type
-	ecs_type_t* type_ptr = &type;
-	if (components.size() == 0) {
-		type_ptr = nullptr;
-	} else {
-		comp_data = ecs_get(
-			get_world()->raw(),
-			get_id(),
-			EcsComponent
-		);
-		componet_id = get_world()->coerce_id(components[0]);
-		type.array = &componet_id;
-		type.count = 1;
-	}
+	GFWorld* w = get_world();
 
 	// Setup parameter
+	ecs_entity_t componet_id = 0;
+	const EcsComponent* comp_data = nullptr;
+	int8_t* event_data = nullptr;
 	if (comp_data != nullptr) {
 		event_data = new int8_t[comp_data->size];
 		GFComponent::build_data_from_members(
 			event_members,
 			event_data,
 			get_id(),
-			get_world()
+			w
 		);
+	}
+
+	ecs_entity_t target_id = w->coerce_id(target_entity);
+
+	auto type = ecs_get_type(w->raw(), target_id);
+	for (int i=0; i != type->count; i++) {
+		UtilityFunctions::prints("TYPE", w->id_to_text(type->array[i]));
 	}
 
 	// Emit
 	ecs_event_desc_t desc = {
 		.event = get_id(),
-		.ids = type_ptr,
-		.entity = get_world()->coerce_id(target_entity),
+		.ids = ecs_get_type(w->raw(), target_id),
+		.entity = target_id,
 		.param = static_cast<void*>(event_data)
 	};
-	ecs_emit(
-		get_world()->raw(),
-		&desc
-	);
+
+	ecs_emit(w->raw(), &desc );
 
 	// Cleanup
 	if (event_data != nullptr) {

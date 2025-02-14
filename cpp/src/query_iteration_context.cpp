@@ -1,10 +1,12 @@
 
 
 #include "query_iteration_context.h"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "querylike_builder.h"
 #include "component.h"
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/variant.hpp"
+#include "tag.h"
 #include "utils.h"
 #include "world.h"
 
@@ -27,6 +29,18 @@ ecs_entity_t get_compmonent_of_term(const ecs_term_t* term) {
 	return term->id;
 }
 
+Ref<GFEntity> instance_from(ecs_entity_t id, GFWorld* world) {
+	ecs_entity_t main_id = world->get_main_id(id); // Get main ID, if pair, for checking if ID is component
+	if (ecs_has(world->raw(), main_id, EcsComponent)) {
+		return GFComponent::from_id_no_source(
+			id,
+			world
+		);
+	} else {
+		return GFTag::from_id(id, world);
+	}
+}
+
 QueryIterationContext::QueryIterationContext(
 	const Ref<GFQuerylikeBuilder> query_b,
 	const Callable callable_
@@ -40,7 +54,7 @@ QueryIterationContext::QueryIterationContext(
 			case ecs_oper_kind_t::EcsAnd:
 			case ecs_oper_kind_t::EcsOptional:
 				comp_ref_per_term.append(
-					GFComponent::from_id_no_source(
+					instance_from(
 						get_compmonent_of_term(&terms[i]),
 						get_world()
 					)
@@ -50,7 +64,7 @@ QueryIterationContext::QueryIterationContext(
 				break;
 			case ecs_oper_kind_t::EcsOr:
 				comp_ref_per_term.append(
-					GFComponent::from_id_no_source(
+					instance_from(
 						get_compmonent_of_term(&terms[i]),
 						get_world()
 					)
@@ -85,17 +99,24 @@ void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity
 	for (int comp_i=0; comp_i != comp_ref_args.size(); comp_i++) {
 		int term_i = comp_ref_term_ids[comp_i];
 
-		ecs_entity_t entity = ecs_field_src(it, term_i);
-		if (entity == 0) {
-			entity = it->entities[entity_index];
+		Ref<GFEntity> added_entity = comp_ref_args[comp_i];
+		if (added_entity == nullptr) {
+			// Object is null, skip
+			continue;
 		}
-
-		Ref<GFComponent> comp = comp_ref_args[comp_i];
-		if (comp == nullptr) {
+		if (!added_entity->is_class(GFComponent::get_class_static())) {
+			// Added ID is not a component, skip
 			continue;
 		}
 
-		comp->set_source_id(entity);
+		ecs_entity_t source = ecs_field_src(it, term_i);
+		if (source == 0) {
+			source = it->entities[entity_index];
+		}
+
+		// Set source of added ID
+		Ref<GFComponent> comp = added_entity;
+		comp->set_source_id(source);
 	}
 }
 
@@ -111,7 +132,8 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 		}
 
 		const ecs_term_t* term = &terms[term_i];
-		Ref<GFComponent> comp_ref = comp_ref_per_term[term_i];
+		Ref<GFEntity> comp_ref = comp_ref_per_term[term_i];
+
 		switch (term->oper) {
 			case ecs_oper_kind_t::EcsAnd:
 				comp_ref_args[i_arg] = comp_ref;

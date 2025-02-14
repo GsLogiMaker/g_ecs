@@ -5,7 +5,8 @@
 class_name _GlecsModules extends Node
 
 const MODULES:= [
-	"./rendering/rendering.gd",
+	"./2d/_module.gd",
+	"./rendering/_module.gd",
 ]
 
 static var x:= (func():
