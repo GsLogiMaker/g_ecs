@@ -1,6 +1,7 @@
 
 #include "registerable_entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "world.h"
 
 #include <flecs.h>
@@ -37,6 +38,7 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(
 	const Ref<Script> script,
 	GFWorld* world
 ) {
+	UtilityFunctions::prints("FROM SCJI", script->get_path());
 	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
 		script->get_instance_base_type()
 	);

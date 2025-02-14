@@ -23,7 +23,7 @@ namespace godot {
 			callable(Callable())
 		{}
 		GFSystemBuilder():
-			GFSystemBuilder(GFWorld::singleton())
+			GFSystemBuilder(nullptr)
 		{}
 		~GFSystemBuilder();
 

@@ -40,6 +40,7 @@ namespace godot {
 
 		ecs_entity_t coerce_id(const Variant);
 
+		static GFWorld* get_local_thread_singleton();
 		int64_t get_raw() const;
 
 		Ref<GFEntity> lookup(const String);
@@ -58,6 +59,8 @@ namespace godot {
 		String id_to_text(ecs_entity_t) const;
 		static Variant::Type id_to_variant_type(ecs_entity_t);
 
+		static void set_local_thread_singleton(const GFWorld*);
+
 		static GFWorld* singleton();
 		void start_rest_api() const;
 		static ecs_entity_t variant_type_to_id(const Variant::Type);
@@ -72,8 +75,6 @@ namespace godot {
 		// **************************************
 		// *** Unexposed ***
 		// **************************************
-
-		static const char* SINGLETON_NAME;
 
 		// *** Glecs entities ***
 		static ecs_entity_t glecs;
@@ -138,6 +139,11 @@ namespace godot {
 		ecs_world_t* raw() const;
 
 	protected:
+		static GDObjectInstanceID global_thread_singleton;
+		static thread_local GDObjectInstanceID local_thread_singleton;
+
+		static GFWorld* get_global_thread_singleton();
+
 		static void _bind_methods();
 
 	private:

@@ -7,7 +7,6 @@
 #include "entity_iterator.h"
 #include "gdextension_interface.h"
 #include "godot_cpp/classes/engine.hpp"
-#include "godot_cpp/core/memory.hpp"
 #include "module.h"
 #include "observer_builder.h"
 #include "pair.h"
@@ -52,15 +51,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			godot::ClassDB::register_class<GFObserverBuilder>();
 			godot::ClassDB::register_class<GFQueryBuilder>();
 			godot::ClassDB::register_class<GFSystemBuilder>();
-
-			if (Engine::get_singleton()->has_singleton(GFWorld::SINGLETON_NAME)) {
-				Object* world = Engine::get_singleton()->get_singleton(GFWorld::SINGLETON_NAME);
-				Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
-				memdelete(world);
-			}
-			world = memnew(GFWorld(nullptr));
-     	   	Engine::get_singleton()->register_singleton(GFWorld::SINGLETON_NAME, world);
-			world->setup_glecs();
 			break;
         case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen
@@ -82,7 +72,6 @@ void uninitialize_module(ModuleInitializationLevel p_level) {
         case MODULE_INITIALIZATION_LEVEL_MAX:
           break;
         case MODULE_INITIALIZATION_LEVEL_SCENE:
-     	   Engine::get_singleton()->unregister_singleton(GFWorld::SINGLETON_NAME);
 		   break;
 	}
 }
