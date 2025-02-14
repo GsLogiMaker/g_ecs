@@ -38,7 +38,6 @@ Ref<GFRegisterableEntity> GFRegisterableEntity::from_script(
 	const Ref<Script> script,
 	GFWorld* world
 ) {
-	UtilityFunctions::prints("FROM SCJI", script->get_path());
 	Ref<GFRegisterableEntity> e = ClassDB::instantiate(
 		script->get_instance_base_type()
 	);
@@ -72,10 +71,18 @@ void GFRegisterableEntity::call_internal_register() {
 }
 
 void GFRegisterableEntity::call_user_register() {
-	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
-	ecs_set_scope(get_world()->raw(), get_id());
+	GFWorld* w = get_world();
+
+	GFWorld* old_thread_world = GFWorld::get_local_thread_singleton();
+	GFWorld::set_local_thread_singleton(w);
+	ecs_entity_t old_scope = ecs_get_scope(w->raw());
+	ecs_set_scope(w->raw(), get_id());
+
 	this->call("_register_user");
-	ecs_set_scope(get_world()->raw(), old_scope);
+
+	GFWorld::set_local_thread_singleton(old_thread_world);
+	ecs_set_scope(w->raw(), old_scope);
+
 }
 
 // --------------------------------------------------------

@@ -10,7 +10,7 @@ func _register(w:GFWorld):
 	
 	#region GFCanvasItem
 	# Construct GFCanvasItem
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("construct_canvas_item") \
 		.set_events(OnAdd) \
 		.with(GFCanvasItem) \
@@ -22,7 +22,7 @@ func _register(w:GFWorld):
 				)
 			)
 
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("update_canvas_item_on_set") \
 		.set_events(OnSet) \
 		.with(GFCanvasItem) \
@@ -33,7 +33,7 @@ func _register(w:GFWorld):
 			queue_redraw(item.get_source_entity())
 			)
 
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("destruct_canvas_item") \
 		.set_events(OnRemove) \
 		.with(GFCanvasItem) \
@@ -41,7 +41,7 @@ func _register(w:GFWorld):
 			RenderingServer.free_rid(item.get_rid())
 			)
 			
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("update_canvas_item_transform") \
 		.set_events(OnSet) \
 		.with(GFCanvasItem).access_filter() \
@@ -53,7 +53,7 @@ func _register(w:GFWorld):
 
 	#region GFTexture2D
 	
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("texture_2d_trigger_redraw") \
 		.set_events(OnAdd, OnSet) \
 		.with(GFCanvasItem) \
@@ -62,7 +62,7 @@ func _register(w:GFWorld):
 			queue_redraw(item.get_source_entity())
 			)
 	
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("draw_texture_rect") \
 		.set_events(GFOnDraw) \
 		.with(GFCanvasItem) \
@@ -83,7 +83,7 @@ func _register(w:GFWorld):
 
 	#region GFDrawRect2D
 	
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("draw_rect_2d_trigger_redraw") \
 		.set_events(OnAdd, OnSet) \
 		.with(GFCanvasItem) \
@@ -98,7 +98,7 @@ func _register(w:GFWorld):
 			queue_redraw(item.get_source_entity())
 			)
 	
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("trigger_redraw_on_set_draw_rect_size") \
 		.set_events(OnSet) \
 		.with(GFCanvasItem).access_filter() \
@@ -110,7 +110,7 @@ func _register(w:GFWorld):
 			queue_redraw(item.get_source_entity())
 			)
 	
-	GFObserverBuilder.new_in_world(w) \
+	GFObserverBuilder.new() \
 		.set_name("draw_rect") \
 		.set_events(GFOnDraw) \
 		.with(GFCanvasItem) \
