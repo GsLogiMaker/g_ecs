@@ -79,6 +79,14 @@ GFWorld::~GFWorld() {
 	ecs_fini(_raw);
 }
 
+String GFWorld::_to_string() const {
+	return String("[")
+		+ get_class()
+		+ "#"
+		+ String::num_int64(get_instance_id())
+		+ "]";
+}
+
 void GFWorld::setup_glecs() {
 	_raw = ecs_init();
 	registered_entity_ids = Dictionary();

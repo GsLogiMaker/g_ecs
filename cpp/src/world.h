@@ -37,6 +37,7 @@ namespace godot {
 		// **************************************
 
 		void _register_modules_from_scripts(int);
+		String _to_string() const;
 
 		ecs_entity_t coerce_id(const Variant);
 
