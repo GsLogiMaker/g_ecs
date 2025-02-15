@@ -2,6 +2,7 @@
 extends Node2D
 
 var texture:= load("res://icon.png")
+var e:GFEntity
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

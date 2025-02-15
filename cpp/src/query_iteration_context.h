@@ -3,6 +3,7 @@
 #define QUERY_ITERATION_CONTEXT_BUILDER_H
 
 #include "component.h"
+#include "entity.h"
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/packed_int32_array.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
@@ -24,8 +25,8 @@ namespace godot {
 
 	class QueryIterationContext {
 	public:
-		TypedArray<GFComponent> comp_ref_per_term {TypedArray<GFComponent>()};
-		TypedArray<GFComponent> comp_ref_args {TypedArray<GFComponent>()};
+		TypedArray<GFEntity> comp_ref_per_term {TypedArray<GFEntity>()};
+		TypedArray<GFEntity> comp_ref_args {TypedArray<GFEntity>()};
 		PackedInt32Array comp_ref_term_ids {PackedInt32Array()};
 
 		QueryIterationContext(
