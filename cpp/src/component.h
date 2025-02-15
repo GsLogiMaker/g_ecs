@@ -45,7 +45,8 @@ namespace godot {
 		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
 		Variant getm(const String) const;
-		void setm(const String, const Variant) const;
+		bool setm(const String, const Variant) const;
+		bool setm_no_notify(const String, const Variant) const;
 
 		Ref<GFEntity> get_source_entity() const;
 		ecs_entity_t get_source_id() const;
