@@ -36,9 +36,14 @@ namespace godot {
 		// *** Exposed ***
 		// **************************************
 
+		void _register_modules_from_scripts(int);
+		String _to_string() const;
+
 		ecs_entity_t coerce_id(const Variant);
 
+		static GFWorld* get_default_world();
 		int64_t get_raw() const;
+		static GFWorld* get_singleton();
 
 		Ref<GFEntity> lookup(const String);
 
@@ -51,17 +56,16 @@ namespace godot {
 		ecs_entity_t register_new_script_id(const Ref<Script> script);
 		Ref<GFRegisterableEntity> register_script_id_no_user_call(const Ref<Script> script);
 
-		void _register_modules_from_scripts(int);
+		bool id_has_child(ecs_entity_t parent, const char* child_name) const;
+		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent) const;
+		String id_to_text(ecs_entity_t) const;
+		static Variant::Type id_to_variant_type(ecs_entity_t);
+
+		static void set_default_world(const GFWorld*);
 
 		void start_rest_api() const;
 		static ecs_entity_t variant_type_to_id(const Variant::Type);
-
-		bool id_has_child(ecs_entity_t parent, const char* child_name) const;
-
-		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent) const;
-
-		String id_to_text(ecs_entity_t) const;
-		static Variant::Type id_to_variant_type(ecs_entity_t);
+		static GFWorld* world_or_singleton(GFWorld* world);
 
 		// **************************************
 		// *** Maybe expose later ***
@@ -72,8 +76,6 @@ namespace godot {
 		// **************************************
 		// *** Unexposed ***
 		// **************************************
-
-		static const char* SINGLETON_NAME;
 
 		// *** Glecs entities ***
 		static ecs_entity_t glecs;
@@ -134,12 +136,15 @@ namespace godot {
 		void init_component_ptr(void*, ecs_entity_t, Variant) const;
 		void init_gd_type_ptr(void*, ecs_entity_t) const;
 
-		static GFWorld* world_or_singleton(GFWorld* world);
-		static GFWorld* singleton();
 		bool is_id_alive(const ecs_entity_t id) const;
 		ecs_world_t* raw() const;
 
 	protected:
+		static GDObjectInstanceID global_thread_singleton;
+		static thread_local GDObjectInstanceID local_thread_singleton;
+
+		static GFWorld* get_global_thread_singleton();
+
 		static void _bind_methods();
 
 	private:

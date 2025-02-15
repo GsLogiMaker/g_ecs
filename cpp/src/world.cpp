@@ -3,9 +3,11 @@
 #include "entity.h"
 #include "component.h"
 #include "component_builder.h"
+#include "gdextension_interface.h"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/text_server_manager.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
+#include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/packed_string_array.hpp"
 #include "godot_cpp/variant/string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
@@ -26,8 +28,6 @@
 #include <godot_cpp/variant/string_name.hpp>
 
 using namespace godot;
-
-const char* GFWorld::SINGLETON_NAME = "GFGlobalWorld";
 
 ecs_entity_t GFWorld::glecs = 0;
 ecs_entity_t GFWorld::glecs_meta = 0;
@@ -72,8 +72,19 @@ ecs_entity_t GFWorld::glecs_meta_packed_vector3_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_color_array = 0;
 ecs_entity_t GFWorld::glecs_meta_packed_vector4_array = 0;
 
+GDObjectInstanceID GFWorld::global_thread_singleton = 0;
+GDObjectInstanceID thread_local GFWorld::local_thread_singleton = 0;
+
 GFWorld::~GFWorld() {
 	ecs_fini(_raw);
+}
+
+String GFWorld::_to_string() const {
+	return String("[")
+		+ get_class()
+		+ "#"
+		+ String::num_int64(get_instance_id())
+		+ "]";
 }
 
 void GFWorld::setup_glecs() {
@@ -496,8 +507,6 @@ void GFWorld::setup_glecs() {
 	#undef DEFINE_GD_COMPONENT
 	#undef DEFINE_GD_COMPONENT_WITH_HOOKS
 
-
-
 	_register_modules_from_scripts(0);
 }
 
@@ -741,7 +750,14 @@ void GFWorld::_register_modules_from_scripts(int depth=0) {
 }
 
 void GFWorld::start_rest_api() const {
-	ecs_entity_t rest_id = ecs_lookup_path_w_sep(raw(), 0, "flecs.rest.Rest", ".", "", false);
+	ecs_entity_t rest_id = ecs_lookup_path_w_sep(
+		raw(),
+		0,
+		"flecs.rest.Rest",
+		".",
+		"",
+		false
+	);
 	EcsRest rest = (EcsRest)EcsRest();
 	ecs_set_id(raw(), rest_id, rest_id, sizeof(EcsRest), &rest);
 }
@@ -877,15 +893,13 @@ GFWorld* GFWorld::world_or_singleton(GFWorld* world) {
 			world->get_instance_id()
 		)
 	) {
-		return GFWorld::singleton();
+		return GFWorld::get_default_world();
 	}
 	return world;
 }
 
-GFWorld* GFWorld::singleton() {
-	Object* singleton = Engine::get_singleton()
-		->get_singleton(GFWorld::SINGLETON_NAME);
-	return Object::cast_to<GFWorld>(singleton);
+GFWorld* GFWorld::get_singleton() {
+	return GFWorld::get_global_thread_singleton();
 }
 
 void GFWorld::copy_component_ptr(
@@ -1153,7 +1167,40 @@ ecs_world_t * GFWorld::raw() const {
 // --- Protected ---
 // ----------------------------------------------
 
+GFWorld* GFWorld::get_global_thread_singleton() {
+	if (!UtilityFunctions::is_instance_id_valid(global_thread_singleton)) {
+		GFWorld* world = memnew(GFWorld(nullptr));
+		global_thread_singleton = world->get_instance_id();
+		world->setup_glecs();
+	}
+	return Object::cast_to<GFWorld>(
+		UtilityFunctions::instance_from_id(global_thread_singleton)
+	);
+}
+
+GFWorld* GFWorld::get_default_world() {
+	if (!UtilityFunctions::is_instance_id_valid(local_thread_singleton)) {
+		GFWorld* global_world = get_global_thread_singleton();
+		set_default_world(global_world);
+		return global_world;
+	}
+	return Object::cast_to<GFWorld>(
+		UtilityFunctions::instance_from_id(local_thread_singleton)
+	);
+}
+
+void GFWorld::set_default_world(const GFWorld* world) {
+	if (world == nullptr) {
+		local_thread_singleton = 0;
+	}
+	local_thread_singleton = world->get_instance_id();
+}
+
 void GFWorld::_bind_methods() {
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("get_default_world"), &GFWorld::get_default_world);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("set_default_world", "world"), &GFWorld::set_default_world);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("get_singleton"), &GFWorld::get_singleton);
+
 	godot::ClassDB::bind_method(D_METHOD("register_script", "script"), &GFWorld::register_script);
 
 	godot::ClassDB::bind_method(D_METHOD("coerce_id", "entity"), &GFWorld::coerce_id);

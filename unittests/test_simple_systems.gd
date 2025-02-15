@@ -2,12 +2,16 @@
 @tool
 extends GutTest
 
-var world:GFWorld
+var world:GFWorld = null
+var _old_world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
-func after_all():
+func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
@@ -16,7 +20,7 @@ func after_all():
 	#world.new_pipeline(&"first")
 	#world.new_pipeline(&"second")
 #
-	#var entity:= GFEntity.new_in_world(world) \
+	#var entity:= GFEntity.new() \
 		#.add(Bools) \
 		#.add(Ints) \
 		#.set_name("Test")
@@ -52,14 +56,14 @@ func after_all():
 	#entity.free()
 
 func test_bools():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Bools) \
 		.for_each(func(x:Bools):
 			x.b = x.a
 			x.a = not x.b
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Bools) \
 		.set_name("Test")
 
@@ -71,14 +75,14 @@ func test_bools():
 	entity.delete()
 
 func test_ints():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Ints) \
 		.for_each(func(x:Ints):
 			x.b *= 2
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Ints) \
 		.set_name("Test")
 	entity.get(Ints).b = 1
@@ -92,14 +96,14 @@ func test_ints():
 	entity.delete()
 
 func test_floats():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Floats) \
 		.for_each(func(x:Floats):
 			x.b *= 2
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Floats) \
 		.set_name("Test")
 	entity.get(Floats).b = 1.2
@@ -114,14 +118,14 @@ func test_floats():
 
 # test simple_systems strings
 func test_strings():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Strings) \
 		.for_each(func(x:Strings):
 			x.b += "em"
 			x.a += x.b
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.set_name("Test") \
 		.add(Strings, "", "po")
 	var strings:Strings = entity.get(Strings)
@@ -138,14 +142,14 @@ func test_strings():
 	entity.delete()
 
 func test_byte_arrays():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(ByteArrays) \
 		.for_each(func(x:ByteArrays):
 			for i in range(x.a.size()):
 				x.a[i] += x.b[i]
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(ByteArrays) \
 		.set_name("Test")
 	entity.get(ByteArrays).a = PackedByteArray([1, 2, 3])
@@ -161,13 +165,13 @@ func test_byte_arrays():
 
 # test simple_systems textures
 func test_textures():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Textures) \
 		.for_each(func(x:Textures):
 			x.a = x.b
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Textures) \
 		.set_name("Test")
 	entity.get(Textures).a = null
@@ -192,7 +196,7 @@ func test_ref_counts():
 	var rc:= RefCounted.new()
 	assert_eq(rc.get_reference_count(), 1)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(RefCounts) \
 		.set_name("Test")
 
@@ -205,14 +209,14 @@ func test_ref_counts():
 	entity.delete()
 
 func test_arrays():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Arrays) \
 		.for_each(func(x:Arrays):
 			for i in mini(x.a.size(), x.b.size()):
 				x.b[i] += x.a[i]
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Arrays) \
 		.set_name("Test")
 	entity.get(Arrays).a = [23, 4, 6]
@@ -228,13 +232,13 @@ func test_arrays():
 	entity.delete()
 
 func test_dicts():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Dicts) \
 		.for_each(func(x:Dicts):
 			x.b["value"] += x.a["add_by"]
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Dicts) \
 		.set_name("Test")
 	entity.get(Dicts).a = {"add_by": 5}

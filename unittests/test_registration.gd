@@ -6,18 +6,22 @@ const AModule = preload("./scripts/a_module.gd")
 const AComponent = preload("./scripts/a_component.gd")
 const AEntity = preload("./scripts/a_entity.gd")
 
-var world:GFWorld
+var world:GFWorld = null
+var _old_world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
-func after_all():
+func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
 
 func test_auto_register_script():
-	GFEntity.new_in_world(world) \
+	GFEntity.new() \
 		.add(AComponent)
 
 	assert_ne(
@@ -87,7 +91,7 @@ func test_register_script_sub_class():
 	)
 
 func test_name_conflic():
-	GFEntity.new_in_world(world) \
+	GFEntity.new() \
 		.set_name("Foo")
 	world.register_script(Foo)
 

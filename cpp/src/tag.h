@@ -32,7 +32,7 @@ namespace godot {
 			)
 		{}
 		GFTag():
-			GFRegisterableEntity(GFWorld::singleton())
+			GFRegisterableEntity(nullptr)
 		{}
 
 		~GFTag();

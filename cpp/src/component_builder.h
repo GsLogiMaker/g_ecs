@@ -25,7 +25,7 @@ namespace godot {
 			member_names(Array())
 		{}
 		GFComponentBuilder():
-			GFEntityBuilder(GFWorld::singleton())
+			GFEntityBuilder(nullptr)
 		{}
 		~GFComponentBuilder();
 

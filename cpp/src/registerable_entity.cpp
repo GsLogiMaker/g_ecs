@@ -1,6 +1,7 @@
 
 #include "registerable_entity.h"
 #include "godot_cpp/classes/wrapped.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "world.h"
 
 #include <flecs.h>
@@ -70,10 +71,18 @@ void GFRegisterableEntity::call_internal_register() {
 }
 
 void GFRegisterableEntity::call_user_register() {
-	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
-	ecs_set_scope(get_world()->raw(), get_id());
+	GFWorld* w = get_world();
+
+	GFWorld* old_thread_world = GFWorld::get_default_world();
+	GFWorld::set_default_world(w);
+	ecs_entity_t old_scope = ecs_get_scope(w->raw());
+	ecs_set_scope(w->raw(), get_id());
+
 	this->call("_register_user");
-	ecs_set_scope(get_world()->raw(), old_scope);
+
+	GFWorld::set_default_world(old_thread_world);
+	ecs_set_scope(w->raw(), old_scope);
+
 }
 
 // --------------------------------------------------------
