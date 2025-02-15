@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFWorld" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFWorld" inherits="Object"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		An entity component system world.
 	</brief_description>
@@ -51,6 +52,13 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="get_default_world" qualifiers="static">
+			<return type="GFWorld" />
+			<description>
+				Returns the current default world. If no default world is set then this method will return the world from [method get_singleton]. See [method set_default_world] for more information on default worlds.
+				[b]NOTE:[/b] Default worlds are unique per thread. This method will only return worlds set in the same thread.
+			</description>
+		</method>
 		<method name="get_raw" qualifiers="const">
 			<return type="int" />
 			<description>
@@ -63,7 +71,18 @@
 
 				ecs_new(raw); // Create a new entity
 				[/codeblock]
-				WARNING: Do not call finish, or otherwise destruct the `ecs_world_t`. The world object is managed by [GFWorld] and freeing it separate from the [GFWorld] will cause undefined behavior or crashes.
+				[b]WARNING:[/b] Do not call finish, or otherwise destruct the [code]ecs_world_t[/code]. The world object is managed by [GFWorld] and freeing it separate from the [GFWorld] will cause undefined behavior or crashes.
+			</description>
+		</method>
+		<method name="get_singleton" qualifiers="static">
+			<return type="GFWorld" />
+			<description>
+				Returns the global world of the program.
+				Example:
+				[codeblock]
+				var world = GFWorld.get_singleton()
+				GFEntity.new_in_world(world)
+				[/codeblock]
 			</description>
 		</method>
 		<method name="lookup">
@@ -137,6 +156,31 @@
 				    world.register_script(Health)
 				    world.coerce_id(Health) # The ID of the Health component
 				[/codeblock]
+			</description>
+		</method>
+		<method name="set_default_world" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="world" type="GFWorld" />
+			<description>
+				Sets the default world that methods like [method GFEntity.new] use to determine which world to create objects in.
+				This method can be used as a means of switching the context (world) in which ECS operations take place. For example:
+				[codeblock]
+					var custom_default_world = GFWorld.new()
+
+					var old_default_world = GFWorld.get_default_world()
+					GFWorld.set_default_world(custom_default_world)
+
+					# The following line creates an entity in
+					# `custom_default_world` when it otherwise
+					# would've been created in `old_default_world`.
+					var entity = GFEntity.new()
+
+					# It is a good practice to restore the default
+					# world to whatever it was before you set it.
+					GFWorld.set_default_world(old_default_world)
+				[/codeblock]
+				Changing the default world can be used as an alternative to [code]new_in_world[/code] methods such as [method GFSystemBuilder.new_in_world]. This method is called internally before [method GFRegisterableEntity._register] is called so that entities created during registration are created in the same world as the registered entity. This is particularly helpful when registering [GFModule]s where you may be creating many entities, systems, and observers. If [method set_default_world] wasn't called before registering modules then you would need to use [code]new_in_world[/code] methods instead of [code]new[/code] if you wanted your module to work in worlds other than the global returned from [method get_singleton].
+				[b]NOTE:[/b] Default worlds are unique per thread. This method will only affect the thread it was called in.
 			</description>
 		</method>
 		<method name="start_rest_api" qualifiers="const">

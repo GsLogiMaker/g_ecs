@@ -2,11 +2,15 @@
 extends GutTest
 
 var world:GFWorld = null
+var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
 func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
@@ -78,7 +82,9 @@ func test_entity_created_in_singleton():
 	var e2:= GFEntity.new_in_world(GFWorld.get_singleton())
 	assert_eq(e2.is_alive(), true)
 
-	assert_eq(e.get_world(), e2.get_world())
+	assert_ne(world, GFWorld.get_singleton(), "Expected world not to be the global one")
+	assert_eq(e.get_world(), world, "Expected e1 to be created in local thread world")
+	assert_eq(e2.get_world(), GFWorld.get_singleton(), "Expected e2 to be created in global world")
 
 	e.delete()
 	e2.delete()

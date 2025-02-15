@@ -2,19 +2,23 @@
 @tool
 extends GutTest
 
-var world:GFWorld
+var world:GFWorld = null
+var _old_world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
-func after_all():
+func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
 
 # test prefab prefab
 func test_prefab():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Foo) \
 		.with(Bar) \
 		.for_each(func(f:Foo, b:Bar):
@@ -25,7 +29,7 @@ func test_prefab():
 			b.b = PI
 			)
 
-	var entity:= GFEntity.new_in_world(world)
+	var entity:= GFEntity.new()
 	var isa:= world.coerce_id("flecs/core/IsA")
 	var myprefab:= world.coerce_id(MyPrefab)
 	var pair:= world.pair(isa, myprefab)

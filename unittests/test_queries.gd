@@ -1,19 +1,21 @@
 
 extends GutTest
 
-var world:GFWorld
+var world:GFWorld = null
+var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	#world.new_pipeline(&"test")
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
 func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
 
 func test_optional_terms():
-	var w:= world
 	var data:Dictionary = {ints=0, bools=0}
 	var callable:= func(ints, bools):
 		if ints:
@@ -21,45 +23,43 @@ func test_optional_terms():
 		if bools:
 			data.bools += 1
 
-	var empty:= GFEntity.new_in_world(w) \
+	var empty:= GFEntity.new() \
 		.set_name("Empty") \
 		.add(Bools)
-	var just_ints:= GFEntity.new_in_world(w) \
+	var just_ints:= GFEntity.new() \
 		.set_name("JustInts") \
 		.add(Ints)
-	var just_bools:= GFEntity.new_in_world(w) \
+	var just_bools:= GFEntity.new() \
 		.set_name("JustBools") \
 		.add(Bools)
-	var all:= GFEntity.new_in_world(w) \
+	var all:= GFEntity.new() \
 		.set_name("All") \
 		.add(Ints) \
 		.add(Bools)
 
 	data.ints = 0
 	data.bools = 0
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Ints) \
 		.maybe_with(Bools) \
 		.for_each(callable)
-	w.progress(0.0)
+	world.progress(0.0)
 	assert_eq(data.ints, 2, "Expected `Ints` to be queried 2 times")
 	assert_eq(data.bools, 1, "Expected `Bools` to be queried 1 times")
 
 	data.ints = 0
 	data.bools = 0
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.maybe_with(Ints) \
 		.with(Bools) \
 		.for_each(callable)
-	w.progress(0.0)
+	world.progress(0.0)
 	assert_eq(data.ints, 1 + (2), "Expected `Ints` to be queried 3 times total") # Extra 2 from previous system running
 	assert_eq(data.bools, 3 + (1), "Expected `Bools` to be queried 4 times total") # Extra 1 from previous system running
 
 func test_or_operation_terms():
-	var w:= world
-
 	var data:= {ints=0, bools=0}
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Bools).or_with(Ints) \
 		.for_each(func(bools_or_ints:GFComponent):
 			if bools_or_ints is Ints:
@@ -68,28 +68,28 @@ func test_or_operation_terms():
 				data.bools += 1
 			)
 
-	GFEntity.new_in_world(w).add(Ints)
-	GFEntity.new_in_world(w).add(Ints)
-	GFEntity.new_in_world(w).add(Ints)
-	GFEntity.new_in_world(w).add(Bools)
-	GFEntity.new_in_world(w).add(Ints).add(Bools)
+	GFEntity.new().add(Ints)
+	GFEntity.new().add(Ints)
+	GFEntity.new().add(Ints)
+	GFEntity.new().add(Bools)
+	GFEntity.new().add(Ints).add(Bools)
 
-	w.progress(0.0)
+	world.progress(0.0)
 
 	assert_eq(data.ints, 3)
 	assert_eq(data.bools, 2)
 
 
 func test_up_traversal():
-	var par:= GFEntity.new_in_world(world) \
+	var par:= GFEntity.new() \
 		.set_name("Parent") \
 		.add(Bools)
-	var child:= GFEntity.new_in_world(world) \
+	var child:= GFEntity.new() \
 		.set_name("Child") \
 		.add(Bools) \
 		.add_pair("flecs/core/ChildOf", par)
 
-	var parent_descriptions:= GFQueryBuilder.new_in_world(world) \
+	var parent_descriptions:= GFQueryBuilder.new() \
 		.with(Bools).up() \
 		.with(Bools) \
 		.build()
@@ -114,14 +114,13 @@ func _test_cascade_traversal():
 
 
 func test_with_pair():
-	var w:= world
 	var data:= {ints_bools=0}
 
-	GFEntityBuilder.new_in_world(world) \
+	GFEntityBuilder.new() \
 		.add_pair(Ints, Bools) \
 		.build()
 
-	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
+	var query:GFQuery = GFQueryBuilder.new() \
 		.with(Ints, Bools) \
 		.build()
 

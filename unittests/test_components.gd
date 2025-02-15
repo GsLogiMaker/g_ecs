@@ -2,17 +2,20 @@
 extends GutTest
 
 var world:GFWorld = null
+var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
 func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 
 func test_add_entity():
-	var _entity:= GFEntity.new_in_world(world)
+	var _entity:= GFEntity.new()
 
 	# Can't assert, but should be fine as long as it doesn't crash
 	assert_null(null)
@@ -20,14 +23,18 @@ func test_add_entity():
 
 func test_world_deletion():
 	var w:= GFWorld.new()
+	
 	var e:= GFEntity.new_in_world(w) \
 		.add(Foo) \
 		.set_name("Test")
 	var foo:= e.get(Foo)
+	assert_eq(e.get_world(), w)
+	
 	var e2:= GFEntity.new_in_world(w) \
 		.add(Foo) \
 		.set_name("Test")
 	var foo2:= e2.get(Foo)
+	assert_eq(e2.get_world(), w)
 
 	foo.set_value(Vector2(24.3, 2.1))
 	foo2.set_value(Vector2(125.1, 3.3))
@@ -47,9 +54,7 @@ func test_world_deletion():
 
 
 func test_registration():
-	var w:= world
-
-	var e:= GFEntity.new_in_world(world) \
+	var e:= GFEntity.new() \
 		.add(RegistrationA) \
 		.add(RegistrationB) \
 		.set_name("Test")
@@ -59,20 +64,20 @@ func test_registration():
 
 	# A system defined in RegistrationA's _registered function should run
 	# on GFWorld's process pipeline
-	w.progress(0.0)
+	world.progress(0.0)
 
 	assert_almost_eq(e.get(RegistrationA).get_result(), 14.0, .001)
 	assert_almost_eq(e.get(RegistrationB).get_result(), 33.0, .001)
 
 
 func test_simple_system():
-	GFSystemBuilder.new_in_world(world) \
+	GFSystemBuilder.new() \
 		.with(Foo) \
 		.for_each(func(foo):
 			foo.set_value(Vector2(2, 5))
 			)
 
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Foo) \
 		.set_name("Test")
 

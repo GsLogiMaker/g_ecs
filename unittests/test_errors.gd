@@ -2,17 +2,21 @@
 extends GutTest
 
 var world:GFWorld = null
+var _old_world:GFWorld = null
 
-func before_all():
+func before_each():
 	world = GFWorld.new()
+	_old_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(world)
 
-func after_all():
+func after_each():
+	GFWorld.set_default_world(_old_world)
 	world.free()
 
 #region Tests
 
 func test_get_nonexistant_property():
-	var entity:= GFEntity.new_in_world(world) \
+	var entity:= GFEntity.new() \
 		.add(Foo) \
 		.set_name("Test")
 	var foo:Foo = entity.get(Foo)
@@ -21,7 +25,7 @@ func test_get_nonexistant_property():
 
 
 func test_new_entity_with_unregistered_component():
-	var _entity:= GFEntity.new_in_world(world) \
+	var _entity:= GFEntity.new() \
 		.add(Unregistered) \
 		.set_name("Test")
 

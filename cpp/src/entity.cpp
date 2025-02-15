@@ -184,9 +184,6 @@ Ref<GFEntity> GFEntity::emit(
 	ecs_entity_t target_id = w->coerce_id(target_entity);
 
 	auto type = ecs_get_type(w->raw(), target_id);
-	for (int i=0; i != type->count; i++) {
-		UtilityFunctions::prints("TYPE", w->id_to_text(type->array[i]));
-	}
 
 	// Emit
 	ecs_event_desc_t desc = {
