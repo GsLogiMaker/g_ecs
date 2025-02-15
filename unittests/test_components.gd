@@ -103,6 +103,26 @@ func test_components_in_relationships():
 	w.free()
 
 
+func test_setm_no_notify():
+	var e:= GFEntity.new() \
+		.add(Foo)
+	
+	var data:= {i = 0}
+	GFObserverBuilder.new() \
+		.set_events("/root/flecs/core/OnSet") \
+		.with(Foo) \
+		.for_each(func(c): data.i += 1)
+
+	var foo:Foo = e.get(Foo)
+	foo.setm_no_notify("value", Vector2(23, 17))
+	assert_eq(foo.getm("value"), Vector2(23, 17))
+	assert_eq(data.i, 0)
+	
+	foo.setm("value", Vector2.ONE)
+	assert_eq(foo.getm("value"), Vector2.ONE)
+	assert_eq(data.i, 1)
+	
+
 class Targets extends GFRegisterableEntity: pass
 
 

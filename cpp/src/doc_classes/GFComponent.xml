@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -215,7 +216,7 @@
 			</description>
 		</method>
 		<method name="setm" qualifiers="const">
-			<return type="void" />
+			<return type="bool" />
 			<param index="0" name="member" type="String" />
 			<param index="1" name="value" type="Variant" />
 			<description>
@@ -227,6 +228,14 @@
 
 				vec2.setm("x", 3.14)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="setm_no_notify" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="member" type="String" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+				Sets the value of a component's member without triggering the [code]OnSet[/code] event. For most cases [method setm] should be preferred.
 			</description>
 		</method>
 		<method name="setv">
