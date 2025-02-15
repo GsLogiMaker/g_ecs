@@ -640,7 +640,9 @@ Ref<GFRegisterableEntity> GFWorld::register_script(const Ref<Script> script) {
 
 ecs_entity_t GFWorld::register_script_id(const Ref<Script> script) {
 	Ref<GFRegisterableEntity> ett = register_script_id_no_user_call(script);
+
 	ett->call_user_register();
+
 	return ett->get_id();
 }
 

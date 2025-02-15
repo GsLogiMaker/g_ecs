@@ -66,7 +66,10 @@ void GFRegisterableEntity::register_in_world() {
 }
 
 void GFRegisterableEntity::call_internal_register() {
+	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
+	ecs_set_scope(get_world()->raw(), get_id());
 	this->call("_register_internal");
+	ecs_set_scope(get_world()->raw(), old_scope);
 }
 
 void GFRegisterableEntity::call_user_register() {

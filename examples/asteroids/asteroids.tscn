@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dglcrfdcbfvvf"]
+[gd_scene load_steps=3 format=3 uid="uid://dglcrfdcbfvvf"]
 
 [ext_resource type="Script" path="res://addons/glecs/examples/asteroids/asteroids.gd" id="1_i0ls5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4dt8d"]
+size = Vector2(10, 10)
 
 [node name="Asteroids" type="Node2D"]
 script = ExtResource("1_i0ls5")
@@ -12,3 +15,15 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "Asteroids
 "
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+position = Vector2(100, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource("RectangleShape2D_4dt8d")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(100, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_4dt8d")

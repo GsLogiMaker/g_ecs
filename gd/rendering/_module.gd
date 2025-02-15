@@ -7,5 +7,6 @@ func _register(world: GFWorld) -> void:
 	world.register_script(GFCanvasItem)
 	world.register_script(GFDrawRect2D)
 	world.register_script(GFOnDraw)
+	world.register_script(GFOnUpdateVisualTransform)
 	world.register_script(GFTexture2D)
 	world.register_script(Systems)

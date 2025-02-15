@@ -98,9 +98,8 @@ void GFModule::_register_internal() {
 		}
 	}
 
-	ecs_set_scope(get_world()->raw(), old_scope);
-
 	GFRegisterableEntity::_register_internal();
+	ecs_set_scope(get_world()->raw(), old_scope);
 }
 
 void GFModule::_register_user() {

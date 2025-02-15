@@ -28,7 +28,7 @@ namespace godot {
 		{}
 		GFComponent():
 			source_entity_id(0),
-			GFRegisterableEntity(0, GFWorld::singleton())
+			GFRegisterableEntity(0, nullptr)
 		{}
 		~GFComponent() {};
 

@@ -16,7 +16,7 @@ namespace godot {
 
 	public:
 		GFRegisterableEntity():
-			GFRegisterableEntity(GFWorld::singleton())
+			GFRegisterableEntity(nullptr)
 		{}
 		GFRegisterableEntity(GFWorld* world):
 			GFEntity(world)

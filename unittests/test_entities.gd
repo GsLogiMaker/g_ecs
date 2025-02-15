@@ -12,7 +12,7 @@ func after_each():
 #region Tests
 
 func test_component_get_and_set():
-	var e:GFEntity = GFEntity.new_in_world(world) \
+	var e:GFEntity = GFEntity.new() \
 		.add(Foo) \
 		.set_name("Test")
 
@@ -25,7 +25,7 @@ func test_component_get_and_set():
 	e.delete()
 
 func test_component_string_get_and_set():
-	var e:= GFEntity.new_in_world(world) \
+	var e:= GFEntity.new() \
 		.add(Stringy) \
 		.set_name("Test")
 
@@ -40,14 +40,14 @@ func test_component_string_get_and_set():
 	assert_eq(foo.b, "em")
 
 func test_new_entity_with_unregistered_component():
-	var e:GFEntity = GFEntity.new_in_world(world) \
+	var e:GFEntity = GFEntity.new() \
 		.add(Unregistered) \
 		.set_name("Test")
 	assert_eq(e.get(Unregistered).value, 0)
 
 func test_creating_entity_by_new():
 	# Test that an entity is invalidated by being deleted
-	var e:= GFEntity.new_in_world(world)
+	var e:= GFEntity.new()
 	assert_eq(e.is_alive(), true)
 	e.delete()
 	assert_eq(e.is_alive(), false)
@@ -62,7 +62,7 @@ func test_creating_entity_by_new():
 func test_entity_from():
 	var id:= 0
 	if true:
-		var tmp_entity = GFEntity.new_in_world(world)
+		var tmp_entity = GFEntity.new()
 		tmp_entity.set_name(&"Cool Name")
 		id = tmp_entity.get_id()
 	assert_ne(id, 0)
@@ -75,7 +75,7 @@ func test_entity_created_in_singleton():
 	var e:= GFEntity.new()
 	assert_eq(e.is_alive(), true)
 
-	var e2:= GFEntity.new_in_world(GFGlobalWorld)
+	var e2:= GFEntity.new_in_world(GFWorld.get_singleton())
 	assert_eq(e2.is_alive(), true)
 
 	assert_eq(e.get_world(), e2.get_world())
@@ -84,7 +84,7 @@ func test_entity_created_in_singleton():
 	e2.delete()
 
 func test_builder():
-	var e:= GFEntityBuilder.new_in_world(world) \
+	var e:= GFEntityBuilder.new() \
 		.set_name("Built") \
 		.add_entity(Foo) \
 		.add_pair(Foo, Stringy) \
@@ -93,7 +93,7 @@ func test_builder():
 
 	assert_eq(e.get_name(), "Built", "Expected entity to be named 'Built'")
 
-	var query:GFQuery = GFQueryBuilder.new_in_world(world) \
+	var query:GFQuery = GFQueryBuilder.new() \
 		.with(Foo) \
 		.with(world.pair(Foo, Stringy)) \
 		.with(world.pair(Stringy, Foo)) \
@@ -107,8 +107,8 @@ func test_builder():
 
 
 func test_add_get_child():
-	var child:= GFEntity.new_in_world(world).set_name("Child")
-	var par:= GFEntity.new_in_world(world) \
+	var child:= GFEntity.new().set_name("Child")
+	var par:= GFEntity.new() \
 		.set_name("Parent") \
 		.add_child(child)
 
@@ -120,10 +120,10 @@ func test_add_get_child():
 
 
 func test_set_get_parent():
-	var child:= GFEntity.new_in_world(world) \
+	var child:= GFEntity.new() \
 		.set_name("Child") \
 		.set_parent(
-			GFEntity.new_in_world(world).set_name("Parent")
+			GFEntity.new().set_name("Parent")
 		)
 
 	assert_eq(
@@ -146,11 +146,11 @@ func test_has_child():
 
 
 func test_iter_children():
-	var parent:= GFEntity.new_in_world(world) \
-		.add_child(GFEntity.new_in_world(world)
+	var parent:= GFEntity.new() \
+		.add_child(GFEntity.new()
 			.set_name("George")
 		) \
-		.add_child(GFEntity.new_in_world(world)
+		.add_child(GFEntity.new()
 			.set_name("Riley")
 		)
 
@@ -167,11 +167,11 @@ func test_iter_children():
 	assert_true(has_riley, "Expected to iterate over the entity named Riley")
 
 func test_get_children():
-	var parent:= GFEntity.new_in_world(world) \
-		.add_child(GFEntity.new_in_world(world)
+	var parent:= GFEntity.new() \
+		.add_child(GFEntity.new()
 			.set_name("George")
 		) \
-		.add_child(GFEntity.new_in_world(world)
+		.add_child(GFEntity.new()
 			.set_name("Riley")
 		)
 
@@ -187,7 +187,7 @@ func test_get_children():
 	assert_true(has_riley, "Expected to array to have the entity named Riley")
 
 func test_remove():
-	var e:= GFEntity.new_in_world(world) \
+	var e:= GFEntity.new() \
 		.set_name("RemovingFrom") \
 		.add(Foo, 2.24) \
 		.add_pair(Foo, Stringy, 234.1)
@@ -204,11 +204,11 @@ func test_remove():
 	assert_false(e.has(Foo, Stringy))
 	
 func test_add_sibling():
-	var par:= GFEntity.new_in_world(world)
-	var bill:= GFEntity.new_in_world(world) \
+	var par:= GFEntity.new()
+	var bill:= GFEntity.new() \
 		.set_name("Bill") \
 		.set_parent(par) \
-		.add_sibling(GFEntity.new_in_world(world)
+		.add_sibling(GFEntity.new()
 			.set_name("Bob")
 		)
 	
@@ -216,7 +216,7 @@ func test_add_sibling():
 	assert_true(par.has_child("Bob"), "Expected parent to have have child named Bob")
 
 func test_inheritance():
-	var ship_pfb:= GFEntityBuilder.new_in_world(world) \
+	var ship_pfb:= GFEntityBuilder.new() \
 		.add_entity("flecs/core/Prefab") \
 		.add_entity(GFPosition2D) \
 		.build() \
@@ -233,7 +233,7 @@ func test_inheritance():
 		"Expected position in `ship_pfb` to have been set",
 	)
 	
-	var e:= GFEntity.new_in_world(world)
+	var e:= GFEntity.new()
 	assert_false(
 		e.is_inheriting(ship_pfb),
 		"Expected `e` to NOT inheret `ship_pfb` yet",
@@ -270,19 +270,19 @@ func test_inheritance():
 	)
 
 func test_inheritance_doc_example():
-	var health = GFEntity.new_in_world(world)
-	var spaceship = GFEntity.new_in_world(world)
+	var health = GFEntity.new()
+	var spaceship = GFEntity.new()
 	spaceship.add("flecs/core/Prefab")
 	spaceship.add(health)
 
-	var enterprise = GFEntity.new_in_world(world)
+	var enterprise = GFEntity.new()
 	enterprise.inherit(spaceship)
 
 	assert_true(enterprise.is_inheriting(spaceship)) # true
 	assert_true(enterprise.has(health)) # true
 
 func test_get_target_for():
-	var enterprise:= GFEntity.new_in_world(world) \
+	var enterprise:= GFEntity.new() \
 		.set_name("Enterprise") \
 		.add_pair(GFPosition2D, GFScale2D) \
 		.add_pair(GFPosition2D, GFRotation2D)
@@ -317,31 +317,31 @@ func test_is_owner_of():
 	var isa:= world.coerce_id("flecs/core/IsA")
 	var inherit:= world.pair("flecs/core/OnInstantiate", "flecs/core/Inherit")
 	
-	var pos:= GFComponentBuilder.new_in_world(world) \
+	var pos:= GFComponentBuilder.new() \
 		.set_name("Pos") \
 		.add_entity(inherit) \
 		.add_member("_", TYPE_INT) \
 		.build()
-	var rot:= GFComponentBuilder.new_in_world(world) \
+	var rot:= GFComponentBuilder.new() \
 		.set_name("Rot") \
 		.add_member("_", TYPE_INT) \
 		.build()
-	var scl:= GFComponentBuilder.new_in_world(world) \
+	var scl:= GFComponentBuilder.new() \
 		.set_name("Scl") \
 		.add_member("_", TYPE_INT) \
 		.build()
 		
-	var spaceship:= GFEntity.new_in_world(world) \
+	var spaceship:= GFEntity.new() \
 		.set_name("Spaceship") \
 		.add("flecs/core/Prefab") \
 		.add(pos) \
 		.add(rot)
 		
-	var enterprise:= GFEntity.new_in_world(world) \
+	var enterprise:= GFEntity.new() \
 		.set_name("Enterprise") \
 		.inherit(spaceship) \
 		.add(scl)
-	var voyager:= GFEntity.new_in_world(world) \
+	var voyager:= GFEntity.new() \
 		.set_name("Voyager") \
 		.inherit(spaceship) \
 		.add(pos)
@@ -365,9 +365,9 @@ func test_is_owner_of():
 	assert_true(voyager.has(rot), "Expected voyager to have rot")
 
 func test_clear():
-	var tag:= GFEntity.new_in_world(world).set_name("tag")
+	var tag:= GFEntity.new().set_name("tag")
 	
-	var e:= GFEntity.new_in_world(world) \
+	var e:= GFEntity.new() \
 		.set_name("Entity") \
 		.add(tag)
 	
@@ -380,20 +380,20 @@ func test_clear():
 func test_set_name():
 	# Entities should get a unique name when
 	# their name is explicitely set.
-	var e1:= GFEntity.new_in_world(world).set_name("E1")
-	var e2:= GFEntity.new_in_world(world).set_name("E1")
-	var e3:= GFEntity.new_in_world(world).set_name("E1")
+	var e1:= GFEntity.new().set_name("E1")
+	var e2:= GFEntity.new().set_name("E1")
+	var e3:= GFEntity.new().set_name("E1")
 	assert_eq(e1.get_name(), "E1")
 	assert_eq(e2.get_name(), "E2")
 	assert_eq(e3.get_name(), "E3")
 	
 	# Entities should make get a unique name
 	# when moved to a parent.
-	var parent:= GFEntity.new_in_world(world)
-	var child_1:= GFEntity.new_in_world(world) \
+	var parent:= GFEntity.new()
+	var child_1:= GFEntity.new() \
 		.set_name("Child") \
 		.set_parent(parent)
-	var child_2:= GFEntity.new_in_world(world) \
+	var child_2:= GFEntity.new() \
 		.set_name("Child") \
 		.set_parent(parent)
 	assert_eq(child_1.get_name(), "Child")

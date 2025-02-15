@@ -29,7 +29,7 @@ namespace godot {
 		{}
 		/// Create a new named module in default world
 		GFModule(const char* name):
-			GFRegisterableEntity(GFWorld::singleton())
+			GFRegisterableEntity(nullptr)
 		{}
 		/// Create new unnamed module
 		GFModule(GFWorld* world): GFModule("", world)

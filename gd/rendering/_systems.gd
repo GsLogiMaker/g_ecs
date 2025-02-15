@@ -43,7 +43,7 @@ func _register(w:GFWorld):
 			
 	GFObserverBuilder.new_in_world(w) \
 		.set_name("update_canvas_item_transform") \
-		.set_events(OnSet) \
+		.set_events(GFOnTransformUpdate) \
 		.with(GFCanvasItem).access_filter() \
 		.maybe_with(GFPosition2D) \
 		.maybe_with(GFRotation2D) \

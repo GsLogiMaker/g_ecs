@@ -20,7 +20,7 @@ namespace godot {
 			GFQuerylikeBuilder(world)
 		{}
 		GFObserverBuilder():
-			GFObserverBuilder(GFWorld::singleton())
+			GFObserverBuilder(nullptr)
 		{}
 		~GFObserverBuilder();
 

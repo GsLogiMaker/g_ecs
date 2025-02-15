@@ -2,6 +2,7 @@
 
 #include "querylike_builder.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "query_iteration_context.h"
 #include "utils.h"
@@ -195,7 +196,9 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 			"Failed to add second of pair in `", oper_name, "` term to query\n"
 		);
 
-		term_id = ecs_pair(term_id, second_id);
+		first_id = term_id;
+		second_id = second_id;
+		term_id = 0;
 	}
 
 	query_desc.terms[get_term_count()] = {

@@ -19,7 +19,7 @@ namespace godot {
 
 	public:
 		GFQueryBuilder():
-			GFQueryBuilder(GFWorld::singleton())
+			GFQueryBuilder(nullptr)
 		{}
 		GFQueryBuilder(GFWorld* world):
 			GFQuerylikeBuilder(world)
