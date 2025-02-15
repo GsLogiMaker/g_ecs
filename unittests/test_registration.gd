@@ -11,7 +11,7 @@ var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	_old_world = GFWorld.get_contextual_singleton()
+	_old_world = GFWorld.get_default_world()
 	GFWorld.set_contextual_singleton(world)
 
 func after_each():

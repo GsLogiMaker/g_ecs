@@ -41,7 +41,7 @@ namespace godot {
 
 		ecs_entity_t coerce_id(const Variant);
 
-		static GFWorld* get_contextual_singleton();
+		static GFWorld* get_default_world();
 		int64_t get_raw() const;
 		static GFWorld* get_singleton();
 
@@ -61,7 +61,7 @@ namespace godot {
 		String id_to_text(ecs_entity_t) const;
 		static Variant::Type id_to_variant_type(ecs_entity_t);
 
-		static void set_contextual_singleton(const GFWorld*);
+		static void set_default_world(const GFWorld*);
 
 		void start_rest_api() const;
 		static ecs_entity_t variant_type_to_id(const Variant::Type);

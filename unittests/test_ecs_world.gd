@@ -6,7 +6,7 @@ var _old_world:GFWorld = null
 
 func before_each():
 	world = GFWorld.new()
-	_old_world = GFWorld.get_contextual_singleton()
+	_old_world = GFWorld.get_default_world()
 	GFWorld.set_contextual_singleton(world)
 
 func after_each():
@@ -91,8 +91,21 @@ func test_simple_system():
 func test_entity_created_in_local_thread_world():
 	var e:= GFEntity.new()
 	assert_eq(e.get_world(), world)
-	assert_eq(world, GFWorld.get_contextual_singleton())
+	assert_eq(world, GFWorld.get_default_world())
 
+func test_set_default_world_doc_example():
+	var custom_default_world = GFWorld.new()
+	
+	var old_default_world = GFWorld.get_default_world()
+	GFWorld.set_default_world(custom_default_world)
+	
+	# The following line is similar to calling this:
+	# var entity = GFEntity.new_in_world(custom_default_world)
+	var entity = GFEntity.new()
+
+	# It is a good practice to restore the default
+	# world to whatever it was before you set it.
+	GFWorld.set_default_world(old_default_world)
 
 class Foo extends GFComponent:
 	func _build(b: GFComponentBuilder) -> void:
