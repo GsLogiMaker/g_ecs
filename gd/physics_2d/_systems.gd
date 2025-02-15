@@ -49,8 +49,7 @@ func _register(w: GFWorld) -> void:
 			PhysicsServer2D.body_set_state_sync_callback(
 				rid,
 				rigid_body_sync.bind(
-					body.get(GFPosition2D),
-					body.get(GFRotation2D),
+					body.get_source_entity()
 					),
 				)
 			body._set_rid(rid)
@@ -124,10 +123,6 @@ func _register(w: GFWorld) -> void:
 				)
 			)
 
-
-
-
-
 	GFObserverBuilder.new() \
 		.set_name("deconstruct_collision_shape2d") \
 		.set_events(OnRemove) \
@@ -191,15 +186,27 @@ func _register(w: GFWorld) -> void:
 
 static func rigid_body_sync(
 	state:PhysicsDirectBodyState2D,
-	position_c:GFPosition2D,
-	rotation_c:GFRotation2D,
+	entity:GFEntity,
 ) -> void:
+	var position_c:GFPosition2D = entity.get(GFPosition2D) \
+		if entity.has(GFPosition2D) \
+		else null
+	var rotation_c:GFRotation2D = entity.get(GFRotation2D) \
+		if entity.has(GFRotation2D) \
+		else null
 	if position_c:
-		position_c.setm("vec", state.transform.get_origin())
+		position_c.setm_no_notify("vec", state.transform.get_origin())
 	if rotation_c:
-		rotation_c.setm("angle", state.transform.get_rotation())
-	
-	GFEntity.from(
-		GFOnTransformUpdate,
-		position_c.get_world(),
-	).emit(position_c.get_source_id())
+		rotation_c.setm_no_notify("angle", state.transform.get_rotation())
+
+	var c:GFComponent = position_c \
+		if position_c \
+		else rotation_c \
+		if rotation_c \
+		else null
+
+	if c:
+		GFEntity.from(
+			GFOnTransformUpdate,
+			c.get_world(),
+		).emit(c.get_source_id())
