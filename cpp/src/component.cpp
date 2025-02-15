@@ -34,13 +34,6 @@ Ref<GFComponent> GFComponent::from_id(
 ) {
 	world = GFWorld::world_or_singleton(world);
 
-	const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
-	// if (comp_data == nullptr) {
-	// 	ERR(nullptr,
-	// 		"Could not instantiate ", get_class_static(), "\n",
-	// 		"	Entity ", world->id_to_text(comp), " is not a component"
-	// 	);
-	// }
 	Ref<GFComponent> comp_ref = memnew(GFComponent(entity, comp, world));
 	return setup_template<GFComponent>(comp_ref);
 }
@@ -51,13 +44,6 @@ Ref<GFComponent> GFComponent::from_id_no_source(
 ) {
 	world = GFWorld::world_or_singleton(world);
 
-	// const EcsComponent* comp_data = GFComponent::get_component_ptr(world, comp);
-	// if (comp_data == nullptr) {
-	// 	ERR(nullptr,
-	// 		"Could not instantiate ", get_class_static(), "\n",
-	// 		"	Entity ", world->id_to_text(comp), " is not a component"
-	// 	);
-	// }
 	Ref<GFComponent> comp_ref = Ref(memnew(GFComponent(0, comp, world)));
 	comp_ref->update_script();
 	return comp_ref;
@@ -78,27 +64,34 @@ void GFComponent::_register_internal() {
 	GFRegisterableEntity::_register_internal();
 }
 
-void GFComponent::setm(const String member, const Variant value) const {
+bool GFComponent::setm(const String member, const Variant value) const {
+	if (!setm_no_notify(member, value)) {
+		return false;
+	}
+	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
+	return true;
+}
+
+bool GFComponent::setm_no_notify(const String member, const Variant value) const {
 	ecs_world_t* raw = get_world()->raw();
 
 	// Get member data
 	const EcsMember* member_data = get_member_data(member);
 	if (member_data == nullptr) {
 		// Member data is null. This should never happen.
-		ERR(/**/,
+		ERR(false,
 			"Member metadata is null"
 		);
 	}
 	void* member_ptr = get_member_ptr_mut_at(member_data->offset);
 	if (member_ptr == nullptr) {
-		ERR(/**/,
+		ERR(false,
 			"Member pointer is null"
 		);
 	}
 
-	// Return member
 	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
-	ecs_modified_id(get_world()->raw(), get_source_id(), get_id());
+	return true;
 }
 
 Variant GFComponent::getm(const String member) const {
@@ -412,11 +405,12 @@ void GFComponent::_bind_methods() {
 	GDVIRTUAL_BIND(_build, "b");
 	godot::ClassDB::bind_method(D_METHOD("_register_internal"), &GFComponent::_register_internal);
 
-	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from", "component", "world"), &GFComponent::from, nullptr);
-	godot::ClassDB::bind_static_method(GFComponent::get_class_static(), D_METHOD("from_id", "id", "world"), &GFComponent::from_id, nullptr);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from", "component", "world"), &GFComponent::from, nullptr);
+	godot::ClassDB::bind_static_method(get_class_static(), D_METHOD("from_id", "id", "world"), &GFComponent::from_id, nullptr);
 
 	godot::ClassDB::bind_method(D_METHOD("getm", "member"), &GFComponent::getm);
 	godot::ClassDB::bind_method(D_METHOD("setm", "member", "value"), &GFComponent::setm);
+	godot::ClassDB::bind_method(D_METHOD("setm_no_notify", "member", "value"), &GFComponent::setm_no_notify);
 
 	godot::ClassDB::bind_method(D_METHOD("get_source_entity"), &GFComponent::get_source_entity);
 	godot::ClassDB::bind_method(D_METHOD("get_source_id"), &GFComponent::get_source_id);
