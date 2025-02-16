@@ -300,44 +300,19 @@ Ref<GFEntity> GFEntity::set_componentv(
 
 	ecs_entity_t c_id = w->coerce_id(component);
 
-	if (!ecs_has_id(w->raw(), get_id(), c_id)) {
-		// Component is not present in entity, add it
-
-		if (ECS_IS_PAIR(c_id)) {
-			// ID is a pair, perform pair specific checks
-			ecs_entity_t first_id = ECS_PAIR_FIRST(c_id);
-			ecs_entity_t second_id = ECS_PAIR_SECOND(c_id);
-			if (
-				!ecs_has_id(w->raw(), first_id, ecs_id(EcsComponent))
-				&& !ecs_has_id(w->raw(), second_id, ecs_id(EcsComponent))
-			) {
-				// ID is not a component, error
-				ERR(nullptr,
-					"Failed to set data in pair\n",
-					"	Neither ", w->id_to_text(first_id),
-					" nor ", w->id_to_text(second_id), "are components"
-				);
-			}
-
-		} else if (!ecs_has_id(w->raw(), c_id, ecs_id(EcsComponent))) {
-			// Passed ID is not a component, handle
-			if (members.size() != 0) {
-				ERR(nullptr, "Failed to set data in component\n",
-					"	Entity ", w->id_to_text(c_id), " is not a component"
-				);
-			}
-
-			// Add as tag and return
-			ecs_add_id(w->raw(), get_id(), c_id);
-			return this;
-		}
-
-		ecs_add_id(w->raw(), get_id(), c_id);
+	ecs_entity_t main_id =  w->get_main_id(c_id);
+	if (!ecs_has_id(w->raw(), main_id, FLECS_IDEcsComponentID_)) {
+		ERR(nullptr, "Failed to set component",
+			"\n	Entity ",
+			w->id_to_text(c_id),
+			" is not a component and can't be set in ",
+			this
+		)
 	}
 
 	GFComponent::build_data_from_members(
 		members,
-		ecs_get_mut_id(w->raw(), get_id(), c_id),
+		ecs_ensure_id(w->raw(), get_id(), c_id),
 		c_id,
 		get_world()
 	);

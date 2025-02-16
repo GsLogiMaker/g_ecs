@@ -175,6 +175,8 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 
 	GFWorld* w = get_world();
 	ecs_entity_t term_id = w->coerce_id(term_v);
+	ecs_entity_t first_id = 0;
+	ecs_entity_t second_id = 0;
 	CHECK_ENTITY_ALIVE(term_id, w,
 		nullptr,
 		"Failed to add term in `", oper_name, "` term to query\n"
@@ -186,7 +188,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 			"Failed to add term as first of pair in `", oper_name, "` term to query\n"
 		);
 
-		ecs_entity_t second_id = w->coerce_id(second);
+		second_id = w->coerce_id(second);
 		CHECK_ENTITY_ALIVE(second_id, w,
 			nullptr,
 			"Failed to add second in `", oper_name, "` term to query\n"
@@ -196,9 +198,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 			"Failed to add second of pair in `", oper_name, "` term to query\n"
 		);
 
-		first_id = term_id;
-		second_id = second_id;
-		term_id = 0;
+		term_id = ecs_pair(term_id, second_id);
 	}
 
 	query_desc.terms[get_term_count()] = {
