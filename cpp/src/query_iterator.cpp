@@ -1,9 +1,12 @@
 
 #include "query_iterator.h"
+#include "component.h"
+#include "entity.h"
 #include "query_iteration_context.h"
 #include "godot_cpp/variant/array.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "querylike_builder.h"
+#include "tag.h"
 
 #include <stdint.h>
 #include <flecs.h>
@@ -28,11 +31,29 @@ Variant GFQueryIterator::_iter_get(Variant arg) {
 	QueryIterationContext* ctx = static_cast<QueryIterationContext*>(
 		iterator.query->binding_ctx
 	);
-	return ctx->comp_ref_args;
+	Array result = Array();
+	for (int i=0; i != ctx->comp_ref_args.size(); i++) {
+		Ref<GFEntity> entity = ctx->comp_ref_args[i];
+		if (entity->get_class() == GFComponent::get_class_static()) {
+			Ref<GFComponent> comp = ctx->comp_ref_args[i];
+			result.append(memnew(GFComponent(
+				comp->get_source_id(),
+				comp->get_id(),
+				comp->get_world()
+			)));
+		} else if (entity->get_class() == GFTag::get_class_static()) {
+			Ref<GFTag> tag = ctx->comp_ref_args[i];
+			result.append(memnew(GFTag(
+				tag->get_id(),
+				tag->get_world()
+			)));
+		}
+	}
+	return result;
 }
 
 // --------------------------------------
-// --- Unexposed
+// --- Unexposed ---
 // --------------------------------------
 
 bool GFQueryIterator::next() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFObserverBuilder" inherits="GFQuerylikeBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for observers.
 	</brief_description>
@@ -121,6 +122,13 @@
 			<param index="0" name="entity" type="Variant" />
 			<description>
 				Overrides [method GFEntityBuilder.set_target_entity].
+			</description>
+		</method>
+		<method name="src">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.src].
 			</description>
 		</method>
 		<method name="up">

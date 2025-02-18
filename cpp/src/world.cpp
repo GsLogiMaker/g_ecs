@@ -657,7 +657,7 @@ Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(const Ref<Scr
 	if (*script == nullptr) {
 		ERR(nullptr,
 			"Could not register script\n",
-			"Script is null."
+			"	Script is null."
 		);
 	}
 	if (!godot::ClassDB::is_parent_class(
@@ -666,7 +666,7 @@ Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(const Ref<Scr
 	)) {
 		ERR(nullptr,
 			"Could not register script\n",
-			"Script, ", script, ", does not inherit from ",
+			"	Script, ", script, ", does not inherit from ",
 			GFRegisterableEntity::get_class_static()
 		);
 	}
@@ -676,7 +676,7 @@ Ref<GFRegisterableEntity> GFWorld::register_script_id_no_user_call(const Ref<Scr
 			= GFRegisterableEntity::from_script(script, this);
 		ERR(reg_ett,
 			"Could not register script\n",
-			"Script ", script, " is already registered"
+			"	Script ", script, " is already registered"
 		);
 		return reg_ett;
 	}

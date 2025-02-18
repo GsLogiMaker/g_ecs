@@ -106,6 +106,9 @@ func test_set_default_world_doc_example():
 	# It is a good practice to restore the default
 	# world to whatever it was before you set it.
 	GFWorld.set_default_world(old_default_world)
+	
+	assert_eq(GFWorld.get_default_world(), world)
+	assert_eq(entity.get_world(), custom_default_world)
 
 class Foo extends GFComponent:
 	func _build(b: GFComponentBuilder) -> void:

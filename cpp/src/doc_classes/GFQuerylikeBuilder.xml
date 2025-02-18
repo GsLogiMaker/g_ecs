@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFQuerylikeBuilder" inherits="GFEntityBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFQuerylikeBuilder" inherits="GFEntityBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		The abstract base class for different query-like builders.
 	</brief_description>
@@ -76,6 +77,28 @@
 			<description>
 				Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
 				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="src">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Sets the source of the most recently added term. Setting the source allows for matching terms against a specific entity. [url=https://www.flecs.dev/flecs/md_docs_2Queries.html#source]More about Flecs sources[/url].
+				Example:
+				[codeblock]
+				var Velocity = GFComponentBuilder.new() \
+				    .add_member("velocity", TYPE_VECTOR2) \
+				    .build()
+				var ship = GFEntity.new() \
+				    .add(Velocity)
+				var asteroid = GFEntity.new() \
+				    .add(Velocity)
+
+				# Query only for Velocity of the ship, not the asteroid
+				var query = GFQueryBuilder.new() \
+				    .with(Velocity).src(ship) \
+				    .build()
+				[/codeblock]
 			</description>
 		</method>
 		<method name="up">
