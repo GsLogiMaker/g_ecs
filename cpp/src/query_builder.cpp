@@ -2,6 +2,7 @@
 
 #include "query_builder.h"
 #include "godot_cpp/variant/callable.hpp"
+#include "querylike_builder.h"
 #include "world.h"
 #include "query.h"
 
@@ -18,6 +19,8 @@ Ref<GFQueryBuilder> GFQueryBuilder::new_in_world(GFWorld* world) {
 }
 
 Ref<GFQuery> GFQueryBuilder::build() {
+	QUERYLIKE_BUILD_START
+
 	query_desc.entity = GFEntityBuilder::build_id();
 
 	setup_ctx(Callable());
@@ -25,6 +28,8 @@ Ref<GFQuery> GFQueryBuilder::build() {
 		get_world()->raw(),
 		&query_desc
 	);
+
+	QUERYLIKE_BUILD_END
 
 	return Ref(memnew(GFQuery(get_world(), query)));
 }

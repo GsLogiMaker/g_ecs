@@ -30,12 +30,6 @@ Ref<GFTag> GFTag::from_id(ecs_entity_t tag_id, GFWorld* world_) {
 		tag_id,
 		world
 	));
-	if (!ett->is_alive()) {
-		ERR(nullptr,
-			"Could not instantiate tag from ID\n",
-			"	World/ID is not valid/alive"
-		);
-	}
 	ett->update_script();
 	return ett;
 }

@@ -20,6 +20,8 @@ Ref<GFSystemBuilder> GFSystemBuilder::new_in_world(GFWorld* world) {
 }
 
 void GFSystemBuilder::for_each(const Callable callable) {
+	QUERYLIKE_BUILD_START
+
 	ecs_entity_t sys_id = GFEntityBuilder::build_id();
 	// Prevent creating new entity if builder is rebuilt
 	set_target_entity(sys_id);
@@ -33,6 +35,8 @@ void GFSystemBuilder::for_each(const Callable callable) {
 		};
 		ecs_system_init(get_world()->raw(), &desc);
 	}
+
+	QUERYLIKE_BUILD_END
 }
 
 // **********************************************
