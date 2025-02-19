@@ -10,6 +10,7 @@
 #include "godot_cpp/variant/variant.hpp"
 #include "registerable_entity.h"
 #include "utils.h"
+#include "world.h"
 
 #include <cstdint>
 #include <stdint.h>
@@ -49,6 +50,43 @@ Ref<GFComponent> GFComponent::from_id_no_source(
 	return comp_ref;
 }
 
+bool GFComponent::_get(StringName property, Variant& out) {
+	if (Object::_get(property, out)) {
+		return true;
+	}
+	out = getm(property);
+	return out != Variant();
+}
+
+void GFComponent::_get_property_list(List<PropertyInfo>* p_list) {
+	GFWorld* w = get_world();
+
+	ecs_entity_t main_id = w->get_main_id(get_id());
+	if (!w->is_id_alive(main_id)) {
+		return;
+	}
+
+	const EcsStruct* struct_c = ecs_get(w->raw(), main_id, EcsStruct);
+	for (int member_i=0; member_i != struct_c->members.count; member_i++) {
+		const ecs_member_t* member = ecs_vec_get_t(&struct_c->members, ecs_member_t, member_i);
+
+		p_list->push_back(PropertyInfo(
+			w->id_into_variant_type(member->type),
+			member->name,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_EDITOR
+		));
+	}
+}
+
+bool GFComponent::_set(StringName property, Variant value) {
+	if (Object::_set(property, value)) {
+		return true;
+	}
+	return setm(property, value);
+}
+
 void GFComponent::_register_internal() {
 	// Build component
 	Ref<GFComponentBuilder> b = memnew(GFComponentBuilder(get_world()));
@@ -73,7 +111,7 @@ bool GFComponent::setm(const String member, const Variant value) const {
 }
 
 bool GFComponent::setm_no_notify(const String member, const Variant value) const {
-	ecs_world_t* raw = get_world()->raw();
+	GFWorld* w = get_world();
 
 	// Get member data
 	const EcsMember* member_data = get_member_data(member);
@@ -90,7 +128,7 @@ bool GFComponent::setm_no_notify(const String member, const Variant value) const
 		);
 	}
 
-	Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+	Utils::set_type_from_variant(value, member_data->type, w, member_ptr);
 	return true;
 }
 
@@ -145,9 +183,8 @@ const EcsMember* GFComponent::get_member_data(const String member) const {
 		ERR(nullptr,
 			"No member named \"",
 			member,
-			"\" found in component \"",
-			get_world()->id_to_text(get_id()),
-			"\""
+			"\" found in component ",
+			get_world()->id_to_text(get_id())
 		);
 	}
 
@@ -175,12 +212,12 @@ Variant GFComponent::member_value_as_primitive(
 		case ecs_primitive_kind_t::EcsI64: return *static_cast<const int64_t*>(ptr);
 		case ecs_primitive_kind_t::EcsF32: return *static_cast<const float*>(ptr);
 		case ecs_primitive_kind_t::EcsF64: return *static_cast<const double*>(ptr);
-		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\nCan't handle uptr");
-		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\nCan't handle iptr");
+		case ecs_primitive_kind_t::EcsUPtr: ERR(nullptr, "Can't get primitive\n	Can't handle uptr");
+		case ecs_primitive_kind_t::EcsIPtr: ERR(nullptr, "Can't get primitive\n	Can't handle iptr");
 		case ecs_primitive_kind_t::EcsString: return *static_cast<char* const *>(ptr);
 		case ecs_primitive_kind_t::EcsEntity: return *static_cast<const ecs_entity_t*>(ptr);
 		case ecs_primitive_kind_t::EcsId: return *static_cast<const ecs_entity_t*>(ptr);
-		default: ERR(nullptr, "Can't get primitive\nUnknown primitive type");
+		default: ERR(nullptr, "Can't get primitive\n	Unknown primitive type: ", primitive);
 	}
 }
 
@@ -188,65 +225,60 @@ Variant GFComponent::member_value_as_type(
 	const void* ptr,
 	ecs_entity_t type
 ) const {
-	ecs_world_t* raw = get_world()->raw();
-	Variant::Type vari_type = get_world()->id_to_variant_type(type);
+	GFWorld* w = get_world();
+
+	Variant::Type vari_type = get_world()->id_as_variant_type(type);
+	if (vari_type == Variant::NIL) {
+		const EcsPrimitive* primi_c = ecs_get(w->raw(), type, EcsPrimitive);
+		if (primi_c != nullptr) {
+			return member_value_as_primitive(ptr, primi_c->kind);
+		}
+	}
 
 	switch (vari_type) {
-	case(Variant::Type::NIL): {
-		// Member is not a Godot type. Try to get from Flecs primitive
-		if (ecs_has_id(raw, type, ecs_id(EcsPrimitive))) {
-			return member_value_as_primitive(
-				ptr,
-				ecs_get(raw, type, EcsPrimitive)->kind
-			);
-		}
-
-		ERR(nullptr,
-			"Can't convert type ", get_world()->id_to_text(type), " to Variant"
-		);
-	}
-	case(Variant::Type::BOOL): return Variant( *static_cast<const bool*>(ptr) );
-	case(Variant::Type::INT): return Variant( *static_cast<const int64_t*>(ptr) );
-	case(Variant::Type::FLOAT): return Variant( *static_cast<const double*>(ptr) );
-	case(Variant::Type::STRING): return Variant( *static_cast<const String*>(ptr) );
-	case(Variant::Type::VECTOR2): return Variant( *static_cast<const Vector2*>(ptr) );
-	case(Variant::Type::VECTOR2I): return Variant( *static_cast<const Vector2i*>(ptr) );
-	case(Variant::Type::RECT2): return Variant( *static_cast<const Rect2*>(ptr) );
-	case(Variant::Type::RECT2I): return Variant( *static_cast<const Rect2i*>(ptr) );
-	case(Variant::Type::VECTOR3): return Variant( *static_cast<const Vector3*>(ptr) );
-	case(Variant::Type::VECTOR3I): return Variant( *static_cast<const Vector3i*>(ptr) );
-	case(Variant::Type::TRANSFORM2D): return Variant( *static_cast<const Transform2D*>(ptr) );
-	case(Variant::Type::VECTOR4): return Variant( *static_cast<const Vector4*>(ptr) );
-	case(Variant::Type::VECTOR4I): return Variant( *static_cast<const Vector4i*>(ptr) );
-	case(Variant::Type::PLANE): return Variant( *static_cast<const Plane*>(ptr) );
-	case(Variant::Type::QUATERNION): return Variant( *static_cast<const Quaternion*>(ptr) );
-	case(Variant::Type::AABB): return Variant( *static_cast<const AABB*>(ptr) );
-	case(Variant::Type::BASIS): return Variant( *static_cast<const Basis*>(ptr) );
-	case(Variant::Type::TRANSFORM3D): return Variant( *static_cast<const Transform3D*>(ptr) );
-	case(Variant::Type::PROJECTION): return Variant( *static_cast<const Projection*>(ptr) );
-	case(Variant::Type::COLOR): return Variant( *static_cast<const Color*>(ptr) );
-	case(Variant::Type::STRING_NAME): return Variant( *static_cast<const StringName*>(ptr) );
-	case(Variant::Type::NODE_PATH): return Variant( *static_cast<const NodePath*>(ptr) );
-	case(Variant::Type::RID): return Variant( *static_cast<const RID*>(ptr) );
-	case(Variant::Type::OBJECT): return Variant( *static_cast<const Variant*>(ptr) );
-	case(Variant::Type::CALLABLE): return Variant( *static_cast<const Callable*>(ptr) );
-	case(Variant::Type::SIGNAL): return Variant( *static_cast<const Signal*>(ptr) );
+	case(Variant::Type::NIL): return nullptr;
+	case(Variant::Type::BOOL): return *static_cast<const bool*>(ptr);
+	case(Variant::Type::INT): return *static_cast<const int64_t*>(ptr);
+	case(Variant::Type::FLOAT): return *static_cast<const double*>(ptr);
+	case(Variant::Type::STRING): return *static_cast<const String*>(ptr);
+	case(Variant::Type::VECTOR2): return *static_cast<const Vector2*>(ptr);
+	case(Variant::Type::VECTOR2I): return *static_cast<const Vector2i*>(ptr);
+	case(Variant::Type::RECT2): return *static_cast<const Rect2*>(ptr);
+	case(Variant::Type::RECT2I): return *static_cast<const Rect2i*>(ptr);
+	case(Variant::Type::VECTOR3): return *static_cast<const Vector3*>(ptr);
+	case(Variant::Type::VECTOR3I): return *static_cast<const Vector3i*>(ptr);
+	case(Variant::Type::TRANSFORM2D): return *static_cast<const Transform2D*>(ptr);
+	case(Variant::Type::VECTOR4): return *static_cast<const Vector4*>(ptr);
+	case(Variant::Type::VECTOR4I): return *static_cast<const Vector4i*>(ptr);
+	case(Variant::Type::PLANE): return *static_cast<const Plane*>(ptr);
+	case(Variant::Type::QUATERNION): return *static_cast<const Quaternion*>(ptr);
+	case(Variant::Type::AABB): return *static_cast<const AABB*>(ptr);
+	case(Variant::Type::BASIS): return *static_cast<const Basis*>(ptr);
+	case(Variant::Type::TRANSFORM3D): return *static_cast<const Transform3D*>(ptr);
+	case(Variant::Type::PROJECTION): return *static_cast<const Projection*>(ptr);
+	case(Variant::Type::COLOR): return *static_cast<const Color*>(ptr);
+	case(Variant::Type::STRING_NAME): return *static_cast<const StringName*>(ptr);
+	case(Variant::Type::NODE_PATH): return *static_cast<const NodePath*>(ptr);
+	case(Variant::Type::RID): return *static_cast<const RID*>(ptr);
+	case(Variant::Type::OBJECT): return *static_cast<const Variant*>(ptr);
+	case(Variant::Type::CALLABLE): return *static_cast<const Callable*>(ptr);
+	case(Variant::Type::SIGNAL): return *static_cast<const Signal*>(ptr);
 	case(Variant::Type::DICTIONARY): return *static_cast<const Dictionary*>(ptr);
 	case(Variant::Type::ARRAY): return *static_cast<const Array*>(ptr);
-	case(Variant::Type::PACKED_BYTE_ARRAY): return Variant( *static_cast<const PackedByteArray*>(ptr) );
-	case(Variant::Type::PACKED_INT32_ARRAY): return Variant( *static_cast<const PackedInt32Array*>(ptr) );
-	case(Variant::Type::PACKED_INT64_ARRAY): return Variant( *static_cast<const PackedInt64Array*>(ptr) );
-	case(Variant::Type::PACKED_FLOAT32_ARRAY): return Variant( *static_cast<const PackedFloat32Array*>(ptr) );
-	case(Variant::Type::PACKED_FLOAT64_ARRAY): return Variant( *static_cast<const PackedFloat64Array*>(ptr) );
-	case(Variant::Type::PACKED_STRING_ARRAY): return Variant( *static_cast<const PackedStringArray*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR2_ARRAY): return Variant( *static_cast<const PackedVector2Array*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR3_ARRAY): return Variant( *static_cast<const PackedVector3Array*>(ptr) );
-	case(Variant::Type::PACKED_COLOR_ARRAY): return Variant( *static_cast<const PackedColorArray*>(ptr) );
-	case(Variant::Type::PACKED_VECTOR4_ARRAY): return Variant( *static_cast<const PackedVector4Array*>(ptr) );
-	case(Variant::Type::VARIANT_MAX): throw "Can't get type VARIANT_MAX";
+	case(Variant::Type::PACKED_BYTE_ARRAY): return *static_cast<const PackedByteArray*>(ptr);
+	case(Variant::Type::PACKED_INT32_ARRAY): return *static_cast<const PackedInt32Array*>(ptr);
+	case(Variant::Type::PACKED_INT64_ARRAY): return *static_cast<const PackedInt64Array*>(ptr);
+	case(Variant::Type::PACKED_FLOAT32_ARRAY): return *static_cast<const PackedFloat32Array*>(ptr);
+	case(Variant::Type::PACKED_FLOAT64_ARRAY): return *static_cast<const PackedFloat64Array*>(ptr);
+	case(Variant::Type::PACKED_STRING_ARRAY): return *static_cast<const PackedStringArray*>(ptr);
+	case(Variant::Type::PACKED_VECTOR2_ARRAY): return *static_cast<const PackedVector2Array*>(ptr);
+	case(Variant::Type::PACKED_VECTOR3_ARRAY): return *static_cast<const PackedVector3Array*>(ptr);
+	case(Variant::Type::PACKED_COLOR_ARRAY): return *static_cast<const PackedColorArray*>(ptr);
+	case(Variant::Type::PACKED_VECTOR4_ARRAY): return *static_cast<const PackedVector4Array*>(ptr);
+	case(Variant::Type::VARIANT_MAX): ERR(nullptr, "Failed to get member\n	Member type VARIANT_MAX is invalid");
 	}
 
-	throw "Unreachable";
+	ERR(nullptr, "Unreachable");
 }
 
 String GFComponent::_to_string() const {
@@ -295,13 +327,13 @@ void GFComponent::build_data_from_variant(
 	Variant vari,
 	void* output
 ) const {
-	ecs_world_t* raw = get_world()->raw();
+	GFWorld* w = get_world();
 
-	const EcsStruct* struct_data = ecs_get(raw, get_id(), EcsStruct);
+	const EcsStruct* struct_data = ecs_get(w->raw(), get_id(), EcsStruct);
 	if (struct_data == nullptr) {
 		ERR(/**/,
 			"Could not build data from Variant\n",
-			"Component is not a struct."
+			"	Component is not a struct."
 		);
 	}
 
@@ -321,7 +353,7 @@ void GFComponent::build_data_from_variant(
 					static_cast<uint8_t*>(output) + member_data->offset
 				);
 				// Set member from dictionary
-				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+				Utils::set_type_from_variant(value, member_data->type, w, member_ptr);
 			}
 			break;
 		}
@@ -336,13 +368,13 @@ void GFComponent::build_data_from_variant(
 					static_cast<uint8_t*>(output) + member_data->offset
 				);
 				// Set member from array
-				Utils::set_type_from_variant(value, member_data->type, raw, member_ptr);
+				Utils::set_type_from_variant(value, member_data->type, w, member_ptr);
 			}
 			break;
 		}
 		default: ERR(/**/,
 			"Could not build data from Variant\n",
-			"Variant type ", Variant::get_type_name(vari.get_type()),
+			"	Variant type ", Variant::get_type_name(vari.get_type()),
 			" can't be built into component data."
 		);
 	}
@@ -368,8 +400,6 @@ void GFComponent::build_data_from_members(
 	ecs_entity_t component_id,
 	const GFWorld* world
 ) {
-	ecs_world_t* w_raw = world->raw();
-
 	const EcsStruct* struct_data = GFComponent::get_struct_ptr(world, component_id);
 	if (struct_data == nullptr) {
 		ERR(/**/,
@@ -391,7 +421,7 @@ void GFComponent::build_data_from_members(
 			static_cast<uint8_t*>(output) + member_data->offset
 		);
 		// Set member value
-		Utils::set_type_from_variant(value, member_data->type, w_raw, member_ptr);
+		Utils::set_type_from_variant(value, member_data->type, world, member_ptr);
 	}
 }
 

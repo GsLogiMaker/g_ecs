@@ -44,6 +44,10 @@ namespace godot {
 		static Ref<GFComponent> from_id(ecs_entity_t c, ecs_entity_t e, GFWorld*);
 		static Ref<GFComponent> from_id_no_source(ecs_entity_t comp, GFWorld* world);
 
+		bool _get(StringName, Variant&);
+		void _get_property_list(List<PropertyInfo> *p_list);
+		bool _set(StringName, Variant);
+
 		Variant getm(const String) const;
 		bool setm(const String, const Variant) const;
 		bool setm_no_notify(const String, const Variant) const;

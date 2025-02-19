@@ -59,9 +59,11 @@ namespace godot {
 		bool id_has_child(ecs_entity_t parent, const char* child_name) const;
 		bool id_set_parent(ecs_entity_t id, ecs_entity_t parent) const;
 		String id_to_text(ecs_entity_t) const;
-		static Variant::Type id_to_variant_type(ecs_entity_t);
+		Variant::Type id_as_variant_type(ecs_entity_t) const;
+		Variant::Type id_into_variant_type(ecs_entity_t) const;
 
 		static void set_default_world(const GFWorld*);
+		void set_gd_struct_from_variant(const Variant, const ecs_entity_t, void*) const;
 
 		void start_rest_api() const;
 		static ecs_entity_t variant_type_to_id(const Variant::Type);

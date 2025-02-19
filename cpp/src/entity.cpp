@@ -1,9 +1,16 @@
 
 #include "entity.h"
 #include "entity_iterator.h"
+#include "godot_cpp/classes/global_constants.hpp"
+#include "godot_cpp/classes/reg_ex.hpp"
+#include "godot_cpp/classes/reg_ex_match.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/memory.hpp"
+#include "godot_cpp/core/property_info.hpp"
 #include "godot_cpp/variant/array.hpp"
+#include "godot_cpp/variant/packed_string_array.hpp"
+#include "godot_cpp/variant/string_name.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include "utils.h"
 // needed here because entity.h does not include
 // component.h, but uses forward declaration instead
@@ -28,6 +35,174 @@ Ref<GFEntity> GFEntity::from(const Variant entity, GFWorld* world) {
 }
 Ref<GFEntity> GFEntity::from_id(ecs_entity_t id, GFWorld* world) {
 	return setup_template<GFEntity>(memnew(GFEntity(id, world)));
+}
+
+const RegEx* GFEntity::get_entity_id_regex() {
+	static RegEx* regex = memnew(RegEx());
+	if (!regex->is_valid()) {
+		regex->compile("#([-]?[0-9]+)");
+	}
+	return regex;
+}
+
+Variant GFEntity::__get(const StringName property) {
+	Variant result = Variant();
+	_get(property, result);
+	return result;
+}
+
+bool GFEntity::_get(StringName property, Variant& out) {
+	if (is_class(property)) {
+		// Property is an inhereted class, return true
+		return true;
+	}
+	if (property.contains(".")) {
+		// Property is an inhereted script, return true
+		return true;
+	}
+	if (property == StringName("script")) {
+		// Property is `script` from RefCounted, return script
+		out = get_script();
+		return true;
+	}
+
+	GFWorld* w = get_world();
+
+	PackedStringArray prop_parts = property.split("/");
+	if (prop_parts.size() < 1) {
+		return false;
+	}
+
+	TypedArray<RegExMatch> matches = get_entity_id_regex()->search_all(prop_parts[0]);
+
+	ecs_entity_t comp_id = 0;
+	switch (matches.size()) {
+		case 1: {
+			Ref<RegExMatch> match0 = matches[0];
+			comp_id = match0->get_strings()[1].to_int();
+			break;
+		}
+		case 2: {
+			Ref<RegExMatch> match0 = matches[0];
+			Ref<RegExMatch> match1 = matches[1];
+			comp_id = ecs_pair(
+				match0->get_strings()[1].to_int(),
+				match1->get_strings()[1].to_int()
+			);
+			break;
+		}
+		default:
+			return false;
+	}
+
+	if (prop_parts.size() < 2) {
+		return true;
+	}
+
+	if (!ecs_has(w->raw(), comp_id, EcsStruct)) {
+		return false;
+	}
+
+	// TODO: Use a has_member method here instead
+	CharString member_char_name = prop_parts[1].utf8();
+	if (ecs_lookup_child(w->raw(), comp_id, member_char_name) == 0) {
+		return false;
+	}
+
+	Ref<GFComponent> comp = GFComponent::from_id(comp_id, get_id(), w);
+	if (comp == nullptr || !comp->is_alive()) {
+		return false;
+	}
+	out = comp->getm(prop_parts[1]);
+	return true;
+}
+
+void GFEntity::_get_property_list(List<PropertyInfo>* p_list) {
+	GFWorld* w = get_world();
+	const ecs_type_t* type = ecs_get_type(w->raw(), get_id());
+
+	for (int i=0; i != type->count; i++) {
+		ecs_entity_t main_id = w->get_main_id(type->array[i]);
+		if (!w->is_id_alive(main_id)) {
+			continue;
+		}
+
+		const String comp_name = w->id_to_text(type->array[i]);
+		const EcsStruct* struct_c = ecs_get(w->raw(), main_id, EcsStruct);
+		if (struct_c == nullptr) {
+			p_list->push_back(PropertyInfo(
+				Variant::NIL,
+				comp_name,
+				PROPERTY_HINT_NONE,
+				"",
+				PROPERTY_USAGE_EDITOR
+			));
+			continue;
+		}
+
+		for (int member_i=0; member_i != struct_c->members.count; member_i++) {
+			const ecs_member_t* member = ecs_vec_get_t(&struct_c->members, ecs_member_t, member_i);
+			Variant::Type vari_type = w->id_into_variant_type(member->type);
+			p_list->push_back( PropertyInfo(
+				vari_type,
+				String(comp_name) + "/" + member->name,
+				PROPERTY_HINT_NONE,
+				"",
+				PROPERTY_USAGE_EDITOR
+			));
+		}
+	}
+}
+
+bool GFEntity::_set(StringName property, Variant value) {
+	if (is_class(property)) {
+		// Property is an inhereted class, return true
+		return true;
+	}
+	if (property.contains(".")) {
+		// Property is an inhereted script, return true
+		return true;
+	}
+	if (property == StringName("script")) {
+		// Property is `script` from RefCounted, return script
+		set_script(value);
+		return true;
+	}
+
+	GFWorld* w = get_world();
+
+	PackedStringArray prop_parts = property.split("/");
+	if (prop_parts.size() != 2) {
+		return false;
+	}
+
+	TypedArray<RegExMatch> matches = get_entity_id_regex()->search_all(prop_parts[0]);
+
+	ecs_entity_t comp_id = 0;
+	switch (matches.size()) {
+		case 1: {
+			Ref<RegExMatch> match0 = matches[0];
+			comp_id = match0->get_strings()[1].to_int();
+			break;
+		}
+		case 2: {
+			Ref<RegExMatch> match0 = matches[0];
+			Ref<RegExMatch> match1 = matches[1];
+			comp_id = ecs_pair(
+				match0->get_strings()[1].to_int(),
+				match1->get_strings()[1].to_int()
+			);
+			break;
+		}
+		default: return false;
+	}
+
+	Ref<GFComponent> comp = GFComponent::from_id(comp_id, get_id(), w);
+	if (comp == nullptr || !comp->is_alive()) {
+		return false;
+	}
+	Variant result = comp->setm(prop_parts[1], value);
+	return result;
 }
 
 Ref<GFEntity> GFEntity::add_child(const Variant entity) {
@@ -409,9 +584,6 @@ Ref<GFEntity> GFEntity::inherit(Variant entity) {
 }
 
 bool GFEntity::is_alive() const {
-	if (get_world() == nullptr) {
-		return false;
-	}
 	if (!UtilityFunctions::is_instance_id_valid(world_instance_id)) {
 		return false;
 	}
@@ -586,6 +758,7 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from", "entity", "world"), &GFEntity::from, nullptr);
 	godot::ClassDB::bind_static_method(GFEntity::get_class_static(), D_METHOD("from_id", "id", "world"), &GFEntity::from_id, nullptr);
 
+	godot::ClassDB::bind_method(D_METHOD("_get", "property"), &GFEntity::__get);
 	godot::ClassDB::bind_method(D_METHOD("get", "entity", "second"), &GFEntity::get_component, nullptr);
 
 	godot::ClassDB::bind_method(D_METHOD("delete"), &GFEntity::delete_);

@@ -762,6 +762,56 @@ void GFWorld::start_rest_api() const {
 	ecs_set_id(raw(), rest_id, rest_id, sizeof(EcsRest), &rest);
 }
 
+void GFWorld::set_gd_struct_from_variant(
+	const Variant value,
+	const ecs_entity_t gd_struct,
+	void* out
+) const {
+	Variant::Type type = id_as_variant_type(gd_struct);
+	switch (type) {
+        case Variant::NIL: ERR(/**/, "Can't set nil");
+        case Variant::BOOL: *static_cast<bool*>(out) = value; break;
+        case Variant::INT: *static_cast<int64_t*>(out) = value; break;
+        case Variant::FLOAT: *static_cast<double*>(out) = value; break;
+        case Variant::STRING: *static_cast<String*>(out) = value; break;
+        case Variant::VECTOR2: *static_cast<Vector2*>(out) = value; break;
+        case Variant::VECTOR2I: *static_cast<Vector2i*>(out) = value; break;
+        case Variant::RECT2: *static_cast<Rect2*>(out) = value; break;
+        case Variant::RECT2I: *static_cast<Rect2i*>(out) = value; break;
+        case Variant::VECTOR3: *static_cast<Vector3*>(out) = value; break;
+        case Variant::VECTOR3I: *static_cast<Vector3i*>(out) = value; break;
+        case Variant::TRANSFORM2D: *static_cast<Transform2D*>(out) = value; break;
+        case Variant::VECTOR4: *static_cast<Vector4*>(out) = value; break;
+        case Variant::VECTOR4I: *static_cast<Vector4i*>(out) = value; break;
+        case Variant::PLANE: *static_cast<Plane*>(out) = value; break;
+        case Variant::QUATERNION: *static_cast<Quaternion*>(out) = value; break;
+        case Variant::AABB: *static_cast<AABB*>(out) = value; break;
+        case Variant::BASIS: *static_cast<Basis*>(out) = value; break;
+        case Variant::TRANSFORM3D: *static_cast<Transform3D*>(out) = value; break;
+        case Variant::PROJECTION: *static_cast<Projection*>(out) = value; break;
+        case Variant::COLOR: *static_cast<Color*>(out) = value; break;
+        case Variant::STRING_NAME: *static_cast<StringName*>(out) = value; break;
+        case Variant::NODE_PATH: *static_cast<NodePath*>(out) = value; break;
+        case Variant::RID: *static_cast<RID*>(out) = value; break;
+        case Variant::OBJECT: *static_cast<Variant*>(out) = value; break;
+        case Variant::CALLABLE: *static_cast<Callable*>(out) = value; break;
+        case Variant::SIGNAL: *static_cast<Signal*>(out) = value; break;
+        case Variant::DICTIONARY: *static_cast<Dictionary*>(out) = value; break;
+        case Variant::ARRAY: *static_cast<Array*>(out) = value; break;
+        case Variant::PACKED_BYTE_ARRAY: *static_cast<PackedByteArray*>(out) = value; break;
+        case Variant::PACKED_INT32_ARRAY: *static_cast<PackedInt32Array*>(out) = value; break;
+        case Variant::PACKED_INT64_ARRAY: *static_cast<PackedInt64Array*>(out) = value; break;
+        case Variant::PACKED_FLOAT32_ARRAY: *static_cast<PackedFloat32Array*>(out) = value; break;
+        case Variant::PACKED_FLOAT64_ARRAY: *static_cast<PackedFloat64Array*>(out) = value; break;
+        case Variant::PACKED_STRING_ARRAY: *static_cast<PackedStringArray*>(out) = value; break;
+        case Variant::PACKED_VECTOR2_ARRAY: *static_cast<PackedVector2Array*>(out) = value; break;
+        case Variant::PACKED_VECTOR3_ARRAY: *static_cast<PackedVector3Array*>(out) = value; break;
+        case Variant::PACKED_COLOR_ARRAY: *static_cast<PackedColorArray*>(out) = value; break;
+        case Variant::PACKED_VECTOR4_ARRAY: *static_cast<PackedVector4Array*>(out) = value; break;
+        case Variant::VARIANT_MAX: ERR(/**/, "Can't set Variant::VARIANT_MAX");
+	}
+}
+
 ecs_entity_t GFWorld::variant_type_to_id(Variant::Type type) {
 	if (type == Variant::Type::VARIANT_MAX) {
 		throw "No ID exists for VARIANT_MAX";
@@ -784,14 +834,47 @@ String GFWorld::id_to_text(ecs_entity_t id) const {
 	;
 }
 
-Variant::Type GFWorld::id_to_variant_type(ecs_entity_t id) {
-	if (id < GFWorld::glecs_meta_nil) {
+
+
+Variant::Type GFWorld::id_as_variant_type(ecs_entity_t id) const {
+	if (id < GFWorld::glecs_meta_nil || id > glecs_meta_packed_vector4_array) {
 		return godot::Variant::NIL;
 	}
 	Variant::Type type = Variant::Type(id - GFWorld::glecs_meta_nil);
-	if (type >= Variant::Type::VARIANT_MAX) {
-		return godot::Variant::NIL;
+	return type;
+}
+
+Variant::Type GFWorld::id_into_variant_type(ecs_entity_t id) const {
+	Variant::Type type = id_as_variant_type(id);
+	if (type != Variant::NIL) {
+		return type;
 	}
+
+	const EcsPrimitive* primi_c = ecs_get(raw(), id, EcsPrimitive);
+	if (primi_c == nullptr) {
+		return Variant::NIL;
+	}
+	switch (primi_c->kind) {
+        case EcsBool: return Variant::BOOL;
+        case EcsChar: return Variant::STRING;
+        case EcsByte: return Variant::INT;
+        case EcsU8: return Variant::INT;
+        case EcsU16: return Variant::INT;
+        case EcsU32: return Variant::INT;
+        case EcsU64: return Variant::INT;
+        case EcsI8: return Variant::INT;
+        case EcsI16: return Variant::INT;
+        case EcsI32: return Variant::INT;
+        case EcsI64: return Variant::INT;
+        case EcsF32: return Variant::FLOAT;
+        case EcsF64: return Variant::FLOAT;
+        case EcsUPtr: return Variant::OBJECT;
+        case EcsIPtr: return Variant::OBJECT;
+        case EcsString: return Variant::STRING;
+        case EcsEntity: return Variant::INT;
+        case EcsId: return Variant::INT;
+	}
+
 	return type;
 }
 
@@ -924,7 +1007,7 @@ void GFWorld::copy_gd_type_ptr(
 	void* dst_ptr,
 	ecs_entity_t type
 ) const {
-	Variant::Type vari_type = id_to_variant_type(type);
+	Variant::Type vari_type = id_as_variant_type(type);
 
 	switch (vari_type) {
 	case(Variant::Type::NIL): {
@@ -994,7 +1077,7 @@ void GFWorld::deinit_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
 ) const {
-	Variant::Type vari_type = id_to_variant_type(type);
+	Variant::Type vari_type = id_as_variant_type(type);
 
 	switch (vari_type) {
 	case(Variant::Type::NIL): {
@@ -1066,7 +1149,7 @@ void GFWorld::init_gd_type_ptr(
 	void* ptr,
 	ecs_entity_t type
 ) const {
-	Variant::Type vari_type = id_to_variant_type(type);
+	Variant::Type vari_type = id_as_variant_type(type);
 
 	switch (vari_type) {
 	case(Variant::Type::NIL): if (ecs_has(_raw, type, EcsStruct)) {init_component_ptr(ptr, type, Variant());}; break;
