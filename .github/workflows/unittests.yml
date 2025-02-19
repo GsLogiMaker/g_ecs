@@ -101,13 +101,13 @@ jobs:
     # --- Restore caches ---
 
     - name: 💾 Restore cached cpp files
-      uses: actions/cache/restore@v4.0.2
+      uses: actions/cache/restore@v4
       with:
         path: cpp
         key: ${{ env.cpp_key }}
 
     - name: 💾 Restore cached include files
-      uses: actions/cache/restore@v4.0.2
+      uses: actions/cache/restore@v4
       with:
         path: cpp/include
         key: ${{ env.include_key }}
