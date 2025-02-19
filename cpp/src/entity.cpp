@@ -72,48 +72,42 @@ bool GFEntity::_get(StringName property, Variant& out) {
 	if (prop_parts.size() < 1) {
 		return false;
 	}
-
 	TypedArray<RegExMatch> matches = get_entity_id_regex()->search_all(prop_parts[0]);
-
-	ecs_entity_t comp_id = 0;
-	switch (matches.size()) {
-		case 1: {
-			Ref<RegExMatch> match0 = matches[0];
-			comp_id = match0->get_strings()[1].to_int();
-			break;
-		}
-		case 2: {
-			Ref<RegExMatch> match0 = matches[0];
-			Ref<RegExMatch> match1 = matches[1];
-			comp_id = ecs_pair(
-				match0->get_strings()[1].to_int(),
-				match1->get_strings()[1].to_int()
-			);
-			break;
-		}
-		default:
-			return false;
+	if (matches.size() == 0 || matches.size() > 2) {
+		return false;
 	}
 
+	Ref<RegExMatch> match0 = matches[0];
+	ecs_entity_t comp_id = match0->get_strings()[1].to_int();
+	if (matches.size() > 1) {
+		// Component is a pair
+		Ref<RegExMatch> match1 = matches[1];
+		comp_id = ecs_pair(
+			comp_id,
+			match1->get_strings()[1].to_int()
+		);
+	}
+
+	if (!w->is_id_alive(comp_id)) {
+		// Component is not alive, abort
+		return false;
+	}
 	if (prop_parts.size() < 2) {
+		// Found tag, return null
 		return true;
 	}
-
 	if (!ecs_has(w->raw(), comp_id, EcsStruct)) {
+		// Component is not a struct, abort
 		return false;
 	}
 
-	// TODO: Use a has_member method here instead
-	CharString member_char_name = prop_parts[1].utf8();
-	if (ecs_lookup_child(w->raw(), comp_id, member_char_name) == 0) {
+	const EcsMember* member_c = w->_comp_get_member_data(comp_id, prop_parts[1]);
+	if (member_c == nullptr) {
+		// Member is does not exist, abort
 		return false;
 	}
 
-	Ref<GFComponent> comp = GFComponent::from_id(comp_id, get_id(), w);
-	if (comp == nullptr || !comp->is_alive()) {
-		return false;
-	}
-	out = comp->getm(prop_parts[1]);
+	out = w->_comp_getm(get_id(), comp_id, prop_parts[1]);
 	return true;
 }
 
@@ -127,30 +121,26 @@ void GFEntity::_get_property_list(List<PropertyInfo>* p_list) {
 			continue;
 		}
 
-		const String comp_name = w->id_to_text(type->array[i]);
-		const EcsStruct* struct_c = ecs_get(w->raw(), main_id, EcsStruct);
-		if (struct_c == nullptr) {
+		String comp_name = w->id_to_text(type->array[i]);
+
+		if (!ecs_has(w->raw(), main_id, EcsStruct)) {
 			p_list->push_back(PropertyInfo(
 				Variant::NIL,
 				comp_name,
 				PROPERTY_HINT_NONE,
 				"",
-				PROPERTY_USAGE_EDITOR
+				PROPERTY_USAGE_EDITOR,
+				""
 			));
 			continue;
 		}
 
-		for (int member_i=0; member_i != struct_c->members.count; member_i++) {
-			const ecs_member_t* member = ecs_vec_get_t(&struct_c->members, ecs_member_t, member_i);
-			Variant::Type vari_type = w->id_into_variant_type(member->type);
-			p_list->push_back( PropertyInfo(
-				vari_type,
-				String(comp_name) + "/" + member->name,
-				PROPERTY_HINT_NONE,
-				"",
-				PROPERTY_USAGE_EDITOR
-			));
-		}
+		w->_comp_get_property_list(
+			get_id(),
+			type->array[i],
+			p_list,
+			comp_name + "/"
+		);
 	}
 }
 
@@ -172,37 +162,46 @@ bool GFEntity::_set(StringName property, Variant value) {
 	GFWorld* w = get_world();
 
 	PackedStringArray prop_parts = property.split("/");
-	if (prop_parts.size() != 2) {
+	if (prop_parts.size() < 1) {
 		return false;
 	}
-
 	TypedArray<RegExMatch> matches = get_entity_id_regex()->search_all(prop_parts[0]);
-
-	ecs_entity_t comp_id = 0;
-	switch (matches.size()) {
-		case 1: {
-			Ref<RegExMatch> match0 = matches[0];
-			comp_id = match0->get_strings()[1].to_int();
-			break;
-		}
-		case 2: {
-			Ref<RegExMatch> match0 = matches[0];
-			Ref<RegExMatch> match1 = matches[1];
-			comp_id = ecs_pair(
-				match0->get_strings()[1].to_int(),
-				match1->get_strings()[1].to_int()
-			);
-			break;
-		}
-		default: return false;
-	}
-
-	Ref<GFComponent> comp = GFComponent::from_id(comp_id, get_id(), w);
-	if (comp == nullptr || !comp->is_alive()) {
+	if (matches.size() == 0 || matches.size() > 2) {
 		return false;
 	}
-	Variant result = comp->setm(prop_parts[1], value);
-	return result;
+
+	Ref<RegExMatch> match0 = matches[0];
+	ecs_entity_t comp_id = match0->get_strings()[1].to_int();
+	if (matches.size() > 1) {
+		// Component is a pair
+		Ref<RegExMatch> match1 = matches[1];
+		comp_id = ecs_pair(
+			comp_id,
+			match1->get_strings()[1].to_int()
+		);
+	}
+
+	if (!w->is_id_alive(comp_id)) {
+		// Component is not alive, abort
+		return false;
+	}
+	if (prop_parts.size() < 2) {
+		// Found tag, return null
+		return true;
+	}
+	if (!ecs_has(w->raw(), comp_id, EcsStruct)) {
+		// Component is not a struct, abort
+		return false;
+	}
+
+	const EcsMember* member_c = w->_comp_get_member_data(comp_id, prop_parts[1]);
+	if (member_c == nullptr) {
+		// Member is does not exist, abort
+		return false;
+	}
+
+	w->_comp_setm(get_id(), comp_id, prop_parts[1], value);
+	return true;
 }
 
 Ref<GFEntity> GFEntity::add_child(const Variant entity) {

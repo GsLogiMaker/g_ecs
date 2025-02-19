@@ -3,6 +3,8 @@
 #define WORLD_H
 
 #include "godot_cpp/classes/script.hpp"
+#include "godot_cpp/core/property_info.hpp"
+#include "godot_cpp/templates/list.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include <flecs.h>
 #include <godot_cpp/classes/object.hpp>
@@ -73,6 +75,22 @@ namespace godot {
 		// *** Maybe expose later ***
 		// **************************************
 
+		PropertyInfo _comp_get_property_info(
+			ecs_entity_t e,
+			ecs_entity_t c,
+			const Variant,
+			String=String()
+		) const;
+		void _comp_get_property_list(
+			ecs_entity_t e,
+			ecs_entity_t c,
+			List<PropertyInfo>*,
+			String=String()
+		) const;
+		Variant _comp_getm(ecs_entity_t e, ecs_entity_t c, String) const;
+		const EcsMember* _comp_get_member_data(ecs_entity_t comp, const String member) const;
+		bool _comp_setm(ecs_entity_t e, ecs_entity_t c, String, Variant) const;
+		bool _comp_setm_no_notify(ecs_entity_t e, ecs_entity_t c, String, Variant) const;
 		String entity_unique_name(ecs_entity_t parent, String) const;
 
 		// **************************************
@@ -140,6 +158,16 @@ namespace godot {
 
 		bool is_id_alive(const ecs_entity_t id) const;
 		ecs_world_t* raw() const;
+
+		void* _comp_get_member_ptr_mut_at(ecs_entity_t e, ecs_entity_t c, int) const;
+		Variant _variant_from_member_ptr(
+			const void* ptr,
+			ecs_entity_t member_type
+		) const;
+		static Variant _variant_from_member_ptr_primitive(
+			const void* ptr,
+			ecs_primitive_kind_t primitive
+		);
 
 	protected:
 		static GDObjectInstanceID global_thread_singleton;
