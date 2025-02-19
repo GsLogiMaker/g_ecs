@@ -3,7 +3,10 @@
 #define GL_ENTITY_H
 
 #include "entity_iterator.h"
+#include "godot_cpp/classes/reg_ex.hpp"
 #include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/string_name.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
@@ -115,6 +118,11 @@ namespace godot {
 		static Ref<GFEntity> from(const Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
+		Variant __get(const StringName property);
+		bool _get(StringName, Variant&);
+		void _get_property_list(List<PropertyInfo> *p_list);
+		bool _set(StringName, Variant);
+
 		Ref<GFEntity> add_child(const Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> add_componentv(const Variant, const Array);
@@ -139,6 +147,7 @@ namespace godot {
 		Ref<GFEntity> get_child(const String) const;
 		TypedArray<GFEntity> get_children() const;
 		Ref<GFComponent> get_component(const Variant, const Variant) const;
+		static const RegEx* get_entity_id_regex();
 		ecs_entity_t get_id() const;
 		String get_name() const;
 		Ref<GFEntity> get_parent() const;
