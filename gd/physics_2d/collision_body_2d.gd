@@ -6,7 +6,7 @@ func _set_rid(rid:RID) -> void: setm("rid", rid)
 
 func _build(b:GFComponentBuilder) -> void: b \
 		.add_member("rid", TYPE_RID) \
-		.add_entity("/root/flecs/core/Exclusive")
+		.add("/root/flecs/core/Exclusive")
 
 func get_position() -> Vector2:
 	var tr:Transform2D = PhysicsServer2D.body_get_state(

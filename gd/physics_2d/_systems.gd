@@ -68,7 +68,7 @@ func _register(w: GFWorld) -> void:
 		.set_name("set_collision_object2d_to_rigid") \
 		.set_events(OnAdd) \
 		.with(GFCollisionBody2D, GFRigidBody) \
-		.with(GFCollisionShapes).access_in() \
+		.with(GFCollisionShapes).io_in() \
 		.for_each(func(body:GFCollisionBody2D, _shapes):
 			PhysicsServer2D.body_set_mode(
 				body.get_rid(),
@@ -80,7 +80,7 @@ func _register(w: GFWorld) -> void:
 		.set_name("set_collision_object2d_to_static") \
 		.set_events(OnAdd) \
 		.with(GFCollisionBody2D, GFStaticBody) \
-		.with(GFCollisionShapes).access_in() \
+		.with(GFCollisionShapes).io_in() \
 		.for_each(func(body:GFCollisionBody2D, _shapes):
 			PhysicsServer2D.body_set_mode(
 				body.get_rid(),
@@ -92,10 +92,10 @@ func _register(w: GFWorld) -> void:
 		.set_name("update_collision_object2d_transform") \
 		.set_events(OnAdd, OnSet) \
 		.with(GFCollisionBody2D, "/root/flecs/core/*") \
-		.maybe_with(GFPosition2D) \
-		.maybe_with(GFRotation2D) \
-		.maybe_with(GFScale2D) \
-		.with(GFCollisionShapes).access_filter() \
+		.with_maybe(GFPosition2D) \
+		.with_maybe(GFRotation2D) \
+		.with_maybe(GFScale2D) \
+		.with(GFCollisionShapes).io_filter() \
 		.for_each(update_body_transform)
 
 	#endregion
@@ -156,12 +156,12 @@ func _register(w: GFWorld) -> void:
 	GFObserverBuilder.new() \
 		.set_name("set_rectangle_shape2d_transform") \
 		.set_events(OnSet) \
-		.with(GFCollisionBody2D, "/root/flecs/core/*").access_filter().up() \
-		.with(GFCollisionShapes).access_filter().up() \
-		.with(GFRectangleShape2D).access_filter() \
-		.maybe_with(GFPosition2D).access_in() \
-		.maybe_with(GFRotation2D).access_in() \
-		.maybe_with(GFScale2D).access_in() \
+		.with(GFCollisionBody2D, "/root/flecs/core/*").io_filter().up() \
+		.with(GFCollisionShapes).io_filter().up() \
+		.with(GFRectangleShape2D).io_filter() \
+		.with_maybe(GFPosition2D).io_in() \
+		.with_maybe(GFRotation2D).io_in() \
+		.with_maybe(GFScale2D).io_in() \
 		.for_each(func(
 			body:GFCollisionBody2D,
 			shapes:GFCollisionShapes,
