@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFTag" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFTag" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to an entity with no data.
 	</brief_description>
@@ -100,6 +101,13 @@
 				[codeblock]
 				var entity:= GFEntity.from_id(255)
 				[/codeblock]
+			</description>
+		</method>
+		<method name="inherit">
+			<return type="GFTag" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Extends [method GFEntity.inherit].
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">

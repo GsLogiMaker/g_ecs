@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFModule" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFModule" inherits="GFRegisterableEntity"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -88,6 +89,13 @@
 			<param index="1" name="world" type="GFWorld" default="null" />
 			<description>
 				Overrides [method GFEntity.from_id].
+			</description>
+		</method>
+		<method name="inherit">
+			<return type="GFModule" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Extends [method GFEntity.inherit].
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">

@@ -33,6 +33,8 @@ func test_component_string_get_and_set():
 		.add(Stringy) \
 		.set_name("Test")
 
+	prints(e.get_property_list())
+
 	var foo:Stringy = e.get(Stringy)
 	foo.a = "po"
 	foo.b = "em"
@@ -92,7 +94,7 @@ func test_entity_created_in_singleton():
 func test_builder():
 	var e:= GFEntityBuilder.new() \
 		.set_name("Built") \
-		.add_entity(Foo) \
+		.add(Foo) \
 		.add_pair(Foo, Stringy) \
 		.add_pair(Stringy, Foo) \
 		.build()
@@ -223,8 +225,8 @@ func test_add_sibling():
 
 func test_inheritance():
 	var ship_pfb:= GFEntityBuilder.new() \
-		.add_entity("flecs/core/Prefab") \
-		.add_entity(GFPosition2D) \
+		.add("flecs/core/Prefab") \
+		.add(GFPosition2D) \
 		.build() \
 		.set(GFPosition2D, Vector2(2, 3))
 	
@@ -325,7 +327,7 @@ func test_is_owner_of():
 	
 	var pos:= GFComponentBuilder.new() \
 		.set_name("Pos") \
-		.add_entity(inherit) \
+		.add(inherit) \
 		.add_member("_", TYPE_INT) \
 		.build()
 	var rot:= GFComponentBuilder.new() \

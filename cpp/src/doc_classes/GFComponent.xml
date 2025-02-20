@@ -162,6 +162,13 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="inherit">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Extends [method GFEntity.inherit].
+			</description>
+		</method>
 		<method name="is_alive" qualifiers="const">
 			<return type="bool" />
 			<description>

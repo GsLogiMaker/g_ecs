@@ -44,10 +44,10 @@ func _register(w:GFWorld):
 	GFObserverBuilder.new() \
 		.set_name("update_canvas_item_transform") \
 		.set_events(OnSet) \
-		.with(GFCanvasItem).access_filter() \
-		.maybe_with(GFPosition2D) \
-		.maybe_with(GFRotation2D) \
-		.maybe_with(GFScale2D) \
+		.with(GFCanvasItem).io_filter() \
+		.with_maybe(GFPosition2D) \
+		.with_maybe(GFRotation2D) \
+		.with_maybe(GFScale2D) \
 		.for_each(update_transform_c)
 	#endregion
 
@@ -88,8 +88,8 @@ func _register(w:GFWorld):
 		.set_events(OnAdd, OnSet) \
 		.with(GFCanvasItem) \
 		.with(GFDrawRect2D) \
-		.maybe_with(GFPosition2D, GFDrawRect2D) \
-		.maybe_with(GFSize2D, GFDrawRect2D) \
+		.with_maybe(GFPosition2D, GFDrawRect2D) \
+		.with_maybe(GFSize2D, GFDrawRect2D) \
 		.for_each(func(
 			item:GFCanvasItem,
 			_position_gf:GFPosition2D,
@@ -101,7 +101,7 @@ func _register(w:GFWorld):
 	GFObserverBuilder.new() \
 		.set_name("trigger_redraw_on_set_draw_rect_size") \
 		.set_events(OnSet) \
-		.with(GFCanvasItem).access_filter() \
+		.with(GFCanvasItem).io_filter() \
 		.with(GFSize2D, GFDrawRect2D) \
 		.for_each(func(
 			item:GFCanvasItem,
@@ -115,8 +115,8 @@ func _register(w:GFWorld):
 		.set_events(GFOnDraw) \
 		.with(GFCanvasItem) \
 		.with(GFDrawRect2D) \
-		.maybe_with(GFPosition2D, GFDrawRect2D) \
-		.maybe_with(GFSize2D, GFDrawRect2D) \
+		.with_maybe(GFPosition2D, GFDrawRect2D) \
+		.with_maybe(GFSize2D, GFDrawRect2D) \
 		.for_each(func(
 			item:GFCanvasItem,
 			rect_c:GFDrawRect2D,

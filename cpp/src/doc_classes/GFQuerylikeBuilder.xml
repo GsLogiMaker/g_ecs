@@ -10,43 +10,19 @@
 		<link title="More on Flecs Queries">https://www.flecs.dev/flecs/md_docs_2Queries</link>
 	</tutorials>
 	<methods>
-		<method name="access_default">
+		<method name="add">
 			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="entity" type="Variant" />
 			<description>
-				Marks the last added term as default.
+				Overrides [GFEntity.add].
 			</description>
 		</method>
-		<method name="access_filter">
+		<method name="add_pair">
 			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="first" type="Variant" />
+			<param index="1" name="second" type="Variant" />
 			<description>
-				Marks the last added term as a filter.
-				Filters will not trigger observers, but they
-				will still be required for them to match.
-			</description>
-		</method>
-		<method name="access_in">
-			<return type="GFQuerylikeBuilder" />
-			<description>
-				Marks the last added term read only.
-			</description>
-		</method>
-		<method name="access_inout">
-			<return type="GFQuerylikeBuilder" />
-			<description>
-				Marks the last added term read and write.
-			</description>
-		</method>
-		<method name="access_none">
-			<return type="GFQuerylikeBuilder" />
-			<description>
-				Marks the last added term as never accessed. This will also cause the
-				term to not be passed to systems, queryies, or observers.
-			</description>
-		</method>
-		<method name="access_out">
-			<return type="GFQuerylikeBuilder" />
-			<description>
-				Marks the last added term write only.
+				Overrides [GFEntity.add_pair].
 			</description>
 		</method>
 		<method name="cascade">
@@ -61,25 +37,7 @@
 			<description>
 			</description>
 		</method>
-		<method name="maybe_with">
-			<return type="GFQuerylikeBuilder" />
-			<param index="0" name="term" type="Variant" />
-			<param index="1" name="second" type="Variant" default="null" />
-			<description>
-				Adds an optional term to the query.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-			</description>
-		</method>
-		<method name="or_with">
-			<return type="GFQuerylikeBuilder" />
-			<param index="0" name="term" type="Variant" />
-			<param index="1" name="second" type="Variant" default="null" />
-			<description>
-				Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
-				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
-			</description>
-		</method>
-		<method name="src">
+		<method name="from">
 			<return type="GFQuerylikeBuilder" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
@@ -96,9 +54,75 @@
 
 				# Query only for Velocity of the ship, not the asteroid
 				var query = GFQueryBuilder.new() \
-				    .with(Velocity).src(ship) \
+				    .with(Velocity).from(ship) \
 				    .build()
 				[/codeblock]
+			</description>
+		</method>
+		<method name="io_default">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term to behave with the default IO functionality.
+			</description>
+		</method>
+		<method name="io_filter">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term as a filter. Filter terms do not trigger observers, but they are still be required for an entity to match the query.
+			</description>
+		</method>
+		<method name="io_in">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term read only.
+			</description>
+		</method>
+		<method name="io_inout">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term read and write.
+			</description>
+		</method>
+		<method name="io_none">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term as never accessed. This will also cause the term to not be passed to systems, queryies, or observers.
+			</description>
+		</method>
+		<method name="io_out">
+			<return type="GFQuerylikeBuilder" />
+			<description>
+				Marks the last added term write only.
+			</description>
+		</method>
+		<method name="or_with">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Adds a term to the query that matches this or one of the previous terms in an [i]or[/i] chain.
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="set_name">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="name" type="Variant" />
+			<description>
+				Overrides [GFEntityBuilder.set_name].
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="entity" type="Variant" default="0" />
+			<description>
+				Overrides [GFEntityBuilder.set_parent].
+			</description>
+		</method>
+		<method name="set_target_entity">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Overrides [GFEntityBuilder.set_target_entity].
 			</description>
 		</method>
 		<method name="up">
@@ -115,6 +139,15 @@
 			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Adds a term to the query.
+				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
+			</description>
+		</method>
+		<method name="with_maybe">
+			<return type="GFQuerylikeBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Adds an optional term to the query.
 				The term added is identified by a [Variant] coerced to an ID. To learn more about [Variant] coercion see [method GFWorld.coerce_id].
 			</description>
 		</method>

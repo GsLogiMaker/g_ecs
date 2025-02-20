@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFEntityBuilder" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFEntityBuilder" inherits="RefCounted"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -7,7 +8,7 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="add_entity">
+		<method name="add">
 			<return type="GFEntityBuilder" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
