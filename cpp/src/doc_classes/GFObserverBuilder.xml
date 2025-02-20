@@ -20,7 +20,7 @@
 		GFObserverBuilder.new() \
 		    .set_events("flecs/core/OnAdd") \
 		    .with("Run") \
-		    .with("Jump").access_filter() \
+		    .with("Jump").io_filter() \
 		    .for_each(func(run:GFComponent, jump:GFComponent):
 		        pass
 		        )
@@ -30,11 +30,11 @@
 		<link title="More on Flecs Observers">https://www.flecs.dev/flecs/md_docs_2ObserversManual</link>
 	</tutorials>
 	<methods>
-		<method name="add_entity">
+		<method name="add">
 			<return type="GFObserverBuilder" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
-				Overrides [method GFEntityBuilder.add_entity].
+				Overrides [method GFEntityBuilder.add].
 			</description>
 		</method>
 		<method name="add_pair">
@@ -66,12 +66,47 @@
 				Builds the observer with a callback for iterating over each result.
 			</description>
 		</method>
-		<method name="maybe_with">
-			<return type="GFObserverBuilder" />
-			<param index="0" name="term" type="Variant" />
-			<param index="1" name="second" type="Variant" default="null" />
+		<method name="from">
+			<return type="GFSystemBuilder" />
+			<param index="0" name="entity" type="Variant" />
 			<description>
-				Overrides [method GFQuerylikeBuilder.maybe_with].
+				Overrides [GFQuerylikeBuilder.from].
+			</description>
+		</method>
+		<method name="io_default">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_default].
+			</description>
+		</method>
+		<method name="io_filter">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_filter].
+			</description>
+		</method>
+		<method name="io_in">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_in].
+			</description>
+		</method>
+		<method name="io_inout">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_inout].
+			</description>
+		</method>
+		<method name="io_none">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_none].
+			</description>
+		</method>
+		<method name="io_out">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_out].
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">
@@ -124,13 +159,6 @@
 				Overrides [method GFEntityBuilder.set_target_entity].
 			</description>
 		</method>
-		<method name="src">
-			<return type="GFObserverBuilder" />
-			<param index="0" name="entity" type="Variant" />
-			<description>
-				Overrides [method GFQuerylikeBuilder.src].
-			</description>
-		</method>
 		<method name="up">
 			<return type="GFObserverBuilder" />
 			<param index="0" name="traversal" type="Variant" default="0" />
@@ -144,6 +172,14 @@
 			<param index="1" name="second" type="Variant" default="null" />
 			<description>
 				Overrides [method GFQuerylikeBuilder.with].
+			</description>
+		</method>
+		<method name="with_maybe">
+			<return type="GFObserverBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.with_maybe].
 			</description>
 		</method>
 		<method name="without">

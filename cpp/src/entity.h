@@ -8,7 +8,6 @@
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/string_name.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -28,6 +27,7 @@
 	Ref<Self> add_pairv(const Variant v0, const Variant v1, const Variant v2)	{ return GFEntity::add_pairv(v0, v1, v2); }	\
 	Ref<Self> add_tag(const Variant v0)	{ return GFEntity::add_tag(v0); }	\
 	Ref<Self> emit(const Variant v0, const Array v1)	{ return GFEntity::emit(v0, v1); }	\
+	Ref<Self> inherit(const Variant v0)	{ return GFEntity::inherit(v0); }	\
 	Ref<Self> set_name(const String v0)	{ return GFEntity::set_name(v0); }	\
 	Ref<Self> set_parent(const Variant v0)	{ return GFEntity::set_parent(v0); }	\
 	Ref<Self> add_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::add_component(v0, v1, v2); }	\
@@ -48,7 +48,6 @@
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"),	&Self::add_tag);	\
 	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "event_members"),	&Self::emit, Array());	\
 	godot::ClassDB::bind_method(D_METHOD("inherit", "entity"),	&Self::inherit);	\
-	godot::ClassDB::bind_method(D_METHOD("is_inheriting", "entity"),	&Self::is_inheriting);	\
 	godot::ClassDB::bind_method(D_METHOD("remove", "entity", "second"),	&Self::remove_component, nullptr);	\
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"),	&Self::set_name);	\
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"),	&Self::set_parent);	\

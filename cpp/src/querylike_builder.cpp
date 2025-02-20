@@ -37,42 +37,42 @@ bool GFQuerylikeBuilder::is_built() const {
 	return built;
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_default() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_default() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `default`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutDefault;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_filter() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_filter() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `filter`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutFilter;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_in() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_in() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `in`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsIn;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_inout() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_inout() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `inout`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOut;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_none() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_none() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `none`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutNone;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_out() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `out`\n"
 	);
@@ -83,7 +83,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(const Variant term_v, const Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with_maybe(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsOptional);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(const Variant term_v, const Variant second) {
@@ -154,7 +154,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(const Variant entity) {
 	return Ref(this);
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::src(const Variant entity) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::from(const Variant entity) {
 	GFWorld* w = get_world();
 	ecs_entity_t entity_id = w->coerce_id(entity);
 

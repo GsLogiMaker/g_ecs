@@ -14,33 +14,39 @@
 #include <godot_cpp/variant/string.hpp>
 
 #define OVERRIDE_QUERYLIKE_SELF_METHODS(Self)	\
-	OVERRIDE_ENTITY_BUILDER_SELF_METHODS(Self)              	\
-	Ref<Self> with(const Variant v0, const Variant v1)      	{ return GFQuerylikeBuilder::with(v0, v1); }      	\
-	Ref<Self> or_with(const Variant v0, const Variant v1)   	{ return GFQuerylikeBuilder::or_with(v0, v1); }   	\
-	Ref<Self> without(const Variant v0, const Variant v1)   	{ return GFQuerylikeBuilder::without(v0, v1); }   	\
-	Ref<Self> maybe_with(const Variant v0, const Variant v1)	{ return GFQuerylikeBuilder::maybe_with(v0, v1); }	\
-	Ref<Self> up(const Variant v0)                          	{ return GFQuerylikeBuilder::up(v0); }            	\
-	Ref<Self> descend(const Variant v0)                     	{ return GFQuerylikeBuilder::descend(v0); }       	\
-	Ref<Self> cascade(const Variant v0)                     	{ return GFQuerylikeBuilder::cascade(v0); }       	\
-	Ref<Self> src(const Variant v0)                     	{ return GFQuerylikeBuilder::src(v0); }       	\
+	OVERRIDE_ENTITY_BUILDER_SELF_METHODS(Self)	\
+	Ref<Self> with(const Variant v0, const Variant v1)	{ return GFQuerylikeBuilder::with(v0, v1); }	\
+	Ref<Self> with_maybe(const Variant v0, const Variant v1)	{ return GFQuerylikeBuilder::with_maybe(v0, v1); }	\
+	Ref<Self> without(const Variant v0, const Variant v1)	{ return GFQuerylikeBuilder::without(v0, v1); }	\
+	Ref<Self> or_with(const Variant v0, const Variant v1)	{ return GFQuerylikeBuilder::or_with(v0, v1); }	\
+	Ref<Self> up(const Variant v0)	{ return GFQuerylikeBuilder::up(v0); }	\
+	Ref<Self> descend(const Variant v0)	{ return GFQuerylikeBuilder::descend(v0); }	\
+	Ref<Self> cascade(const Variant v0)	{ return GFQuerylikeBuilder::cascade(v0); }	\
+	Ref<Self> io_default()	{ return GFQuerylikeBuilder::io_default(); }	\
+	Ref<Self> io_filter()	{ return GFQuerylikeBuilder::io_filter(); }	\
+	Ref<Self> io_in()	{ return GFQuerylikeBuilder::io_in(); }	\
+	Ref<Self> io_inout()	{ return GFQuerylikeBuilder::io_inout(); }	\
+	Ref<Self> io_none()	{ return GFQuerylikeBuilder::io_none(); }	\
+	Ref<Self> io_out()	{ return GFQuerylikeBuilder::io_out(); }	\
+	Ref<Self> from(const Variant v0)	{ return GFQuerylikeBuilder::from(v0); }	\
 ;
 
 #define REGISTER_QUERYLIKE_SELF_METHODS(Self)	\
 	REGISTER_ENTITY_BUILDER_SELF_METHODS(Self)	\
 	godot::ClassDB::bind_method(D_METHOD("with", "term", "second"), &Self::with, nullptr);	\
-	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &Self::or_with, nullptr);	\
+	godot::ClassDB::bind_method(D_METHOD("with_maybe", "term", "second"), &Self::with_maybe, nullptr);	\
 	godot::ClassDB::bind_method(D_METHOD("without", "term", "second"), &Self::without, nullptr);	\
-	godot::ClassDB::bind_method(D_METHOD("maybe_with", "term", "second"), &Self::maybe_with, nullptr);	\
+	godot::ClassDB::bind_method(D_METHOD("or_with", "term", "second"), &Self::or_with, nullptr);	\
 	godot::ClassDB::bind_method(D_METHOD("up", "traversal"), &Self::up, 0);	\
 	godot::ClassDB::bind_method(D_METHOD("descend", "traversal"), &Self::descend, 0);	\
 	godot::ClassDB::bind_method(D_METHOD("cascade", "traversal"), &Self::cascade, 0);	\
-	godot::ClassDB::bind_method(D_METHOD("access_default"), &Self::access_default);	\
-	godot::ClassDB::bind_method(D_METHOD("access_filter"), &Self::access_filter);	\
-	godot::ClassDB::bind_method(D_METHOD("access_in"), &Self::access_in);	\
-	godot::ClassDB::bind_method(D_METHOD("access_inout"), &Self::access_inout);	\
-	godot::ClassDB::bind_method(D_METHOD("access_none"), &Self::access_none);	\
-	godot::ClassDB::bind_method(D_METHOD("access_out"), &Self::access_out);	\
-	godot::ClassDB::bind_method(D_METHOD("src", "entity"), &Self::src);	\
+	godot::ClassDB::bind_method(D_METHOD("io_default"), &Self::io_default);	\
+	godot::ClassDB::bind_method(D_METHOD("io_filter"), &Self::io_filter);	\
+	godot::ClassDB::bind_method(D_METHOD("io_in"), &Self::io_in);	\
+	godot::ClassDB::bind_method(D_METHOD("io_inout"), &Self::io_inout);	\
+	godot::ClassDB::bind_method(D_METHOD("io_none"), &Self::io_none);	\
+	godot::ClassDB::bind_method(D_METHOD("io_out"), &Self::io_out);	\
+	godot::ClassDB::bind_method(D_METHOD("from", "entity"), &Self::from);	\
 ;
 
 #define QUERYLIKE_BUILD_START	\
@@ -92,26 +98,28 @@ namespace godot {
 		{}
 		~GFQuerylikeBuilder();
 
+		OVERRIDE_ENTITY_BUILDER_SELF_METHODS(GFQuerylikeBuilder);
+
 		// **************************************
 		// *** Exposed ***
 		// **************************************
 
 		int get_term_count() const;
 		bool is_built() const;
-		Ref<GFQuerylikeBuilder> access_default();
-		Ref<GFQuerylikeBuilder> access_filter();
-		Ref<GFQuerylikeBuilder> access_in();
-		Ref<GFQuerylikeBuilder> access_inout();
-		Ref<GFQuerylikeBuilder> access_none();
-		Ref<GFQuerylikeBuilder> access_out();
+		Ref<GFQuerylikeBuilder> io_default();
+		Ref<GFQuerylikeBuilder> io_filter();
+		Ref<GFQuerylikeBuilder> io_in();
+		Ref<GFQuerylikeBuilder> io_inout();
+		Ref<GFQuerylikeBuilder> io_none();
+		Ref<GFQuerylikeBuilder> io_out();
 		Ref<GFQuerylikeBuilder> with(const Variant, const Variant);
-		Ref<GFQuerylikeBuilder> maybe_with(const Variant, const Variant);
-		Ref<GFQuerylikeBuilder> or_with(const Variant, const Variant);
+		Ref<GFQuerylikeBuilder> with_maybe(const Variant, const Variant);
 		Ref<GFQuerylikeBuilder> without(const Variant, const Variant);
+		Ref<GFQuerylikeBuilder> or_with(const Variant, const Variant);
 		Ref<GFQuerylikeBuilder> up(const Variant component);
 		Ref<GFQuerylikeBuilder> descend(const Variant component);
 		Ref<GFQuerylikeBuilder> cascade(const Variant component);
-		Ref<GFQuerylikeBuilder> src(const Variant component);
+		Ref<GFQuerylikeBuilder> from(const Variant component);
 
 		// **************************************
 		// *** Unexposed ***
@@ -132,7 +140,7 @@ namespace godot {
 	protected:
 		/// The Flecs description of the building query.
 		ecs_query_desc_t query_desc{0};
-		/// Is true if this builder has already been built
+		/// Is true if this builder has alio_iny been built
 		bool built{false};
 		PackedStringArray source_names = PackedStringArray();
 		PackedStringArray first_names = PackedStringArray();

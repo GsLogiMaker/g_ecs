@@ -41,7 +41,7 @@ func test_optional_terms():
 	data.bools = 0
 	GFSystemBuilder.new() \
 		.with(Ints) \
-		.maybe_with(Bools) \
+		.with_maybe(Bools) \
 		.for_each(callable)
 	world.progress(0.0)
 	assert_eq(data.ints, 2, "Expected `Ints` to be queried 2 times")
@@ -50,7 +50,7 @@ func test_optional_terms():
 	data.ints = 0
 	data.bools = 0
 	GFSystemBuilder.new() \
-		.maybe_with(Ints) \
+		.with_maybe(Ints) \
 		.with(Bools) \
 		.for_each(callable)
 	world.progress(0.0)
@@ -137,7 +137,7 @@ func test_query_variable():
 	var world_e:= GFEntity.new().set_name("World")
 	var world_3d:= GFComponentBuilder.new() \
 		.set_name("World3D") \
-		.add_entity(world_e) \
+		.add(world_e) \
 		.add_member("origin", TYPE_VECTOR2) \
 		.build()
 	var world_2d:= GFEntity.new() \
@@ -155,7 +155,7 @@ func test_query_variable():
 	# Run query
 	var q:= GFQueryBuilder.new() \
 		.with(rendering, "$world") \
-		.with(world_e).src("$world") \
+		.with(world_e).from("$world") \
 		.build()
 	var results:= q.iter().into_array()
 	
@@ -184,7 +184,7 @@ func test_src_doc_example():
 	
 	# Query only for Velocity of the ship, not the asteroid
 	var query = GFQueryBuilder.new() \
-		.with(Velocity).src(ship) \
+		.with(Velocity).from(ship) \
 		.build()
 	
 	var arr = query.iter().into_array()

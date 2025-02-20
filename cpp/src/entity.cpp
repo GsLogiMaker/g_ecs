@@ -775,8 +775,10 @@ void GFEntity::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("has_child", "path"), &GFEntity::has_child);
 
 	godot::ClassDB::bind_method(D_METHOD("is_alive"), &GFEntity::is_alive);
+	godot::ClassDB::bind_method(D_METHOD("is_inheriting", "entity"),	&GFEntity::is_inheriting);
 	godot::ClassDB::bind_method(D_METHOD("is_owner_of"), &GFEntity::is_owner_of);
 	godot::ClassDB::bind_method(D_METHOD("is_pair"), &GFEntity::is_pair);
+
 	godot::ClassDB::bind_method(D_METHOD("iter_children"), &GFEntity::iter_children);
 
 	godot::ClassDB::bind_method(D_METHOD("pair", "second"), &GFEntity::pair);

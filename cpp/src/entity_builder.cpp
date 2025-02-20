@@ -24,7 +24,7 @@ Ref<GFEntityBuilder> GFEntityBuilder::new_in_world(GFWorld* world) {
 	return Ref(memnew(GFEntityBuilder(world)));
 }
 
-Ref<GFEntityBuilder> GFEntityBuilder::add_entity(const Variant entity) {
+Ref<GFEntityBuilder> GFEntityBuilder::add(const Variant entity) {
 	GFWorld* w = get_world();
 	ecs_entity_t id = w->coerce_id(entity);
 	CHECK_ENTITY_ALIVE(id, w, this,
