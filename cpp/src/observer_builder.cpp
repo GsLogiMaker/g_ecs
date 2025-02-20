@@ -17,6 +17,8 @@ Ref<GFObserverBuilder> GFObserverBuilder::new_in_world(GFWorld* world) {
 }
 
 void GFObserverBuilder::for_each(const Callable callable) {
+	QUERYLIKE_BUILD_START
+
 	ecs_entity_t obs_id = GFEntityBuilder::build_id();
 	// Prevent creating new entity if builder is rebuilt
 	set_target_entity(obs_id);
@@ -31,6 +33,8 @@ void GFObserverBuilder::for_each(const Callable callable) {
 		};
 		ecs_observer_init(get_world()->raw(), &desc);
 	}
+
+	QUERYLIKE_BUILD_END
 }
 
 Ref<GFObserverBuilder> GFObserverBuilder::set_event(int index, const Variant event) {

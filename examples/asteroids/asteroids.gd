@@ -20,6 +20,16 @@ func _ready() -> void:
 		.set_name("Shape") \
 		.add(GFRectangleShape2D) \
 		.add_pair("flecs/core/ChildOf", e)
+	#e.add(GFTexture2D, texture)
+	e.add(GFPosition2D, Vector2(0, 0))
+	e.add(GFDrawRect2D)
+	e.add(GFPosition2D)
+	e.add(GFRotation2D)
+	e.set_pair(GFSize2D, GFDrawRect2D, Vector2(100, 22))
+
+	GFEntity.from(GFOnDraw, e.get_world()).emit(e)
+
+	GFWorld.get_default_world().start_rest_api()
 
 
 func _process(delta: float) -> void:

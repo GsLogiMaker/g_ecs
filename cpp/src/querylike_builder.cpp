@@ -2,8 +2,9 @@
 
 #include "querylike_builder.h"
 #include "godot_cpp/variant/callable.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
+#include "godot_cpp/variant/packed_string_array.hpp"
 #include "godot_cpp/variant/variant.hpp"
+#include "query_builder.h"
 #include "query_iteration_context.h"
 #include "utils.h"
 #include "world.h"
@@ -36,42 +37,42 @@ bool GFQuerylikeBuilder::is_built() const {
 	return built;
 }
 
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_default() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_default() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `default`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutDefault;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_filter() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_filter() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `filter`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutFilter;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_in() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_in() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `in`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsIn;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_inout() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_inout() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `inout`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOut;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_none() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_none() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `none`\n"
 	);
 	query_desc.terms[get_term_count()-1].inout = ecs_inout_kind_t::EcsInOutNone;
 	return Ref(this);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::io_out() {
 	CHECK_HAS_A_TERM(Ref(this),
 		"Failed to set term's access mode to `out`\n"
 	);
@@ -82,7 +83,7 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::access_out() {
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsAnd);
 }
-Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::maybe_with(const Variant term_v, const Variant second) {
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::with_maybe(const Variant term_v, const Variant second) {
 	return _add_term(term_v, second, ecs_oper_kind_t::EcsOptional);
 }
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::or_with(const Variant term_v, const Variant second) {
@@ -153,15 +154,64 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::cascade(const Variant entity) {
 	return Ref(this);
 }
 
+Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::from(const Variant entity) {
+	GFWorld* w = get_world();
+	ecs_entity_t entity_id = w->coerce_id(entity);
+
+	ecs_term_t* term = &query_desc.terms[get_term_count()-1];
+	handle_id_or_variable(
+		w,
+		entity,
+		&term->src.id,
+		&source_names[get_term_count()-1]
+	);
+
+	return Ref(this);
+}
+
 // **************************************
 // *** Unexposed ***
 // **************************************
+
+bool GFQuerylikeBuilder::handle_id_or_variable(
+	GFWorld* world,
+	Variant entity,
+	ecs_entity_t* ref_out,
+	String* var_out
+) {
+	switch (entity.get_type()) {
+		case Variant::STRING:
+		case Variant::STRING_NAME: {
+			String string = entity;
+			if (!string.begins_with("$")) {
+				break;
+			}
+			*var_out = string;
+			return true;
+		}
+		default: {}
+	}
+
+	*ref_out = world->coerce_id(entity);
+	CHECK_ENTITY_ALIVE(*ref_out, world,
+		false,
+		"Failed to add term in to query\n"
+	);
+	CHECK_NOT_PAIR(*ref_out, world,
+		false,
+		"Failed to add term in to query\n"
+	);
+
+	return true;
+}
 
 Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 	const Variant term_v,
 	const Variant second,
 	ecs_oper_kind_t oper
 ) {
+	GFWorld* w = get_world();
+
 	const char* oper_name = "";
 	switch (oper) {
 		case EcsAnd: oper_name = "and"; break;
@@ -173,39 +223,32 @@ Ref<GFQuerylikeBuilder> GFQuerylikeBuilder::_add_term(
 		case EcsNotFrom: oper_name = "not_from"; break;
 	}
 
-	GFWorld* w = get_world();
-	ecs_entity_t term_id = w->coerce_id(term_v);
-	ecs_entity_t first_id = 0;
-	ecs_entity_t second_id = 0;
-	CHECK_ENTITY_ALIVE(term_id, w,
-		nullptr,
-		"Failed to add term in `", oper_name, "` term to query\n"
+	source_names.resize(get_term_count()+1);
+	first_names.resize(get_term_count()+1);
+	second_names.resize(get_term_count()+1);
+
+	ecs_term_t* term = &query_desc.terms[get_term_count()];
+	term->oper = static_cast<int16_t>(oper);
+
+	handle_id_or_variable(
+		w,
+		term_v,
+		&term->first.id,
+		&first_names[get_term_count()]
 	);
 
 	if (second.booleanize()) {
-		CHECK_NOT_PAIR(term_id, w,
-			nullptr,
-			"Failed to add term as first of pair in `", oper_name, "` term to query\n"
+		handle_id_or_variable(
+			w,
+			second,
+			&term->second.id,
+			&second_names[get_term_count()]
 		);
-
-		second_id = w->coerce_id(second);
-		CHECK_ENTITY_ALIVE(second_id, w,
-			nullptr,
-			"Failed to add second in `", oper_name, "` term to query\n"
-		);
-		CHECK_NOT_PAIR(term_id, w,
-			nullptr,
-			"Failed to add second of pair in `", oper_name, "` term to query\n"
-		);
-
-		term_id = ecs_pair(term_id, second_id);
+	} else {
+		term->id = term->first.id;
+		term->first.id = 0;
 	}
 
-	query_desc.terms[get_term_count()] = {
-		.id = term_id,
-		.inout = ecs_inout_kind_t::EcsInOutDefault,
-		.oper = static_cast<int16_t>(oper)
-	};
 	term_count += 1;
 
 	return this;
@@ -230,14 +273,16 @@ QueryIterationContext* GFQuerylikeBuilder::setup_ctx(const Callable callable) {
 	};
 
 	if (callable.get_argument_count() != ctx->comp_ref_args.size()) {
-		ERR(ctx,
-			"Failed to setup query context\n",
-			"Query expected a callable with ",
-			ctx->comp_ref_args.size(),
-			" arguments, but got callable with ",
-			callable.get_argument_count(),
-			" arguments."
-		);
+		if (get_class() != GFQueryBuilder::get_class_static()) {
+			ERR(ctx,
+				"Failed to setup query context\n",
+				"	Query expected a callable with ",
+				ctx->comp_ref_args.size(),
+				" arguments, but got callable with ",
+				callable.get_argument_count(),
+				" arguments."
+			);
+		}
 	}
 
 	return ctx;

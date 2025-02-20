@@ -11,27 +11,13 @@ using namespace godot;
 Variant::Type Utils::primitive_type_to_variant(ecs_primitive_kind_t primi_kind) {
 	switch (primi_kind) {
 	case EcsBool: return Variant::BOOL;
-	case EcsU8: return Variant::INT;
-	case EcsU16: return Variant::INT;
-	case EcsU32: return Variant::INT;
 	case EcsU64: return Variant::INT;
-	case EcsI8: return Variant::INT;
-	case EcsI16: return Variant::INT;
-	case EcsI32: return Variant::INT;
 	case EcsI64: return Variant::INT;
-	case EcsF32: return Variant::FLOAT;
 	case EcsF64: return Variant::FLOAT;
-	case EcsString: return Variant::STRING;
 	case EcsId: return Variant::INT;
-	case EcsChar: ERR(Variant::NIL, "Can't handle char primitive type");
-	case EcsByte: ERR(Variant::NIL, "Can't handle byte primitive type");
-	case EcsUPtr: ERR(Variant::NIL, "Can't handle UPointer primitive type");
-	case EcsIPtr: ERR(Variant::NIL, "Can't handle IPointer primitive type");
-	case EcsEntity: ERR(Variant::NIL, "Can't handle entity primitive type");
+	case EcsEntity: return Variant::INT;
+	default: return Variant::NIL;
 	}
-	ERR(Variant::NIL,
-		"Unreachable\n"
-	);
 }
 
 Variant Utils::primitive_value_to_variant(const void* primi_ptr, ecs_primitive_kind_t primi_kind) {
@@ -109,55 +95,7 @@ EntityResult Utils::variant_type_to_id(Variant::Type type) {
 	}
 }
 
-void Utils::set_gd_struct_from_variant(
-	const Variant value,
-	const ecs_entity_t gd_struct,
-	void* out
-) {
-	Variant::Type type = GFWorld::id_to_variant_type(gd_struct);
-	switch (type) {
-        case Variant::NIL: ERR(/**/, "Can't set nil");
-        case Variant::BOOL: *static_cast<bool*>(out) = value; break;
-        case Variant::INT: *static_cast<int64_t*>(out) = value; break;
-        case Variant::FLOAT: *static_cast<double*>(out) = value; break;
-        case Variant::STRING: *static_cast<String*>(out) = value; break;
-        case Variant::VECTOR2: *static_cast<Vector2*>(out) = value; break;
-        case Variant::VECTOR2I: *static_cast<Vector2i*>(out) = value; break;
-        case Variant::RECT2: *static_cast<Rect2*>(out) = value; break;
-        case Variant::RECT2I: *static_cast<Rect2i*>(out) = value; break;
-        case Variant::VECTOR3: *static_cast<Vector3*>(out) = value; break;
-        case Variant::VECTOR3I: *static_cast<Vector3i*>(out) = value; break;
-        case Variant::TRANSFORM2D: *static_cast<Transform2D*>(out) = value; break;
-        case Variant::VECTOR4: *static_cast<Vector4*>(out) = value; break;
-        case Variant::VECTOR4I: *static_cast<Vector4i*>(out) = value; break;
-        case Variant::PLANE: *static_cast<Plane*>(out) = value; break;
-        case Variant::QUATERNION: *static_cast<Quaternion*>(out) = value; break;
-        case Variant::AABB: *static_cast<AABB*>(out) = value; break;
-        case Variant::BASIS: *static_cast<Basis*>(out) = value; break;
-        case Variant::TRANSFORM3D: *static_cast<Transform3D*>(out) = value; break;
-        case Variant::PROJECTION: *static_cast<Projection*>(out) = value; break;
-        case Variant::COLOR: *static_cast<Color*>(out) = value; break;
-        case Variant::STRING_NAME: *static_cast<StringName*>(out) = value; break;
-        case Variant::NODE_PATH: *static_cast<NodePath*>(out) = value; break;
-        case Variant::RID: *static_cast<RID*>(out) = value; break;
-        case Variant::OBJECT: *static_cast<Variant*>(out) = value; break;
-        case Variant::CALLABLE: *static_cast<Callable*>(out) = value; break;
-        case Variant::SIGNAL: *static_cast<Signal*>(out) = value; break;
-        case Variant::DICTIONARY: *static_cast<Dictionary*>(out) = value; break;
-        case Variant::ARRAY: *static_cast<Array*>(out) = value; break;
-        case Variant::PACKED_BYTE_ARRAY: *static_cast<PackedByteArray*>(out) = value; break;
-        case Variant::PACKED_INT32_ARRAY: *static_cast<PackedInt32Array*>(out) = value; break;
-        case Variant::PACKED_INT64_ARRAY: *static_cast<PackedInt64Array*>(out) = value; break;
-        case Variant::PACKED_FLOAT32_ARRAY: *static_cast<PackedFloat32Array*>(out) = value; break;
-        case Variant::PACKED_FLOAT64_ARRAY: *static_cast<PackedFloat64Array*>(out) = value; break;
-        case Variant::PACKED_STRING_ARRAY: *static_cast<PackedStringArray*>(out) = value; break;
-        case Variant::PACKED_VECTOR2_ARRAY: *static_cast<PackedVector2Array*>(out) = value; break;
-        case Variant::PACKED_VECTOR3_ARRAY: *static_cast<PackedVector3Array*>(out) = value; break;
-        case Variant::PACKED_COLOR_ARRAY: *static_cast<PackedColorArray*>(out) = value; break;
-        case Variant::PACKED_VECTOR4_ARRAY: *static_cast<PackedVector4Array*>(out) = value; break;
-        case Variant::VARIANT_MAX: ERR(/**/, "Can't set Variant::VARIANT_MAX");
-	}
-}
+
 
 bool Utils::can_convert_type_to_primitive(Variant::Type type, ecs_primitive_kind_t primi) {
 	switch (type) {
@@ -253,10 +191,10 @@ void Utils::set_primitive_from_variant(
 void Utils::set_type_from_variant(
 	const Variant value,
 	const ecs_entity_t type,
-	const ecs_world_t* world,
+	const GFWorld* world,
 	void* out
 ) {
-	const EcsPrimitive* primi = ecs_get(world, type, EcsPrimitive);
+	const EcsPrimitive* primi = ecs_get(world->raw(), type, EcsPrimitive);
 	if (primi != nullptr) {
 		if (!Utils::can_convert_type_to_primitive(value.get_type(), primi->kind)) {
 			// TODO: Display names of primitive and variant type, instead of numbers
@@ -269,7 +207,7 @@ void Utils::set_type_from_variant(
 		return;
 	}
 
-	set_gd_struct_from_variant(value, type, out);
+	world->set_gd_struct_from_variant(value, type, out);
 }
 
 String Utils::into_pascal_case(String str) {

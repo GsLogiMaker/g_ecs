@@ -3,9 +3,11 @@
 #define GL_ENTITY_H
 
 #include "entity_iterator.h"
+#include "godot_cpp/classes/reg_ex.hpp"
 #include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/string_name.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "utils.h"
 #include "world.h"
@@ -25,6 +27,7 @@
 	Ref<Self> add_pairv(const Variant v0, const Variant v1, const Variant v2)	{ return GFEntity::add_pairv(v0, v1, v2); }	\
 	Ref<Self> add_tag(const Variant v0)	{ return GFEntity::add_tag(v0); }	\
 	Ref<Self> emit(const Variant v0, const Array v1)	{ return GFEntity::emit(v0, v1); }	\
+	Ref<Self> inherit(const Variant v0)	{ return GFEntity::inherit(v0); }	\
 	Ref<Self> set_name(const String v0)	{ return GFEntity::set_name(v0); }	\
 	Ref<Self> set_parent(const Variant v0)	{ return GFEntity::set_parent(v0); }	\
 	Ref<Self> add_component(const Variant** v0, GDExtensionInt v1, GDExtensionCallError& v2)	{ return GFEntity::add_component(v0, v1, v2); }	\
@@ -45,7 +48,6 @@
 	godot::ClassDB::bind_method(D_METHOD("add_tag", "tag"),	&Self::add_tag);	\
 	godot::ClassDB::bind_method(D_METHOD("emit", "entity", "event_members"),	&Self::emit, Array());	\
 	godot::ClassDB::bind_method(D_METHOD("inherit", "entity"),	&Self::inherit);	\
-	godot::ClassDB::bind_method(D_METHOD("is_inheriting", "entity"),	&Self::is_inheriting);	\
 	godot::ClassDB::bind_method(D_METHOD("remove", "entity", "second"),	&Self::remove_component, nullptr);	\
 	godot::ClassDB::bind_method(D_METHOD("set_name", "name"),	&Self::set_name);	\
 	godot::ClassDB::bind_method(D_METHOD("set_parent", "entity"),	&Self::set_parent);	\
@@ -115,6 +117,11 @@ namespace godot {
 		static Ref<GFEntity> from(const Variant, GFWorld*);
 		static Ref<GFEntity> from_id(ecs_entity_t, GFWorld*);
 
+		Variant __get(const StringName property);
+		bool _get(StringName, Variant&);
+		void _get_property_list(List<PropertyInfo> *p_list);
+		bool _set(StringName, Variant);
+
 		Ref<GFEntity> add_child(const Variant entity);
 		Ref<GFEntity> add_component(const Variant**, GDExtensionInt, GDExtensionCallError&);
 		Ref<GFEntity> add_componentv(const Variant, const Array);
@@ -139,6 +146,7 @@ namespace godot {
 		Ref<GFEntity> get_child(const String) const;
 		TypedArray<GFEntity> get_children() const;
 		Ref<GFComponent> get_component(const Variant, const Variant) const;
+		static const RegEx* get_entity_id_regex();
 		ecs_entity_t get_id() const;
 		String get_name() const;
 		Ref<GFEntity> get_parent() const;

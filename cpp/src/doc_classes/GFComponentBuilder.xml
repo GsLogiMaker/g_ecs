@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponentBuilder" inherits="GFEntityBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponentBuilder" inherits="GFEntityBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Builder for a new component type.
 	</brief_description>
@@ -16,11 +17,11 @@
 		<link title="More on Flecs Components">https://www.flecs.dev/flecs/md_docs_2EntitiesComponents.html#components-1</link>
 	</tutorials>
 	<methods>
-		<method name="add_entity">
+		<method name="add">
 			<return type="GFComponentBuilder" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
-				Overrides [method GFEntityBuilder.add_entity].
+				Overrides [GFEntityBuilder.add].
 			</description>
 		</method>
 		<method name="add_member">

@@ -79,6 +79,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="inherit">
+			<return type="GFRegisterableEntity" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+			</description>
+		</method>
 		<method name="new_in_world" qualifiers="static">
 			<return type="GFRegisterableEntity" />
 			<param index="0" name="world" type="GFWorld" />

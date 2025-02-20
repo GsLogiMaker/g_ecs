@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFComponent" inherits="GFRegisterableEntity"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFComponent" inherits="GFRegisterableEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference to a Glecs component from a [GFWorld] that is attatached to an entity.
 	</brief_description>
@@ -161,6 +160,13 @@
 
 				vec2.getm("x")
 				[/codeblock]
+			</description>
+		</method>
+		<method name="inherit">
+			<return type="GFComponent" />
+			<param index="0" name="entity" type="Variant" />
+			<description>
+				Extends [method GFEntity.inherit].
 			</description>
 		</method>
 		<method name="is_alive" qualifiers="const">

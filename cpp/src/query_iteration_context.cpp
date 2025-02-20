@@ -7,7 +7,6 @@
 #include "godot_cpp/variant/callable.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include "tag.h"
-#include "utils.h"
 #include "world.h"
 
 #include <stdlib.h>
@@ -21,10 +20,7 @@ using namespace godot;
 
 ecs_entity_t get_compmonent_of_term(const ecs_term_t* term) {
 	if (term->id == 0) {
-		ERR(0,
-			"Could not get component of term\n",
-			"Term ID is 0"
-		);
+		return ecs_pair(term->first.id, term->second.id);
 	}
 	return term->id;
 }
@@ -104,6 +100,8 @@ void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity
 			// Object is null, skip
 			continue;
 		}
+
+
 		if (!added_entity->is_class(GFComponent::get_class_static())) {
 			// Added ID is not a component, skip
 			continue;
@@ -121,11 +119,10 @@ void QueryIterationContext::update_component_entities(ecs_iter_t* it, int entity
 }
 
 void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
-	auto query = it->query;
-	auto terms = it->query->terms;
+	const ecs_term_t* terms = it->query->terms;
 
 	int i_arg = 0;
-	for (int term_i=0; term_i != query->term_count; term_i++) {
+	for (int term_i=0; term_i != it->query->term_count; term_i++) {
 		ecs_entity_t entity_id = ecs_field_src(it, term_i);
 		if (entity_id == 0) {
 			entity_id = it->entities[0];
@@ -133,6 +130,7 @@ void QueryIterationContext::update_component_terms(ecs_iter_t* it) {
 
 		const ecs_term_t* term = &terms[term_i];
 		Ref<GFEntity> comp_ref = comp_ref_per_term[term_i];
+		comp_ref->set_id(it->ids[i_arg]);
 
 		switch (term->oper) {
 			case ecs_oper_kind_t::EcsAnd:

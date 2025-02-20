@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GFSystemBuilder" inherits="GFQuerylikeBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="GFSystemBuilder" inherits="GFQuerylikeBuilder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A builder for systems.
 	</brief_description>
@@ -18,7 +19,7 @@
 		<link title="More on Flecs Systems">https://www.flecs.dev/flecs/md_docs_2Systems</link>
 	</tutorials>
 	<methods>
-		<method name="add_entity">
+		<method name="add">
 			<return type="GFSystemBuilder" />
 			<param index="0" name="entity" type="Variant" />
 			<description>
@@ -54,12 +55,47 @@
 				Builds the system with a callback for iterating over each result.
 			</description>
 		</method>
-		<method name="maybe_with">
+		<method name="from">
 			<return type="GFSystemBuilder" />
-			<param index="0" name="term" type="Variant" />
-			<param index="1" name="second" type="Variant" default="null" />
+			<param index="0" name="entity" type="Variant" />
 			<description>
-				Overrides [method GFQuerylikeBuilder.maybe_with].
+				Overrides [GFQuerylikeBuilder.from].
+			</description>
+		</method>
+		<method name="io_default">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_default].
+			</description>
+		</method>
+		<method name="io_filter">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_filter].
+			</description>
+		</method>
+		<method name="io_in">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_in].
+			</description>
+		</method>
+		<method name="io_inout">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_inout].
+			</description>
+		</method>
+		<method name="io_none">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_none].
+			</description>
+		</method>
+		<method name="io_out">
+			<return type="GFSystemBuilder" />
+			<description>
+				Overrides [GFQuerylikeBuilder.io_out].
 			</description>
 		</method>
 		<method name="new_in_world" qualifiers="static">
@@ -113,11 +149,20 @@
 				Overrides [method GFQuerylikeBuilder.with].
 			</description>
 		</method>
+		<method name="with_maybe">
+			<return type="GFSystemBuilder" />
+			<param index="0" name="term" type="Variant" />
+			<param index="1" name="second" type="Variant" default="null" />
+			<description>
+				Overrides [method GFQuerylikeBuilder.with_maybe].
+			</description>
+		</method>
 		<method name="without">
 			<return type="GFSystemBuilder" />
 			<param index="0" name="term" type="Variant" />
 			<param index="1" name="second" type="Variant" default="null" />
 			<description>
+				Overrides [method GFQuerylikeBuilder.without].
 			</description>
 		</method>
 	</methods>

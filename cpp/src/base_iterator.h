@@ -15,7 +15,7 @@
 			"Iterator is already exhausted"                	\
 		);	\
 	}                             	\
-	if (index == iterator.count) {	\
+	if (index >= iterator.count) {	\
 		index = 0;                     	\
 		set_done(!ECS_NEXT(&iterator));	\
 		if (is_done()) {               	\

@@ -41,7 +41,7 @@ func test_optional_terms():
 	data.bools = 0
 	GFSystemBuilder.new() \
 		.with(Ints) \
-		.maybe_with(Bools) \
+		.with_maybe(Bools) \
 		.for_each(callable)
 	world.progress(0.0)
 	assert_eq(data.ints, 2, "Expected `Ints` to be queried 2 times")
@@ -50,7 +50,7 @@ func test_optional_terms():
 	data.ints = 0
 	data.bools = 0
 	GFSystemBuilder.new() \
-		.maybe_with(Ints) \
+		.with_maybe(Ints) \
 		.with(Bools) \
 		.for_each(callable)
 	world.progress(0.0)
@@ -129,6 +129,70 @@ func test_with_pair():
 		count += 1
 
 	assert_eq(count, 1, "Expected query to find 1 entity")
+
+
+func test_query_variable():
+	# Setup tags and components
+	var rendering:= GFEntity.new().set_name("Rendering")
+	var world_e:= GFEntity.new().set_name("World")
+	var world_3d:= GFComponentBuilder.new() \
+		.set_name("World3D") \
+		.add(world_e) \
+		.add_member("origin", TYPE_VECTOR2) \
+		.build()
+	var world_2d:= GFEntity.new() \
+		.set_name("World2D") \
+		.add(world_e)
+	
+	# Setup entities to query for
+	var item:= GFEntity.new() \
+		.set_name("Item3D") \
+		.add_pair(rendering, world_3d)
+	var item2:= GFEntity.new() \
+		.set_name("Item2D") \
+		.add_pair(rendering, world_2d)
+	
+	# Run query
+	var q:= GFQueryBuilder.new() \
+		.with(rendering, "$world") \
+		.with(world_e).from("$world") \
+		.build()
+	var results:= q.iter().into_array()
+	
+	assert_eq(results.size(), 2, "Expected 2 query results")
+	assert_eq(
+		results[0][0].get_id(),
+		world.pair_ids(rendering.get_id(), world_3d.get_id()),
+		"Expected " + str(results[0][0]) + " to equal "
+			+ str(rendering.pair(world_3d))
+	)
+	assert_eq(
+		results[1][0].get_id(),
+		world.pair_ids(rendering.get_id(), world_2d.get_id()),
+		"Expected " + str(results[1][0]) + " to equal "
+			+ str(rendering.pair(world_2d))
+	)
+
+func test_src_doc_example():
+	var Velocity = GFComponentBuilder.new() \
+		.add_member("velocity", TYPE_VECTOR2) \
+		.build()
+	var ship = GFEntity.new() \
+		.add(Velocity)
+	var asteroid = GFEntity.new() \
+		.add(Velocity)
+	
+	# Query only for Velocity of the ship, not the asteroid
+	var query = GFQueryBuilder.new() \
+		.with(Velocity).from(ship) \
+		.build()
+	
+	var arr = query.iter().into_array()
+	assert_eq(arr.size(), 1)
+	
+	var velocity_c:GFComponent = arr[0][0]
+	assert_eq(velocity_c.get_id(), Velocity.get_id())
+	assert_eq(velocity_c.get_source_id(), ship.get_id())
 
 #endregion
 
