@@ -19,7 +19,7 @@ func _ready() -> void:
 
 	GFEntity.from(GFOnDraw, e.get_world()).emit(e)
 
-	GFGlobalWorld.start_rest_api()
+	GFWorld.get_default_world().start_rest_api()
 
 
 func _process(delta: float) -> void:
