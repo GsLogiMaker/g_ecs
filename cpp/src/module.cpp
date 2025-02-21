@@ -73,65 +73,59 @@ void GFModule::_register_internal() {
 		&desc
 	);
 
-	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
-	ecs_set_scope(get_world()->raw(), get_id());
+	GLECS_SCOPE(get_world(), get_id(), {
+		Ref<Script> script = get_script();
+		Dictionary constants = script->get_script_constant_map();
+		Array keys = constants.keys();
 
-	Ref<Script> script = get_script();
-	Dictionary constants = script->get_script_constant_map();
-	Array keys = constants.keys();
+		for (int i=0; i != keys.size(); i++) {
+			Variant const_val = constants[keys[i]];
+			if (!variant_is_registerable_script(const_val)) {
+				continue;
+			}
+			Ref<Script> const_script = const_val;
 
-	for (int i=0; i != keys.size(); i++) {
-		Variant const_val = constants[keys[i]];
-		if (!variant_is_registerable_script(const_val)) {
-			continue;
+			// Initialize
+			Ref<GFRegisterableEntity> ett = get_world()->register_script_id_no_user_call(const_script);
+
+			// Maybe set name of registered module
+			if (ecs_get_name(get_world()->raw(), ett->get_id()) == nullptr) {
+				// Entity has no name, give it the name of the constant's key
+				String name = keys[i];
+				ecs_set_name(get_world()->raw(), ett->get_id(), name.utf8());
+			}
 		}
-		Ref<Script> const_script = const_val;
 
-		// Initialize
-		Ref<GFRegisterableEntity> ett = get_world()->register_script_id_no_user_call(const_script);
-
-		// Maybe set name of registered module
-		if (ecs_get_name(get_world()->raw(), ett->get_id()) == nullptr) {
-			// Entity has no name, give it the name of the constant's key
-			String name = keys[i];
-			ecs_set_name(get_world()->raw(), ett->get_id(), name.utf8());
-		}
-	}
-
-	ecs_set_scope(get_world()->raw(), old_scope);
-
-	GFRegisterableEntity::_register_internal();
+		GFRegisterableEntity::_register_internal();
+	});
 }
 
 void GFModule::_register_user() {
-	ecs_entity_t old_scope = ecs_get_scope(get_world()->raw());
-	ecs_set_scope(get_world()->raw(), get_id());
+	GLECS_SCOPE(get_world(), get_id(), {
+		Ref<Script> script = get_script();
+		Dictionary constants = script->get_script_constant_map();
+		Array keys = constants.keys();
 
-	Ref<Script> script = get_script();
-	Dictionary constants = script->get_script_constant_map();
-	Array keys = constants.keys();
+		for (int i=0; i != keys.size(); i++) {
+			Variant const_val = constants[keys[i]];
+			if (!variant_is_registerable_script(const_val)) {
+				continue;
+			}
+			Ref<Script> const_script = const_val;
 
-	for (int i=0; i != keys.size(); i++) {
-		Variant const_val = constants[keys[i]];
-		if (!variant_is_registerable_script(const_val)) {
-			continue;
+			// Initialize sub-item
+			Ref<GFRegisterableEntity> ett = ClassDB::instantiate(
+				const_script->get_instance_base_type()
+			);
+			ett->set_id(get_world()->coerce_id(const_script));
+			ett->set_world(get_world());
+			ett->set_script(const_script);
+
+			ett->call_user_register();
 		}
-		Ref<Script> const_script = const_val;
 
-		// Initialize sub-item
-		Ref<GFRegisterableEntity> ett = ClassDB::instantiate(
-			const_script->get_instance_base_type()
-		);
-		ett->set_id(get_world()->coerce_id(const_script));
-		ett->set_world(get_world());
-		ett->set_script(const_script);
-
-		ett->call_user_register();
-	}
-
-	ecs_set_scope(get_world()->raw(), old_scope);
-
-	GFRegisterableEntity::_register_user();
+		GFRegisterableEntity::_register_user();
+	});
 }
 
 
