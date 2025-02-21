@@ -40,6 +40,19 @@
 		);	\
 	}
 
+#define GLECS_SCOPE(WORLD, SCOPE_ID, CODE){	\
+	GFWorld* __w = WORLD;	\
+	ecs_entity_t __scope_id = SCOPE_ID;	\
+	ecs_entity_t __old = ecs_get_scope(__w->raw());	\
+	ecs_set_scope(__w->raw(), __scope_id);	\
+	UtilityFunctions::prints("ENTER", __scope_id, "FROM", __old);	\
+	{	\
+		CODE	\
+	}	\
+	ecs_set_scope(__w->raw(), __old);	\
+	UtilityFunctions::prints("EXIT", __scope_id, "TO", __old);	\
+}
+
 template <typename T, typename E>
 class Result {
 

@@ -106,19 +106,16 @@ void GFWorld::setup_glecs() {
 
 	// Add glecs/meta module
 	{
-		ecs_entity_t old_scope = ecs_get_scope(_raw);
-		ecs_set_scope(_raw, glecs);
-
 		ecs_component_desc_t comp_desc = {
 			.entity = ecs_new_from_path(_raw, glecs, "meta"),
 		};
-		glecs_meta = ecs_module_init(
-			_raw,
-			"meta",
-			&comp_desc
-		);
-
-		ecs_set_scope(_raw, old_scope);
+		GLECS_SCOPE(this, glecs, {
+			glecs_meta = ecs_module_init(
+				_raw,
+				"meta",
+				&comp_desc
+			);
+		});
 	}
 
 	{ // Add glecs/meta/Real type
@@ -736,13 +733,10 @@ void GFWorld::_register_modules_from_scripts(int depth=0) {
 				"	Found \"", MODULES, "\" after", depth, " iteration(s)."
 			);
 		}
-		ecs_entity_t prev_scope = ecs_get_scope(raw());
-		ecs_set_scope(raw(), glecs);
-
-		Object* glecs_modules = engine->get_singleton(MODULES);
-		glecs_modules->call("register_modules", this);
-
-		ecs_set_scope(raw(), prev_scope);
+		GLECS_SCOPE(this, glecs, {
+			Object* glecs_modules = engine->get_singleton(MODULES);
+			glecs_modules->call("register_modules", this);
+		});
 	} else {
 		if (depth == 10) {
 			UtilityFunctions::push_warning("Failed to load modules from scripts.\n",

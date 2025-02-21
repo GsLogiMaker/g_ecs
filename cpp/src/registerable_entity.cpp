@@ -76,15 +76,14 @@ void GFRegisterableEntity::call_internal_register() {
 void GFRegisterableEntity::call_user_register() {
 	GFWorld* w = get_world();
 
-	GFWorld* old_thread_world = GFWorld::get_default_world();
+	GFWorld* old_default_world = GFWorld::get_default_world();
 	GFWorld::set_default_world(w);
-	ecs_entity_t old_scope = ecs_get_scope(w->raw());
-	ecs_set_scope(w->raw(), get_id());
 
-	this->call("_register_user");
+	GLECS_SCOPE(w, get_id(), {
+		this->call("_register_user");
+	});
 
-	GFWorld::set_default_world(old_thread_world);
-	ecs_set_scope(w->raw(), old_scope);
+	GFWorld::set_default_world(old_default_world);
 
 }
 
